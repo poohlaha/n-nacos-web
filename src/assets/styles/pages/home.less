@@ -3,3 +3,82 @@
  * @date 2023-4-14
  * @author poohlaha
  */
+.wrapper {
+
+}
+
+// navigation
+.wrapper .navigation {
+  height: 64px;
+  background: @background;
+  border-bottom: @border;
+  //box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  position: relative;
+  z-index: 10;
+  max-width: 100%;
+  font-size: @font_small;
+  padding: 0 10px;
+
+  .logo {
+    font-size: @font_largest;
+    font-weight: bold;
+  }
+}
+
+// main
+.wrapper .main {
+  // left
+  .left {
+    width: 220px;
+    border-right: @border;
+    font-size: 14px;
+    padding-top: 40px;
+
+    .left-group {
+
+      .left-item {
+
+      }
+
+      .left-title {
+        margin: 0 20px;
+        height: 60px;
+        border-bottom: @border;
+        color: rgba(0, 0, 0, 0.45);
+      }
+
+      ul {
+        margin-top: 10px;
+
+        li {
+        }
+      }
+
+      li, .left-item {
+        padding: 0 20px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        height: 40px;
+        cursor: pointer;
+
+        &.active {
+          background: @theme_blue;
+          color: @color_resolve;
+        }
+      }
+
+      li:not(.active):hover,
+      .left-item:not(.active):hover {
+        background: @color_menu_active;
+      }
+    }
+  }
+
+  // right
+  .right {
+
+  }
+}
+
+
+

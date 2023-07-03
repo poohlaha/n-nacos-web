@@ -4,11 +4,10 @@
  * @author poohlaha
  */
 import { observable, action } from 'mobx'
-import {CONFIG, CONSTANT} from '@config/index'
-import Utils from '@utils/utils'
+import {CONSTANT} from '@config/index'
 
 class CommonStore {
-  @observable skin = CONSTANT.SKINS[1] // 皮肤
+  @observable skin = CONSTANT.SKINS[0] // 皮肤
 
   /**
    * 切换皮肤

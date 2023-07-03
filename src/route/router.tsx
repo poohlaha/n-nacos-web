@@ -7,23 +7,20 @@ import React from 'react'
 import { RouteInterface } from '@router/router.interface'
 import RouterUrls from '@route/router.url.toml'
 const { lazy } = React
-import Dashboard from '@pages/dashboard'
 
 export const routes: RouteInterface[] = [
   {
-    path: '/',
+    path: '*',
     exact: true,
-    component: Dashboard,
-    name: 'dashboard',
+    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/home/index')),
     auth: false,
     title: '首页'
   },
   {
-    path: RouterUrls.HOME_URL,
-    component: Dashboard,
+    path: RouterUrls.MAIN_URL,
     exact: true,
-    name: 'home',
-    title: '首页',
-    auth: false
-  },
+    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/home/index')),
+    auth: false,
+    title: '首页'
+  }
 ]

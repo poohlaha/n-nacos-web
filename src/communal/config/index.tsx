@@ -1,5 +1,5 @@
 /**
- * @fileOverview config exports
+ * @fileOverview configuration exports
  * @date 2023-04-12
  * @author poohlaha
  */

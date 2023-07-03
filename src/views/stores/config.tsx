@@ -4,10 +4,12 @@
  * @author poohlaha
  */
 import commonStore from './base/common.store'
+import leftStore from './main/left.store'
 
 export function createStore() {
   return {
     commonStore,
+    leftStore
   }
 }
 

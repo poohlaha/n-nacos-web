@@ -8,7 +8,7 @@ const PageNotFound: React.FC<IRouterProps> = (props: IRouterProps) => {
   return (
     <div className="not-found">
       <span>页面未找到.</span>
-      <div className="home-button" onClick={() => (window.location.href = RouterUrls.HOME_URL)}>
+      <div className="home-button" onClick={() => (window.location.href = RouterUrls.MAIN_URL)}>
         返回首页
       </div>
     </div>
