@@ -49,6 +49,7 @@ src/communal/router
 src/communal/utils
 src/communal/index.tsx
 src/views/stores/index.tsx
+src/@types/global.d.ts
 
 .vendor
 
