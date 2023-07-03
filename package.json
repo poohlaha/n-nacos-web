@@ -1,0 +1,47 @@
+{
+  "name": "n-nacos-web",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "description": "n-nacos 后台管理系统, 使用 React 开发.",
+  "keywords": [
+    "react",
+    "css",
+    "js",
+    "tsx",
+    "ts"
+  ],
+  "author": "poohlaha",
+  "license": "ISC",
+  "homepage": "https://github.com/poohlaha/n-nacos-web",
+  "scripts": {
+    "copy": "esno ./scripts/index.ts copy",
+    "start": "esno ./scripts/index.ts start",
+    "build": "esno ./scripts/index.ts dev",
+    "prod": "esno ./scripts/index.ts prod",
+    "clean": "esno ./scripts/index.ts clean",
+    "format": "npx prettier --write src/**/*.{vue,jsx,js,tsx,ts,json,css,md}"
+  },
+  "dependencies": {
+    "antd": "^5.4.2"
+  },
+  "devDependencies": {
+    "@bale-tools/mutate-service": "^2.1.8",
+    "@bale-tools/utils": "^2.0.5",
+    "@bale-tools/mutate-version": "^2.0.8",
+    "@bale-sprint/react": "^1.0.7",
+    "core-js": "3",
+    "autoprefixer": "^10.4.13",
+    "esno": "^0.16.3",
+    "cssnano": "^6.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8",
+    "iOS >= 8",
+    "Firefox >= 20",
+    "Android > 4.4"
+  ]
+}
