@@ -106,10 +106,81 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
     return "Unknow"
   }
 
+  // 进程使用情况
+  const getProcessHtml = (processes: Array<{[K: string]: any}> = []) => {
+    if (processes.length === 0) return null
+
+    return (
+      processes.map((process: {[K: string]: any} = {}) => {
+        return (
+          <Card title={process.name || ''}>
+            <div className="card-item flex">
+              <p>pid:</p>
+              <p>{process.pid|| ''}</p>
+            </div>
+
+            <div className="card-item flex">
+              <p>parentPid:</p>
+              <p>{process.parent_pid|| ''}</p>
+            </div>
+
+            <div className="card-item flex">
+              <p>启动时间:</p>
+              <p>{process.start_time|| ''}</p>
+            </div>
+
+            <div className="card-item flex">
+              <p>cmd:</p>
+              <p>{process.cmd|| ''}</p>
+            </div>
+
+            <div className="card-item flex">
+              <p>exe:</p>
+              <p>{process.exe|| ''}</p>
+            </div>
+
+            <div className="card-item flex">
+              <p>虚拟内存:</p>
+              <p>{process.virtual_memory|| ''}</p>
+            </div>
+
+            <div className="card-item flex">
+              <p>已运行时长:</p>
+              <p>{process.run_time|| ''}s</p>
+            </div>
+
+            <Card title="磁盘使用情况">
+              <div className="card-item flex">
+                <p>总共写入(bytes):</p>
+                <p>{process.total_written_bytes|| 0}</p>
+              </div>
+
+              <div className="card-item flex">
+                <p>写入(bytes):</p>
+                <p>{process.written_bytes|| 0}</p>
+              </div>
+
+              <div className="card-item flex">
+                <p>总共读取(bytes):</p>
+                <p>{process.total_read_bytes|| 0}</p>
+              </div>
+
+              <div className="card-item flex">
+                <p>读取(bytes):</p>
+                <p>{process.read_bytes|| 0}</p>
+              </div>
+            </Card>
+
+          </Card>
+        )
+      })
+    )
+  }
+
   const getHtml = () => {
     let info = commonStore.data.info || {}
     let diskInfo = commonStore.data.disk_info || []
-    let process = commonStore.data.processes || []
+    let processes = commonStore.data.processes || []
     let memory: Array<any> = getMemoryUsed(info.total_memory, info.used_memory)
     let memoryData: Array<any> = []
     let content: {[K: string]: any} = {}
@@ -164,6 +235,13 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
             {getDiskHtml(diskInfo)}
           </div>
         </Card>
+
+        {/* 进程使用情况 */}
+        <Card title="进程使用情况">
+          <div className="card-item process-card flex-direction-column">
+            {getProcessHtml(processes)}
+          </div>
+        </Card>
       </Fragment>
     )
 
@@ -207,7 +285,7 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
 
   const render = () => {
     return (
-      <div className="dashboard-page wh100">
+      <div className="dashboard-page w100 min-h100">
         {getHtml()}
       </div>
     )
