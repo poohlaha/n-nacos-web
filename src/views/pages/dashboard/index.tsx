@@ -23,11 +23,15 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
   const {commonStore} = useStore()
 
   useMount(() => {
+    onRefresh()
+  })
+
+  const onRefresh = () => {
     commonStore.onSendMessage({
       data: ['cpu', 'dist', 'nginx'],
       request: 'system'
     })
-  })
+  }
 
   // 转换成 g
   const getMemoryUnit = (memory: number) => {
@@ -111,9 +115,9 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
     if (processes.length === 0) return null
 
     return (
-      processes.map((process: {[K: string]: any} = {}) => {
+      processes.map((process: {[K: string]: any} = {}, index: number) => {
         return (
-          <Card title={process.name || ''}>
+          <Card title={process.name || ''} key={index}>
             <div className="card-item flex">
               <p>pid:</p>
               <p>{process.pid|| ''}</p>
@@ -192,7 +196,7 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
     return (
       <Fragment>
         {/* 机器信息 */}
-        <Card title="服务器信息" className="sys-info">
+        <Card title="服务器信息" className="sys-info-card" extra={<div onClick={onRefresh}>刷新</div>}>
           <div className="card-item flex-align-center">
             <p>操作系统: </p>
             <p>{getOs(info.os_type || '')}</p>
@@ -217,15 +221,13 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
         {/* 内存使用率 */}
         <Card title="内存使用率">
           {
-            info.total_memory > 0 ? (
+            info.total_memory > 0 && (
               <div className="card-item">
                 {
                   getPiePercentHtml(memoryData, content)
                 }
               </div>
-              ) : (
-              <div className="card-item flex-center">无</div>
-            )
+              )
           }
         </Card>
 

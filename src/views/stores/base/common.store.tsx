@@ -52,6 +52,7 @@ class CommonStore {
   onSendMessage(message: {[K: string]: any}) {
     setTimeout(() => {
       if (!this.socket) return
+      console.log('socket state', this.socket.readyState)
       if (this.socket.readyState === WebSocket.OPEN) {
         console.log('向服务端发送数据: ', JSON.stringify(message));
         this.socket.send(JSON.stringify(message))
@@ -90,7 +91,7 @@ class CommonStore {
    */
   onSocketClose() {
     if (!this.socket) return
-    this.socket.onclose = function () {
+    this.socket.onclose = () => {
       console.log('WebSocket连接已关闭!');
     }
   }
@@ -100,7 +101,7 @@ class CommonStore {
    */
   onSocketError() {
     if (!this.socket) return
-    this.socket.onerror = function (error) {
+    this.socket.onerror = (error) => {
       console.error('WebSocket连接发生错误:', error);
     }
   }
