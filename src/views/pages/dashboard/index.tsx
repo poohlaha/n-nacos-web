@@ -14,8 +14,6 @@ import {
   Interval,
   Coordinate,
   Legend,
-  Axis,
-  Tooltip,
   View,
   Annotation,
 } from 'bizcharts'
@@ -62,12 +60,49 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
     return [data, cols]
   }
 
+  const getDiskCardHtml = (disk: {[K: string]: any}) => {
+    if (Utils.isObjectNull(disk)) return null
+    let usedPercent = (disk.available_space / disk.total_space).toFixed(4)
+    const data = [
+      {type: '未使用', percent: parseFloat(usedPercent)},
+      {type: '已使用', percent: parseFloat((1 - parseFloat(usedPercent)).toFixed(4))}
+    ]
+
+    const content = {
+      percent: (data[0].percent * 100).toFixed(2)  + '%'
+    }
+
+    return getPiePercentHtml(data, content, false)
+  }
+
+  // 获取磁盘使用情况
+  const getDiskHtml = (diskInfo: Array<{[K: string]: any}>) => {
+    if (diskInfo.length === 0) return null
+
+    return (
+      diskInfo.map((disk: {[K: string]: any}, index: number) => {
+        return (
+          <Card
+            hoverable
+            style={{width: 250}}
+            cover={getDiskCardHtml(disk)}
+            key={index}
+          >
+            <Card.Meta title={`${disk.name || ''}(${disk.type_ || ''})`} description={`位置: ${disk.mount_point || ''}`} />
+            <Card.Meta description={`总空间: ${getMemoryUnit(disk.total_space) || ''}`} />
+            <Card.Meta description={`可用空间: ${getMemoryUnit(disk.available_space) || ''}`} />
+          </Card>
+        )
+      })
+    )
+  }
+
   // 获取操作系统
   const getOs = (osType: string) => {
     if (Utils.isBlank(osType)) return "Unknow"
     if (osType.toLowerCase() === 'windows') return 'Windows'
     if (osType.toLowerCase() === 'linux') return 'Linux'
-    if (osType.toLowerCase() === 'darwin') return 'Macos'
+    if (osType.toLowerCase() === 'darwin') return 'MacOs'
     return "Unknow"
   }
 
@@ -77,18 +112,16 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
     let process = commonStore.data.processes || []
     let memory: Array<any> = getMemoryUsed(info.total_memory, info.used_memory)
     let memoryData: Array<any> = []
-    let memoryCol: {[K: string]: any} = {}
     let content: {[K: string]: any} = {}
     if (memory.length > 1) {
       memoryData = memory[0]
-      memoryCol = memory[1]
-      content.percent = memoryData[0].percent * 100  + '%'
+      content.percent = (memoryData[0].percent * 100).toFixed(2) + '%'
     }
 
     return (
       <Fragment>
         {/* 机器信息 */}
-        <Card title="服务器信息">
+        <Card title="服务器信息" className="sys-info">
           <div className="card-item flex-align-center">
             <p>操作系统: </p>
             <p>{getOs(info.os_type || '')}</p>
@@ -115,30 +148,9 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
           {
             info.total_memory > 0 ? (
               <div className="card-item">
-                <Chart placeholder={false} height={250} padding="auto" autoFit>
-                  <Legend visible={true} />
-                  <View
-                    data={memoryData}
-                    scale={memoryCol}
-                  >
-                    <Coordinate type="theta" innerRadius={0.75} />
-                    <Interval
-                      position="percent"
-                      adjust="stack"
-                      color={["type", ["rgba(100, 100, 255, 0.6)", "#eee"]]}
-                      size={20}
-                    />
-
-                    <Annotation.Text
-                      position={["50%", "50%"]}
-                      content={content.percent}
-                      style={{
-                        fontSize: 24,
-                        textAlign: "center",
-                      }}
-                    />
-                  </View>
-                </Chart>
+                {
+                  getPiePercentHtml(memoryData, content)
+                }
               </div>
               ) : (
               <div className="card-item flex-center">无</div>
@@ -147,12 +159,50 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
         </Card>
 
         {/* 磁盘使用情况*/}
-        <Card title="磁盘使用">
-
+        <Card title="磁盘使用情况">
+          <div className="card-item disk-card flex-center">
+            {getDiskHtml(diskInfo)}
+          </div>
         </Card>
       </Fragment>
     )
 
+  }
+
+  // 饼图
+  const getPiePercentHtml = (data: Array<{[K: string]: any}> = [], content: {[K: string]: any} = {}, useLegend: boolean = true) => {
+    return (
+      <Chart placeholder={false} height={250} padding="auto" autoFit>
+        <Legend visible={useLegend} />
+        <View
+          data={data}
+          scale={{
+            percent: {
+              formatter: (val: any) => {
+                return (val * 100).toFixed(2) + "%";
+              }
+            }
+          }}
+        >
+          <Coordinate type="theta" innerRadius={0.75} />
+          <Interval
+            position="percent"
+            adjust="stack"
+            color={["type", ["rgba(100, 100, 255, 0.6)", "#eee"]]}
+            size={20}
+          />
+
+          <Annotation.Text
+            position={["50%", "50%"]}
+            content={content.percent}
+            style={{
+              fontSize: 24,
+              textAlign: "center",
+            }}
+          />
+        </View>
+      </Chart>
+    )
   }
 
   const render = () => {

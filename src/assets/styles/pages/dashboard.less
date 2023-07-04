@@ -27,4 +27,28 @@
   .ant-card:not(:first-child) {
     margin-top: 20px;
   }
+
+  .disk-card {
+    .ant-card:not(:first-child) {
+      margin-left: 20px;
+    }
+
+    .ant-card {
+      margin-top: 0!important;
+      width: 300px;
+
+      .ant-card-cover {
+        border-bottom: @border;
+        padding: 10px;
+      }
+
+      .ant-card-body {
+        padding: 24px 18px;
+      }
+
+      .ant-card-meta:not(:first-child) {
+        margin-top: 10px;
+      }
+    }
+  }
 }
