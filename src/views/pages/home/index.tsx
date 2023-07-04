@@ -11,13 +11,13 @@ import Right from './right';
 const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const render = () => {
     return (
-      <Fragment>
+      <div className="flex-direction-column wh100">
         <Navigation />
         <div className="main flex-1 flex">
           <Left />
           <Right />
         </div>
-      </Fragment>
+      </div>
     )
   }
 

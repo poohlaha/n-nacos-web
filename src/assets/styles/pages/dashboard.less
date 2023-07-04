@@ -1,0 +1,30 @@
+/**
+ * @fileOverview dashboard
+ * @date 2023-7-4
+ * @author poohlaha
+ */
+.dashboard-page {
+  background: #eaedf1;
+  padding: 20px;
+
+  .card-item {
+    font-size: @font;
+    min-height: 40px;
+
+    p {
+      font-weight: bold;
+    }
+
+    p:first-child {
+    }
+
+    p:last-child {
+      color: #db831d;
+      margin-left: 20px;
+    }
+  }
+
+  .ant-card:not(:first-child) {
+    margin-top: 20px;
+  }
+}

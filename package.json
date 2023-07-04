@@ -24,6 +24,7 @@
     "format": "npx prettier --write src/**/*.{vue,jsx,js,tsx,ts,json,css,md}"
   },
   "dependencies": {
+    "bizcharts": "^4.1.22",
     "antd": "^5.4.2",
     "lib-flexible": "^0.3.2",
     "axios": "^0.21.1",
