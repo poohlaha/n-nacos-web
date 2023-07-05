@@ -15,8 +15,7 @@ class CommonStore extends BaseStore {
 
   constructor() {
     super()
-
-    this.initSocket()
+    // this.initSocket()
   }
 
   /**

@@ -20,19 +20,14 @@ import {
 
 const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
-  const {commonStore} = useStore()
+  const {dashboardStore} = useStore()
 
-  useMount(() => {
-    onRefresh()
+  useMount(async () => {
+    await onRefresh()
   })
 
-  const onRefresh = () => {
-    commonStore.setProperty('data', [])
-    commonStore.initSocket()
-    commonStore.onSendMessage({
-      data: ['cpu', 'dist', 'nginx'],
-      request: 'system'
-    })
+  const onRefresh = async () => {
+    await dashboardStore.getSystemInfo()
   }
 
   // 转换成 g
@@ -184,9 +179,9 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
   }
 
   const getHtml = () => {
-    let info = commonStore.data.info || {}
-    let diskInfo = commonStore.data.disk_info || []
-    let processes = commonStore.data.processes || []
+    let info = dashboardStore.systemInfo.info || {}
+    let diskInfo = dashboardStore.systemInfo.disk_info || []
+    let processes = dashboardStore.systemInfo.processes || []
     let memory: Array<any> = getMemoryUsed(info.total_memory, info.used_memory)
     let memoryData: Array<any> = []
     let content: {[K: string]: any} = {}

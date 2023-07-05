@@ -3,7 +3,7 @@
  * @date 2023-04-12
  * @author poohlaha
  */
-import React, {Fragment, ReactElement, useState} from 'react'
+import React, {ReactElement, useState} from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import {Card, Drawer} from 'antd'
@@ -15,28 +15,25 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const [showDrawer, setShowDrawer] = useState(false) // 是否显示 nginx 配置文件
 
-  const {commonStore} = useStore()
+  const {nginxStore} = useStore()
   useMount(() => {
-    commonStore.setProperty('data', {})
+
   })
 
 
-  const onShowDrawer = () => {
-    commonStore.initSocket();
-    commonStore.onSendMessage({
-      data: ['file'],
-      request: 'nginx'
+  const onShowDrawer = async () => {
+    await nginxStore.getFileData(() => {
+      setShowDrawer(true)
     })
-    setShowDrawer(true)
   }
 
   // 获取 nginx 配置文件
   const getNginxFileConfHtml = () => {
-    if (commonStore.loading || !commonStore.data || Utils.isObjectNull(commonStore.data)) return null
+    if (nginxStore.loading || !nginxStore.fileData || Utils.isObjectNull(nginxStore.fileData)) return null
     // @ts-ignore
     let prism = window['Prism']
 
-    const html = prism.highlight(commonStore.data.data, prism.languages.nginx, 'nginx')
+    const html = prism.highlight(nginxStore.fileData.data, prism.languages.nginx, 'nginx')
     return (
       <pre>
         <code className="nginx-detail language-nginx" dangerouslySetInnerHTML={{ __html: html || '' }} />
@@ -53,14 +50,12 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
         {/* 查看配置文件 */}
         {
-          showDrawer && (
-            <Drawer title="Nginx配置文件" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
-              <Loading show={commonStore.loading} />
-              {
-                getNginxFileConfHtml()
-              }
-            </Drawer>
-          )
+          <Drawer title="Nginx配置文件" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
+            <Loading show={nginxStore.loading} />
+            {
+              getNginxFileConfHtml()
+            }
+          </Drawer>
         }
       </div>
     )
