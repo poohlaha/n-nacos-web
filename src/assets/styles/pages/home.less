@@ -3,6 +3,7 @@
  * @date 2023-7-4
  * @author poohlaha
  */
+@left-width: 250px;
 .wrapper {
   .svg-icon {
     width: 14px;
@@ -62,8 +63,8 @@
 
   // left
   .left {
-    width: 250px;
-    min-width: 250px;
+    width: @left-width;
+    min-width: @left-width;
     border-right: @border;
     box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
     font-size: 14px;
@@ -116,7 +117,13 @@
 
   // right
   .right {
+    background: @background_right;
+    padding: 20px;
     overflow: auto;
+
+    .loading {
+      left: @left-width!important;
+    }
   }
 }
 

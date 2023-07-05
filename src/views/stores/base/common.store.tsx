@@ -15,10 +15,6 @@ class CommonStore extends BaseStore {
 
   constructor() {
     super()
-    if (!window.WebSocket) {
-      console.warn('当前浏览器不支持socket !')
-      return
-    }
 
     this.initSocket()
   }
@@ -27,6 +23,14 @@ class CommonStore extends BaseStore {
    * 初始化 socket
    */
   initSocket() {
+    if (this.socket && this.socket.readyState === 1) return
+
+    if (!window.WebSocket) {
+      console.warn('当前浏览器不支持socket !')
+      return
+    }
+
+
     let address = process.env.WEB_SOCKET_URL || ''
     if (Utils.isBlank(address)) return
 

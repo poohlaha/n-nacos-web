@@ -27,6 +27,8 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
   })
 
   const onRefresh = () => {
+    commonStore.setProperty('data', [])
+    commonStore.initSocket()
     commonStore.onSendMessage({
       data: ['cpu', 'dist', 'nginx'],
       request: 'system'

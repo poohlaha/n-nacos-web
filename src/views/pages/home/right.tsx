@@ -7,12 +7,12 @@ import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import Utils from '@utils/utils'
 import RouterUrls from '@route/router.url.toml'
-import Loading from '@views/components/loading'
+import Loading from '@views/components/loading/loading'
 import ScrollToTop from '@router/scrollToTop'
 
 const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
-  const {leftStore} = useStore()
+  const {leftStore, commonStore} = useStore()
 
   const getUrls = () => {
     let urls: Array<{[K: string]: any}> = []
@@ -67,6 +67,8 @@ const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
             }
           </Routes>
         }
+
+        <Loading show={commonStore.loading} />
       </div>
     )
   }
