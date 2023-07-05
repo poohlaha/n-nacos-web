@@ -5,11 +5,13 @@
  */
 import commonStore from './base/common.store'
 import leftStore from './main/left.store'
+import nginxStore from './main/nginx.store'
 
 export function createStore() {
   return {
     commonStore,
-    leftStore
+    leftStore,
+    nginxStore
   }
 }
 

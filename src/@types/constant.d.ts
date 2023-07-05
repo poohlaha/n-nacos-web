@@ -5,6 +5,7 @@
  */
 declare module 'react-fastclick'
 declare module 'crypto-js'
+// declare module 'prismjs'
 declare module '*.toml'
 declare module '*.png'
 declare module '*.jpg'
@@ -13,4 +14,10 @@ declare module '*.mp4'
 declare module '*.jpg'
 declare module '*.gif'
 declare const $http: any // http
+
+declare global {
+  interface Window {
+    Prism: any
+  }
+}
 
