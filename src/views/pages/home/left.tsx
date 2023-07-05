@@ -13,8 +13,9 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const navigate = useNavigate()
   const {leftStore} = useStore()
 
-  const toPage = (url: string) => {
+  const toPage = (url: string, activeIndexes: Array<number> = []) => {
     if (Utils.isBlank(url)) return
+    leftStore.activeIndexes = activeIndexes
     navigate(url)
   }
 
@@ -25,6 +26,7 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         {
           leftStore.menuList.length > 0 && leftStore.menuList.map((item: {[K: string]: any}, index: number) => {
             let name = item.name || ''
+            let icon = item.icon || null
             let children = item.children || []
             let url = `${RouterUrls.MAIN_URL}${item.url || ''}`
             console.log('item', item)
@@ -51,15 +53,19 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
                          return (
                            <ul key={i}>
-                             <li className={`flex-align-center ${childActive ? 'active' : ''}`} onClick={() => toPage(childUrl)}>{child.name || ''}</li>
+                             <li className={`flex-align-center ${childActive ? 'active' : ''}`} onClick={() => toPage(childUrl, [index, i])}>
+                               {child.icon || null}
+                               <p>{child.name || ''}</p>
+                             </li>
                            </ul>
                          )
                        })
                      }
                    </Fragment>
                   ) : (
-                    <div className={`left-item flex-align-center ${parentActive ? 'active' : ''}`} onClick={() => toPage(url)}>
-                      {name || ''}
+                    <div className={`left-item flex-align-center ${parentActive ? 'active' : ''}`} onClick={() => toPage(url, [index])}>
+                      {icon}
+                      <p>{name || ''}</p>
                     </div>
                   )
                 }

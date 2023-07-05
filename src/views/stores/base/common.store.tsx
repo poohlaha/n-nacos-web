@@ -6,13 +6,15 @@
 import { observable, action } from 'mobx'
 import {CONSTANT} from '@config/index'
 import Utils from '@utils/utils'
+import BaseStore from '../base/base.store'
 
-class CommonStore {
-  @observable skin = CONSTANT.SKINS[0] // 皮肤
+class CommonStore extends BaseStore {
+  @observable skin = CONSTANT.SKINS[1] // 皮肤
   @observable socket: WebSocket | null = null // web socket
   @observable data: {[K: string]: any} = {} // 接收的数据
 
   constructor() {
+    super()
     if (!window.WebSocket) {
       console.warn('当前浏览器不支持socket !')
       return
@@ -54,6 +56,7 @@ class CommonStore {
       if (!this.socket) return
       console.log('socket state', this.socket.readyState)
       if (this.socket.readyState === WebSocket.OPEN) {
+        this.loading = true
         console.log('向服务端发送数据: ', JSON.stringify(message));
         this.socket.send(JSON.stringify(message))
       }
@@ -66,6 +69,7 @@ class CommonStore {
   onReceiveMessage() {
     if (!this.socket) return
     this.socket.onmessage = (event: MessageEvent<any>) => {
+      this.loading = false
       let data = event.data
       if (typeof data === 'string') {
         data = JSON.parse(data) || {}
@@ -73,16 +77,17 @@ class CommonStore {
 
       if (Utils.isObjectNull(data)) {
         console.warn('收到来自服务端的数据为空!')
-        return
+        return false
       }
 
       if (data.code !== 200) {
         console.error('接收来自服务端的数据异常: ', data.error || '')
-        return
+        return false
       }
 
       this.data = data.data || {};
       console.log('收到来自服务端的数据:', this.data);
+      return false
     };
   }
 
@@ -91,8 +96,10 @@ class CommonStore {
    */
   onSocketClose() {
     if (!this.socket) return
-    this.socket.onclose = () => {
+    this.socket.onclose = (event: CloseEvent) => {
       console.log('WebSocket连接已关闭!');
+      console.log('关闭代码: ', event.code);
+      console.log('关闭原因: ', event.reason);
     }
   }
 

@@ -4,24 +4,55 @@
  * @author poohlaha
  */
 .wrapper {
-
+  .svg-icon {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 // navigation
 .wrapper .navigation {
-  height: 50px;
+  height: 56px;
   background: @background;
-  border-bottom: @border;
-  //box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  // border-bottom: @border;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
   position: relative;
   z-index: 10;
   max-width: 100%;
   font-size: @font_small;
-  padding: 0 10px;
+  padding: 0 20px;
 
   .logo {
     font-size: @font_largest;
     font-weight: bold;
+  }
+
+  .navigation-right {
+    .avatar {
+      height: 100%;
+      width: 40px;
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        right: -3px;
+        bottom: 10px;
+        width: 11px;
+        height: 11px;
+        border-radius: 100%;
+        border: 2px solid white;
+        z-index: 1;
+        background: #49a342;
+      }
+
+      img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+      }
+    }
+
   }
 }
 
@@ -31,11 +62,11 @@
 
   // left
   .left {
-    width: 220px;
-    min-width: 220px;
+    width: 250px;
+    min-width: 250px;
     border-right: @border;
+    box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
     font-size: 14px;
-    padding-top: 40px;
     overflow: auto;
 
     .left-group {
@@ -46,28 +77,33 @@
 
       .left-title {
         margin: 0 20px;
-        height: 60px;
+        height: 50px;
+        // font-family: 'Open Sans', serif;
         border-bottom: @border;
-        color: rgba(0, 0, 0, 0.45);
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #41434d;
+        font-size: @font;
       }
 
       ul {
         margin-top: 10px;
-
-        li {
-        }
       }
 
       li, .left-item {
         padding: 0 20px;
         text-overflow: ellipsis;
         overflow: hidden;
-        height: 40px;
+        height: 46px;
         cursor: pointer;
 
+        .svg-icon {
+          margin-right: 20px;
+        }
+
         &.active {
-          background: @theme_blue;
-          color: @color_resolve;
+          background: @color_menu_active;
+          color: @theme;
         }
       }
 
