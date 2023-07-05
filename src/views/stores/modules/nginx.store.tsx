@@ -13,6 +13,22 @@ import BackUrls from "@route/router.back.toml";
 class NginxStore extends BaseStore {
 
   @observable fileData: {[K: string]: any} = {} // 系统信息
+  @observable data: Array<{[K: string]: any}> = []
+
+  // 表头
+  readonly tableHeaders: any = [
+    {
+      title: '属性名称',
+      dataIndex: 'propName',
+      key: 'propName',
+      width: '40%',
+    },
+    {
+      title: '属性值',
+      dataIndex: 'propValue',
+      key: 'propValue'
+    }
+  ]
 
   /**
    * 获取系统信息
@@ -31,6 +47,26 @@ class NginxStore extends BaseStore {
         this.loading = false
         this.fileData = res
         callback?.()
+      },
+      fail: () => this.loading = false
+    })
+  }
+
+  /**
+   * 获取树节点
+   */
+  async getTree() {
+    this.loading = true
+    this.fileData = {}
+    return await $http.post({
+      url: BackUrls.GET_QUERY_DATA,
+      data: {
+        data: ['tree'],
+        request: 'nginx'
+      },
+      success: (res: Array<{[K: string]: any}> = []) => {
+        this.loading = false
+        this.data = res || []
       },
       fail: () => this.loading = false
     })
