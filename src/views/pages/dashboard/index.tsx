@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import useMount from '@hooks/useMount'
 import Utils from '@utils/utils'
-import {Card} from 'antd'
+import { Card, Descriptions } from 'antd'
 import {
   Chart,
   Interval,
@@ -18,7 +18,6 @@ import {
   Annotation,
 } from 'bizcharts'
 import Loading from "@views/components/loading/loading";
-
 const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const {dashboardStore} = useStore()
@@ -123,27 +122,15 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
 
     return (
       <Fragment>
-        {/* 机器信息 */}
+        {/* 服务器信息 */}
+
         <Card title="服务器信息" className="sys-info-card" extra={<div onClick={onRefresh}>刷新</div>}>
-          <div className="card-item flex-align-center">
-            <p>操作系统: </p>
-            <p>{getOs(info.os_type || '')}</p>
-          </div>
-
-          <div className="card-item flex-align-center">
-            <p>CPU核数: </p>
-            <p>{info.cpu_num || 0}</p>
-          </div>
-
-          <div className="card-item flex-align-center">
-            <p>总内存: </p>
-            <p>{getMemoryUnit(info.total_memory || 0) || 0}</p>
-          </div>
-
-          <div className="card-item flex-align-center">
-            <p>已使用内存: </p>
-            <p>{getMemoryUnit(info.used_memory || 0) || 0}</p>
-          </div>
+          <Descriptions bordered column={2}>
+            <Descriptions.Item label="操作系统"><p className="color-text">{info.os_type || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="CPU 核数"><p className="color-text">{info.cpu_num || 0}</p></Descriptions.Item>
+            <Descriptions.Item label="总内存"><p className="color-text">{getMemoryUnit(info.total_memory || 0) || 0}</p></Descriptions.Item>
+            <Descriptions.Item label="已使用内存"><p className="color-text">{getMemoryUnit(info.used_memory || 0) || 0}</p></Descriptions.Item>
+          </Descriptions>
         </Card>
 
         {/* 内存使用率 */}

@@ -7,7 +7,7 @@ import React, {ReactElement} from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import useMount from '@hooks/useMount'
-import {Card} from 'antd'
+import {Collapse, Descriptions, Badge} from 'antd'
 import Loading from '@views/components/loading/loading'
 import MBreadcrumb from '@views/modules/breadcrumb'
 import NoData from '@views/components/noData'
@@ -16,78 +16,80 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const {monitorStore, leftStore} = useStore()
 
   useMount(async () => {
-    await monitorStore.getList()
+    await onRefresh()
   })
+
+  const onRefresh = async () => {
+    await monitorStore.getList()
+  }
 
   // 进程使用情况
   const getProcessHtml = (processes: Array<{[K: string]: any}> = []) => {
-    if (processes.length === 0) return null
+    if (processes.length === 0) {
+      return ( <NoData />)
+    }
 
     return (
       processes.map((process: {[K: string]: any} = {}, index: number) => {
         return (
-          <Card key={index}>
-            <div className="card-item flex">
-              <p>pid:</p>
-              <p>{process.pid|| ''}</p>
-            </div>
+          <Descriptions bordered column={2}>
+            <Descriptions.Item label="pid"><p className="color-text">{process.pid || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="parentPid"><p className="color-text">{process.parent_pid || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="start time"><p className="color-text">{process.start_time || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="cmd"><p className="color-text">{process.cmd || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="exe"><p className="color-text">{process.exe || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="virtual memory(bytes)"><p className="color-text">{process.virtual_memory || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="run time"><p className="color-text">{process.run_time || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="status" span={2}>
+              <Badge status="processing" text={process.status || ''} />
+            </Descriptions.Item>
 
-            <div className="card-item flex">
-              <p>parentPid:</p>
-              <p>{process.parent_pid|| ''}</p>
-            </div>
-
-            <div className="card-item flex">
-              <p>启动时间:</p>
-              <p>{process.start_time|| ''}</p>
-            </div>
-
-            <div className="card-item flex">
-              <p>cmd:</p>
-              <p>{process.cmd|| ''}</p>
-            </div>
-
-            <div className="card-item flex">
-              <p>exe:</p>
-              <p>{process.exe|| ''}</p>
-            </div>
-
-            <div className="card-item flex">
-              <p>虚拟内存:</p>
-              <p>{process.virtual_memory|| ''}</p>
-            </div>
-
-            <div className="card-item flex">
-              <p>已运行时长:</p>
-              <p>{process.run_time|| ''}s</p>
-            </div>
-
-            <Card title="磁盘使用情况">
-              <div className="card-item flex">
-                <p>总共写入(bytes):</p>
+            {/* 磁盘使用情况 */}
+            <Descriptions.Item label="disk usage" span={2}>
+              <div className="card-item flex-align-center">
+                <p>total written bytes:</p>
                 <p>{process.total_written_bytes|| 0}</p>
               </div>
 
-              <div className="card-item flex">
-                <p>写入(bytes):</p>
+              <div className="card-item flex-align-center">
+                <p>written bytes:</p>
                 <p>{process.written_bytes|| 0}</p>
               </div>
 
-              <div className="card-item flex">
-                <p>总共读取(bytes):</p>
+              <div className="card-item flex-align-center">
+                <p>total read bytes:</p>
                 <p>{process.total_read_bytes|| 0}</p>
               </div>
 
-              <div className="card-item flex">
-                <p>读取(bytes):</p>
+              <div className="card-item flex-align-center">
+                <p>read bytes:</p>
                 <p>{process.read_bytes|| 0}</p>
               </div>
-            </Card>
-
-          </Card>
+            </Descriptions.Item>
+          </Descriptions>
         )
       })
     )
+  }
+
+  const getCollapseItems = () => {
+    if (monitorStore.loading || monitorStore.processes.length === 0) {
+      return []
+    }
+
+    let items: Array<any> = []
+    monitorStore.processes.forEach((item: {[K: string]: any}, index: number) => {
+      let name = item.name || ''
+      let processes = item.processes || []
+      items.push({
+        key: '' + index,
+        label: name,
+        children: getProcessHtml(processes),
+        extra: <p>结束进程</p>
+      })
+    })
+
+    return items
   }
 
   const render = () => {
@@ -111,7 +113,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
               <p>添加进程</p>
             </div>
 
-            <div className="refresh-item flex-align-center">
+            <div className="refresh-item flex-align-center" onClick={onRefresh}>
               <svg className="svg-icon" viewBox="0 0 1029 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1007.2 262.4c-12.8-6.4-32 0-38.4 19.2l-25.6 70.4C904.8 256 847.2 179.2 757.6 128c-108.8-64-230.4-89.6-352-57.6C232.8 108.8 104.8 236.8 60 409.6 53.6 428.8 66.4 441.6 79.2 448 98.4 448 111.2 441.6 117.6 422.4c38.4-153.6 153.6-268.8 307.2-300.8 108.8-25.6 217.6-6.4 307.2 51.2 76.8 44.8 134.4 115.2 166.4 198.4l-76.8-32c-12.8-6.4-32 0-38.4 19.2-6.4 12.8 0 32 12.8 38.4l128 51.2c6.4 6.4 12.8 6.4 19.2 6.4 0 0 6.4 0 6.4 0 0 0 0 0 0 0 0 0 0 0 6.4 0 6.4 0 12.8-6.4 12.8-12.8L1026.4 294.4C1032.8 281.6 1020 268.8 1007.2 262.4zM949.6 576c-12.8-6.4-32 6.4-32 19.2-38.4 153.6-153.6 268.8-307.2 300.8-108.8 25.6-217.6 6.4-307.2-51.2-76.8-44.8-134.4-115.2-166.4-198.4l76.8 32c12.8 6.4 32 0 38.4-19.2 6.4-12.8 0-32-12.8-38.4L104.8 576C98.4 576 92 569.6 85.6 569.6c0 0-6.4 0-6.4 0 0 0 0 0 0 0 0 0 0 0-6.4 0C66.4 576 60 582.4 60 588.8L2.4 729.6c-6.4 12.8 0 32 19.2 38.4 12.8 6.4 32 0 38.4-19.2l25.6-70.4C124 768 181.6 844.8 271.2 896c108.8 64 230.4 89.6 352 57.6 172.8-38.4 307.2-172.8 345.6-345.6C975.2 595.2 962.4 582.4 949.6 576z" fill="currentColor"></path>
               </svg>
@@ -121,21 +123,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         </div>
 
         <div className="content">
-          {
-            !monitorStore.loading && monitorStore.processes.length > 0 && monitorStore.processes.map((item: {[K: string]: any}, index: number) => {
-              let name = item.name || ''
-              let processes = item.processes || []
-              return (
-                <Card title={name} key={index} className={`${processes.length === 0 ? 'no-data-card' : ''}`}>
-                  {
-                    processes.length === 0 ? (
-                      <NoData />
-                    ) : (getProcessHtml(processes))
-                  }
-                </Card>
-              )
-            })
-          }
+          <Collapse items={getCollapseItems()} defaultActiveKey={['0']}/>
         </div>
 
         <Loading show={monitorStore.loading} />

@@ -4,6 +4,8 @@
  * @author poohlaha
  */
 @left-width: 250px;
+@color_green: #49a342;
+@color_text: #db831d;
 .wrapper {
   .svg-icon {
     width: 14px;
@@ -44,7 +46,7 @@
         border-radius: 100%;
         border: 2px solid white;
         z-index: 1;
-        background: #49a342;
+        background: @color_green;
       }
 
       img {
@@ -125,21 +127,56 @@
       height: 50px;
     }
 
+    .color-text {
+      color: @color_text;
+      font-weight: 700;
+    }
+
+    .no-data {
+      color: @color_gray_light;
+      user-select: none;
+
+      .svg-icon {
+        width: 20px;
+        height: 20px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .ant-collapse {
+      background: @background;
+
+      .no-data {
+        height: 200px;
+      }
+
+      .ant-collapse-extra {
+        color: @theme;
+        font-size: @font_small;
+        cursor: pointer;
+      }
+
+      .ant-badge-status-processing {
+        color: @color_green;
+        background-color: @color_green;
+      }
+
+      .ant-collapse-content-box {
+        .ant-descriptions:not(:first-child) {
+          margin-top: 20px;
+        }
+
+        .ant-badge-status-text {
+          color: @color_green;
+          font-weight: 700;
+        }
+      }
+    }
+
     .no-data-card {
       .ant-card-body {
         height: 200px;
         display: flex;
-      }
-
-      .no-data {
-        color: @color_gray_light;
-        user-select: none;
-
-        .svg-icon {
-          width: 20px;
-          height: 20px;
-          margin-bottom: 10px;
-        }
       }
     }
 
@@ -168,7 +205,7 @@
       }
 
       p:last-child {
-        color: #db831d;
+        color: @color_text;
         margin-left: 20px;
       }
     }
