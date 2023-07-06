@@ -19,9 +19,9 @@ class DashboardStore extends BaseStore {
     this.loading = true
     this.systemInfo = {}
     return await $http.post({
-      url: BackUrls.GET_QUERY_DATA,
+      url: BackUrls.GET_SYSTEM_INFO_URL,
       data: {
-        data: ['cpu', 'dist', 'nginx'],
+        data: ['cpu', 'dist'],
         request: 'system'
       },
       success: (res: {[K: string]: any} = {}) => {

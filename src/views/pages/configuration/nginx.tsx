@@ -26,7 +26,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const {nginxStore} = useStore()
 
   useMount(async () => {
-    await nginxStore.getTree()
+    await nginxStore.getList()
   })
 
 
@@ -125,7 +125,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const render = () => {
     return (
-      <div className="nginx-page">
+      <div className="nginx-page w100 min-h100">
         <Card title="Nginx 配置文件" extra={<p onClick={onShowDrawer}>查看配置文件</p>}>
           {getTable()}
         </Card>
@@ -133,12 +133,13 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         {/* 查看配置文件 */}
         {
           <Drawer title="Nginx配置文件" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
-            <Loading show={nginxStore.loading} />
             {
               getNginxFileConfHtml()
             }
           </Drawer>
         }
+
+        <Loading show={nginxStore.loading} />
       </div>
     )
   }

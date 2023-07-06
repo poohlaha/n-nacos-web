@@ -12,7 +12,7 @@ import ScrollToTop from '@router/scrollToTop'
 
 const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
-  const {leftStore, commonStore} = useStore()
+  const {leftStore} = useStore()
 
   const getUrls = () => {
     let urls: Array<{[K: string]: any}> = []
@@ -43,7 +43,6 @@ const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   }
   const render = () => {
     let urls = getUrls();
-    console.log("urls", urls)
     return (
       <div className="right flex-1">
         {
@@ -67,8 +66,6 @@ const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
             }
           </Routes>
         }
-
-        <Loading show={commonStore.loading} />
       </div>
     )
   }

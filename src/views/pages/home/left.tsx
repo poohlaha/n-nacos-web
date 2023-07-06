@@ -29,7 +29,6 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
             let icon = item.icon || null
             let children = item.children || []
             let url = `${RouterUrls.MAIN_URL}${item.url || ''}`
-            console.log('item', item)
             let parentActive = leftStore.activeIndexes.length === 1 && leftStore.activeIndexes[0] === index
 
             return (
@@ -48,7 +47,9 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
                          let childActive = false
                          let childUrl = `${RouterUrls.MAIN_URL}${child.url || ''}`
                          if (leftStore.activeIndexes.length > 1) {
-                           childActive = leftStore.activeIndexes[1] === i
+                           let parentIndex= leftStore.activeIndexes[0]
+                           let childIndex = leftStore.activeIndexes[1]
+                           childActive = parentIndex === index && childIndex === i
                          }
 
                          return (

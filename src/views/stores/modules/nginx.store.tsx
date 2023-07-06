@@ -5,9 +5,6 @@
  */
 import { observable, action } from 'mobx'
 import BaseStore from '../base/base.store'
-import {lazy} from 'react'
-import RouterUrls from '@route/router.url.toml'
-import React from 'react'
 import BackUrls from "@route/router.back.toml";
 
 class NginxStore extends BaseStore {
@@ -38,11 +35,8 @@ class NginxStore extends BaseStore {
     this.loading = true
     this.fileData = {}
     return await $http.post({
-      url: BackUrls.GET_QUERY_DATA,
-      data: {
-        data: ['file'],
-        request: 'nginx'
-      },
+      url: BackUrls.GET_NGINX_FILE_URL,
+      data: {},
       success: (res: {[K: string]: any} = {}) => {
         this.loading = false
         this.fileData = res
@@ -55,15 +49,12 @@ class NginxStore extends BaseStore {
   /**
    * 获取树节点
    */
-  async getTree() {
+  async getList() {
     this.loading = true
     this.fileData = {}
     return await $http.post({
-      url: BackUrls.GET_QUERY_DATA,
-      data: {
-        data: ['tree'],
-        request: 'nginx'
-      },
+      url: BackUrls.GET_NGINX_LIST_URL,
+      data: {},
       success: (res: Array<{[K: string]: any}> = []) => {
         this.loading = false
         this.data = res || []

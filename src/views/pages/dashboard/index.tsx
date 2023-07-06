@@ -1,6 +1,6 @@
 /**
  * @fileOverview dashboard
- * @date 2023-04-12
+ * @date 2023-07-05
  * @author poohlaha
  */
 import React, {Fragment, ReactElement, useRef} from 'react'
@@ -17,6 +17,7 @@ import {
   View,
   Annotation,
 } from 'bizcharts'
+import Loading from "@views/components/loading/loading";
 
 const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
@@ -286,6 +287,7 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
     return (
       <div className="dashboard-page w100 min-h100">
         {getHtml()}
+        <Loading show={dashboardStore.loading} />
       </div>
     )
   }

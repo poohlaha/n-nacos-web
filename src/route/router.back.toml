@@ -1,2 +1,5 @@
 # 后端路由, 需要按模块分
-GET_QUERY_DATA = '/api/queryData'
+GET_SYSTEM_INFO_URL = '/api/system/getInfo'
+GET_MONITOR_PROCESS_URL = '/api/monitor/getProcessInfo'
+GET_NGINX_FILE_URL = '/api/nginx/getFile'
+GET_NGINX_LIST_URL = '/api/nginx/getList'
