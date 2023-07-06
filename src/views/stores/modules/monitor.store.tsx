@@ -5,7 +5,9 @@
  */
 import { observable, action } from 'mobx'
 import BaseStore from '../base/base.store'
-import BackUrls from "@route/router.back.toml";
+import BackUrls from '@route/router.back.toml'
+import {TOAST} from '@utils/base'
+import Utils from '@utils/utils'
 
 class MonitorStore extends BaseStore {
 
@@ -13,6 +15,10 @@ class MonitorStore extends BaseStore {
   @observable processList: Array<{[K: string]: any}> = []
   @observable addProcesses: Array<string> = []
 
+  constructor() {
+    super()
+    this.addProcesses.push('nginx')
+  }
   /**
    * 获取监控信息
    */
@@ -24,7 +30,7 @@ class MonitorStore extends BaseStore {
     return await $http.post({
       url: BackUrls.GET_MONITOR_PROCESS_URL,
       data: {
-        process_names: ['nginx'].concat(this.addProcesses),
+        process_names: this.addProcesses,
         request: 'monitor'
       },
       success: (res: {[K: string]: any} = {}) => {
@@ -38,7 +44,55 @@ class MonitorStore extends BaseStore {
 
   @action
   onSelectProcessChange(value: Array<string> = []) {
-    this.addProcesses = value || []
+    this.addProcesses = this.addProcesses.concat(value || [])
+  }
+
+  /**
+   * 结束进程
+   */
+  @action
+  async onKillProcess(processName: string, pidList: Array<string>) {
+    this.loading = true
+    return await $http.post({
+      url: BackUrls.KILL_PROCESS_LIST_URL,
+      data: {
+        process_ids: pidList || '',
+        request: 'monitor'
+      },
+      success: async (res: Array<{[K: string]: any}> = []) => {
+        this.loading = false
+        if (res.length > 0) {
+          let errorMsg = ''
+          for(let result of res) {
+            errorMsg += (result.error + '\n')
+          }
+
+          TOAST.show({ message: errorMsg, type: 4 })
+        } else {
+          await this.getList()
+        }
+      },
+      fail: () => this.loading = false
+    })
+  }
+
+  /**
+   * 移除进程
+   */
+  @action
+  async onRemoveProcess(processName: string) {
+    if (this.addProcesses.length === 0) return
+    let processes = Utils.deepCopy(this.addProcesses)
+
+    let addProcess: Array<string> = []
+    for(let process of processes) {
+      if (process !== processName) {
+        addProcess.push(process)
+      }
+    }
+
+    this.addProcesses = addProcess
+    await this.getList()
   }
 }
 

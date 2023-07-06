@@ -87,7 +87,27 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         key: '' + index,
         label: name,
         children: getProcessHtml(processes),
-        extra: <p>结束进程</p>
+        extra: (
+         <div className="flex-align-center extra-item">
+           <p
+             onClick={async (event: any) => {
+                event.stopPropagation()
+                let pidList = processes.map((process: {[K: string]: any}) => process.pid)
+                await monitorStore.onKillProcess(name, pidList)
+             }}
+           >
+             结束进程
+           </p>
+           <p
+             onClick={async (event: any) => {
+                event.stopPropagation()
+                await monitorStore.onRemoveProcess(name)
+             }}
+           >
+             移除进程
+           </p>
+         </div>
+        )
       })
     })
 
@@ -118,7 +138,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const render = () => {
     return (
-      <div className="process-page w100 min-h100">
+      <div className="process-page w100 min-h100 flex-direction-column">
         <div className="breadcrumb-top flex-align-center">
           <MBreadcrumb
             className="flex-1"
@@ -146,8 +166,17 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
           </div>
         </div>
 
-        <div className="content">
-          <Collapse items={getCollapseItems()} defaultActiveKey={['0']}/>
+        <div className="content flex-1 flex-direction-column">
+          {
+            !monitorStore.loading && monitorStore.processes.length === 0 ? (
+              <Collapse className="flex-1 no-data-container flex-center">
+                <NoData />
+              </Collapse>
+              ) : (
+              <Collapse items={getCollapseItems()} defaultActiveKey={['0']}/>
+            )
+          }
+
         </div>
 
         {/* 添加进程 */}

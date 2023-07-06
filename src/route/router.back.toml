@@ -1,5 +1,6 @@
 # 后端路由, 需要按模块分
 GET_SYSTEM_INFO_URL = '/api/system/getInfo'
 GET_MONITOR_PROCESS_URL = '/api/monitor/getProcessInfo'
+KILL_PROCESS_LIST_URL = '/api/system/killProcessList'
 GET_NGINX_FILE_URL = '/api/nginx/getFile'
 GET_NGINX_LIST_URL = '/api/nginx/getList'

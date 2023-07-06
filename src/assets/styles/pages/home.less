@@ -147,6 +147,10 @@
     .ant-collapse {
       background: @background;
 
+      &.no-data-container {
+
+      }
+
       .no-data {
         height: 200px;
       }
@@ -155,6 +159,12 @@
         color: @theme;
         font-size: @font_small;
         cursor: pointer;
+
+        .extra-item {
+          p:not(:last-child) {
+            margin-right: 10px;
+          }
+        }
       }
 
       .ant-badge-status-processing {
