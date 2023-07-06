@@ -3,17 +3,19 @@
  * @date 2023-07-06
  * @author poohlaha
  */
-import React, {ReactElement} from 'react'
+import React, {ReactElement, useState} from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import useMount from '@hooks/useMount'
-import {Collapse, Descriptions, Badge} from 'antd'
+import {Collapse, Descriptions, Badge, Modal, Select} from 'antd'
 import Loading from '@views/components/loading/loading'
 import MBreadcrumb from '@views/modules/breadcrumb'
 import NoData from '@views/components/noData'
+import Utils from '@utils/utils'
 const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const {monitorStore, leftStore} = useStore()
+  const [showModal, setShowModal] = useState(false)
 
   useMount(async () => {
     await onRefresh()
@@ -32,7 +34,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     return (
       processes.map((process: {[K: string]: any} = {}, index: number) => {
         return (
-          <Descriptions bordered column={2}>
+          <Descriptions bordered column={2} key={index}>
             <Descriptions.Item label="pid"><p className="color-text">{process.pid || ''}</p></Descriptions.Item>
             <Descriptions.Item label="parentPid"><p className="color-text">{process.parent_pid || ''}</p></Descriptions.Item>
             <Descriptions.Item label="start time"><p className="color-text">{process.start_time || ''}</p></Descriptions.Item>
@@ -40,7 +42,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
             <Descriptions.Item label="exe"><p className="color-text">{process.exe || ''}</p></Descriptions.Item>
             <Descriptions.Item label="virtual memory(bytes)"><p className="color-text">{process.virtual_memory || ''}</p></Descriptions.Item>
             <Descriptions.Item label="run time"><p className="color-text">{process.run_time || ''}</p></Descriptions.Item>
-            <Descriptions.Item label="status" span={2}>
+            <Descriptions.Item label="status">
               <Badge status="processing" text={process.status || ''} />
             </Descriptions.Item>
 
@@ -92,6 +94,28 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     return items
   }
 
+  // 获取进程列表
+  const getSelectProcessList = () => {
+    if (monitorStore.processList.length === 0) return []
+
+    let processes: Array<any> = []
+    for(let process of monitorStore.processList) {
+      if (Utils.isBlank(process.name) || Utils.isBlank(process.pid)) {
+        continue
+      }
+
+      let arr = processes.filter((a: any) => a.value === process.name) || []
+      if (arr.length === 0) {
+        processes.push({
+          value: process.name,
+          label: process.name
+        })
+      }
+    }
+
+    return processes
+  }
+
   const render = () => {
     return (
       <div className="process-page w100 min-h100">
@@ -104,7 +128,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
           />
 
           <div className="top-add flex-align-center">
-            <div className="add-item flex-align-center">
+            <div className="add-item flex-align-center" onClick={() => setShowModal(true)}>
               <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <path d="M512 992C246.912 992 32 777.088 32 512 32 246.912 246.912 32 512 32c265.088 0 480 214.912 480 480 0 265.088-214.912 480-480 480z m0-64c229.76 0 416-186.24 416-416S741.76 96 512 96 96 282.24 96 512s186.24 416 416 416z" fill="currentColor"></path>
                 <path d="M256 544a32 32 0 0 1 0-64h512a32 32 0 0 1 0 64H256z" fill="currentColor"></path>
@@ -126,7 +150,32 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
           <Collapse items={getCollapseItems()} defaultActiveKey={['0']}/>
         </div>
 
-        <Loading show={monitorStore.loading} />
+        {/* 添加进程 */}
+        <Modal
+          title="添加进程"
+          open={showModal}
+          onOk={async () => {
+            setShowModal(false)
+            await monitorStore.getList()
+          }}
+          onCancel={() => setShowModal(false)}
+          closable={false}
+          destroyOnClose={true}
+          maskClosable={false}
+        >
+          <Select
+            mode="multiple"
+            style={{ width: '100%' }}
+            placeholder="请选择进程"
+            optionLabelProp="label"
+            onChange={(value: Array<string> = []) => monitorStore.onSelectProcessChange(value)}
+            options={getSelectProcessList()}
+            showSearch={true}
+            allowClear={true}
+          />
+        </Modal>
+
+        <Loading show={monitorStore.loading}/>
       </div>
     )
   }
