@@ -9,7 +9,8 @@ import BackUrls from "@route/router.back.toml";
 
 class MonitorStore extends BaseStore {
 
-  @observable data: Array<{[K: string]: any}> = []
+  @observable processes: Array<{[K: string]: any}> = []
+  @observable list: Array<{[K: string]: any}> = []
 
   /**
    * 获取监控信息
@@ -17,15 +18,18 @@ class MonitorStore extends BaseStore {
   @action
   async getList() {
     this.loading = true
+    this.list = []
+    this.processes = []
     return await $http.post({
       url: BackUrls.GET_MONITOR_PROCESS_URL,
       data: {
         process_names: ['nginx'],
         request: 'monitor'
       },
-      success: (res: Array<{[K: string]: any}> = []) => {
+      success: (res: {[K: string]: any} = {}) => {
         this.loading = false
-        this.data = res
+        this.processes = res.processes || []
+        this.list = res.process_list || []
       },
       fail: () => this.loading = false
     })

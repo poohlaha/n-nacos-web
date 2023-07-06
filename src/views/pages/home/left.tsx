@@ -15,12 +15,11 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const toPage = (url: string, activeIndexes: Array<number> = []) => {
     if (Utils.isBlank(url)) return
-    leftStore.activeIndexes = activeIndexes
+    leftStore.setActiveIndexes(activeIndexes)
     navigate(url)
   }
 
   const render = () => {
-
     return (
       <div className="left flex-direction-column">
         {

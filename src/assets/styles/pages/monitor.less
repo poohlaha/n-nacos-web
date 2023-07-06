@@ -1,0 +1,34 @@
+/**
+ * @fileOverview monitor
+ * @date 2023-07-06
+ * @author poohlaha
+ */
+.process-page {
+  font-size: @font;
+
+  .breadcrumb-top {
+
+    .top-add {
+      color: @theme;
+
+      .add-item, .refresh-item {
+        cursor: pointer;
+        user-select: none;
+
+        .svg-icon {
+          margin-right: 5px;
+        }
+      }
+
+      .add-item {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .content {
+    .ant-card:not(:first-child) {
+      margin-top: 20px;
+    }
+  }
+}

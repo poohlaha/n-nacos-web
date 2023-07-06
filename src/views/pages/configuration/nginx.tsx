@@ -10,7 +10,7 @@ import {Card, Drawer, Table} from 'antd'
 import useMount from '@hooks/useMount'
 import Loading from '@views/components/loading/loading'
 import Utils from '@utils/utils'
-import type {TableRowSelection} from "antd/es/table/interface";
+import MBreadcrumb from "@views/modules/breadcrumb";
 
 interface DataType {
   key: string;
@@ -23,12 +23,11 @@ interface DataType {
 const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const [showDrawer, setShowDrawer] = useState(false) // 是否显示 nginx 配置文件
-  const {nginxStore} = useStore()
+  const {nginxStore, leftStore} = useStore()
 
   useMount(async () => {
     await nginxStore.getList()
   })
-
 
   const onShowDrawer = async () => {
     await nginxStore.getFileData(() => {
@@ -126,6 +125,14 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const render = () => {
     return (
       <div className="nginx-page w100 min-h100">
+       <div className="breadcrumb-top flex-align-center">
+         <MBreadcrumb
+           items={leftStore.menuList}
+           activeIndexes={leftStore.activeIndexes}
+           onChange={(activeIndexes: Array<number> = []) => leftStore.setActiveIndexes(activeIndexes)}
+         />
+       </div>
+
         <Card title="Nginx 配置文件" extra={<p onClick={onShowDrawer}>查看配置文件</p>}>
           {getTable()}
         </Card>

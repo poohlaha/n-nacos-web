@@ -8,6 +8,8 @@ import BaseStore from '../base/base.store'
 import {lazy} from 'react'
 import RouterUrls from '@route/router.url.toml'
 import React from 'react'
+import Utils from '@utils/utils'
+import { CONSTANT } from '@config/index'
 
 class LeftStore extends BaseStore {
   readonly menuList = [
@@ -45,7 +47,29 @@ class LeftStore extends BaseStore {
 
   constructor() {
     super()
-    this.activeIndexes = [0] // 默认激活 dashboard
+    let activeIndexes = this.getCache() || []
+    if (typeof activeIndexes === 'string') {
+      activeIndexes = JSON.parse(activeIndexes)
+    }
+
+    this.activeIndexes = activeIndexes.length === 0 ? [0] : activeIndexes
+  }
+
+  @action
+  setCache() {
+    Utils.setLocal(CONSTANT.MENU_CACHE, this.activeIndexes)
+  }
+
+  @action
+  getCache() {
+    return Utils.getLocal(CONSTANT.MENU_CACHE)
+  }
+
+  @action
+  setActiveIndexes(activeIndexes: Array<number> = []) {
+    if (activeIndexes.length === 0) return
+    this.activeIndexes = activeIndexes
+    this.setCache()
   }
 }
 
