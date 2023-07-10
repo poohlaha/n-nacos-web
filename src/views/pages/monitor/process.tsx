@@ -185,7 +185,8 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
           open={showModal}
           onOk={async () => {
             setShowModal(false)
-            await monitorStore.getList()
+            await monitorStore.onAddProcesses()
+            // await monitorStore.getList()
           }}
           onCancel={() => setShowModal(false)}
           closable={false}

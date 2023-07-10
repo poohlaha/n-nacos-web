@@ -14,11 +14,12 @@ class MonitorStore extends BaseStore {
   @observable processes: Array<{[K: string]: any}> = []
   @observable processList: Array<{[K: string]: any}> = []
   @observable addProcesses: Array<string> = []
+  @observable userId: string = '1f09cf1a-6359-4284-8a63-8e56ba0c30eb'
 
   constructor() {
     super()
-    this.addProcesses.push('nginx')
   }
+
   /**
    * 获取监控信息
    */
@@ -30,7 +31,7 @@ class MonitorStore extends BaseStore {
     return await $http.post({
       url: BackUrls.GET_MONITOR_PROCESS_URL,
       data: {
-        process_names: this.addProcesses,
+        user_id: this.userId || '',
         request: 'monitor'
       },
       success: (res: {[K: string]: any} = {}) => {
@@ -71,6 +72,24 @@ class MonitorStore extends BaseStore {
         } else {
           await this.getList()
         }
+      },
+      fail: () => this.loading = false
+    })
+  }
+
+  /**
+   * 添加进程
+    */
+  async onAddProcesses() {
+    this.loading = true
+    return await $http.post({
+      url: BackUrls.ADD_PROCESS_URL,
+      data: {
+        process_names: this.addProcesses || [],
+        request: 'monitor'
+      },
+      success: async (res: Array<{[K: string]: any}> = []) => {
+        this.loading = false
       },
       fail: () => this.loading = false
     })
