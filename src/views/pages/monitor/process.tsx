@@ -184,9 +184,10 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
           title="添加进程"
           open={showModal}
           onOk={async () => {
-            setShowModal(false)
-            await monitorStore.onAddProcesses()
-            // await monitorStore.getList()
+            await monitorStore.onAddProcesses(async () => {
+              setShowModal(false)
+              await monitorStore.getList()
+            })
           }}
           onCancel={() => setShowModal(false)}
           closable={false}

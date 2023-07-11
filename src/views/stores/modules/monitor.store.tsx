@@ -38,6 +38,7 @@ class MonitorStore extends BaseStore {
         this.loading = false
         this.processes = res.processes || []
         this.processList = res.process_list || []
+        this.addProcesses = res.processes.map((process: {[K: string]: any}) => process.name)
       },
       fail: () => this.loading = false
     })
@@ -80,7 +81,7 @@ class MonitorStore extends BaseStore {
   /**
    * 添加进程
     */
-  async onAddProcesses() {
+  async onAddProcesses(callback: Function) {
     this.loading = true
     return await $http.post({
       url: BackUrls.ADD_PROCESS_URL,
@@ -90,6 +91,7 @@ class MonitorStore extends BaseStore {
       },
       success: async (res: Array<{[K: string]: any}> = []) => {
         this.loading = false
+        callback?.()
       },
       fail: () => this.loading = false
     })
@@ -100,18 +102,20 @@ class MonitorStore extends BaseStore {
    */
   @action
   async onRemoveProcess(processName: string) {
-    if (this.addProcesses.length === 0) return
-    let processes = Utils.deepCopy(this.addProcesses)
-
-    let addProcess: Array<string> = []
-    for(let process of processes) {
-      if (process !== processName) {
-        addProcess.push(process)
-      }
-    }
-
-    this.addProcesses = addProcess
-    await this.getList()
+    if (this.addProcesses.length === 0 || Utils.isBlank(processName)) return
+    this.loading = true
+    return await $http.post({
+      url: BackUrls.REMOVE_PROCESS_URL,
+      data: {
+        process_names: [processName],
+        request: 'monitor'
+      },
+      success: async (res: Array<{[K: string]: any}> = []) => {
+        this.loading = false
+        await this.getList()
+      },
+      fail: () => this.loading = false
+    })
   }
 }
 
