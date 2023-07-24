@@ -21,7 +21,8 @@ class DashboardStore extends BaseStore {
     return await $http.post({
       url: BackUrls.GET_SYSTEM_INFO_URL,
       data: {
-        data: ['cpu', 'dist'],
+        user_id: this.userId || '',
+        data: ['cpu', 'disk'],
         request: 'system'
       },
       success: (res: {[K: string]: any} = {}) => {

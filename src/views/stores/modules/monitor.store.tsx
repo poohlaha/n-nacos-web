@@ -14,7 +14,6 @@ class MonitorStore extends BaseStore {
   @observable processes: Array<{[K: string]: any}> = []
   @observable processList: Array<{[K: string]: any}> = []
   @observable addProcesses: Array<string> = []
-  @observable userId: string = '1f09cf1a-6359-4284-8a63-8e56ba0c30eb'
 
   constructor() {
     super()
@@ -86,6 +85,7 @@ class MonitorStore extends BaseStore {
     return await $http.post({
       url: BackUrls.ADD_PROCESS_URL,
       data: {
+        user_id: this.userId,
         process_names: this.addProcesses || [],
         request: 'monitor'
       },
@@ -107,6 +107,7 @@ class MonitorStore extends BaseStore {
     return await $http.post({
       url: BackUrls.REMOVE_PROCESS_URL,
       data: {
+        user_id: this.userId,
         process_names: [processName],
         request: 'monitor'
       },
