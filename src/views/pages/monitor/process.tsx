@@ -22,7 +22,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   })
 
   const onRefresh = async () => {
-    await monitorStore.getList()
+    await monitorStore.getProcessList()
   }
 
   // 进程使用情况
@@ -186,7 +186,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
           onOk={async () => {
             await monitorStore.onAddProcesses(async () => {
               setShowModal(false)
-              await monitorStore.getList()
+              await monitorStore.getProcessList()
             })
           }}
           onCancel={() => setShowModal(false)}

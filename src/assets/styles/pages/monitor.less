@@ -3,7 +3,8 @@
  * @date 2023-07-06
  * @author poohlaha
  */
-.process-page {
+.process-page,
+.command-page {
   font-size: @font;
 
   .breadcrumb-top {
@@ -26,7 +27,40 @@
     }
   }
 
-  .content {
+}
+
+.command-page {
+  .command-form {
+    .ant-card-body {
+      .form-item:not(:last-child) {
+        margin-bottom: 20px;
+      }
+
+      label {
+        margin-right: 10px;
+        width: 60px;
+      }
+
+      .ant-input {
+        width: unset!important;
+        flex: 1;
+      }
+    }
+  }
+
+  .command-content {
+    margin-top: 50px;
+    .exec-column {
+      p {
+        color: @theme;
+      }
+    }
+
+    .options {
+      a:not(:last-child) {
+        margin-right: 5px;
+      }
+    }
 
   }
 }

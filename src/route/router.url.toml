@@ -3,5 +3,6 @@ HOME_URL = '/home'
 MAIN_URL = '/main'
 DASHBOARD_URL = '/dashboard'
 PROCESS_URL = '/process'
+COMMAND_URL = '/command'
 NGINX_URL = '/nginx'
 

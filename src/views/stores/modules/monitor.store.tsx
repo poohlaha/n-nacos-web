@@ -13,7 +13,12 @@ class MonitorStore extends BaseStore {
 
   @observable processes: Array<{[K: string]: any}> = []
   @observable processList: Array<{[K: string]: any}> = []
+  @observable commandList: Array<{[K: string]: any}> = []
   @observable addProcesses: Array<string> = []
+  @observable commandForm: {[K: string]: string} = {
+    name: '',
+    exec: ''
+  }
 
   constructor() {
     super()
@@ -23,7 +28,7 @@ class MonitorStore extends BaseStore {
    * 获取监控信息
    */
   @action
-  async getList() {
+  async getProcessList() {
     this.loading = true
     this.processList = []
     this.processes = []
@@ -70,7 +75,7 @@ class MonitorStore extends BaseStore {
 
           TOAST.show({ message: errorMsg, type: 4 })
         } else {
-          await this.getList()
+          await this.getProcessList()
         }
       },
       fail: () => this.loading = false
@@ -111,9 +116,123 @@ class MonitorStore extends BaseStore {
         process_names: [processName],
         request: 'monitor'
       },
-      success: async (res: Array<{[K: string]: any}> = []) => {
+      success: async (res: Array<{[K: string]: any}> = [], resData: {[K: string]: any} = {}) => {
         this.loading = false
-        await this.getList()
+        if (resData.code !== 200) {
+          TOAST.show({ message: '移除进程失败!', type: 4 })
+          return false
+        }
+        await this.getProcessList()
+      },
+      fail: () => this.loading = false
+    })
+  }
+
+  /**
+   * 命令行提交
+   */
+  async onCommandSubmit() {
+    if (Utils.isBlank(this.commandForm.name)) {
+      TOAST.show({ message: '名称不能为空!', type: 4 })
+      return
+    }
+
+    if (Utils.isBlank(this.commandForm.exec)) {
+      TOAST.show({ message: '脚本不能为空!', type: 4 })
+      return
+    }
+    await $http.post({
+      url: BackUrls.ADD_COMMAND_URL,
+      data: {
+        user_id: this.userId,
+        name: this.commandForm.name || '',
+        exec: this.commandForm.exec || '',
+        request: 'monitor'
+      },
+      success: async (res: {[K: string]: any} = {}, resData: {[K: string]: any} = {}) => {
+        if (resData.code !== 200) {
+          TOAST.show({ message: '添加命令失败!', type: 4 })
+          return false
+        }
+
+        this.loading = false
+        this.commandForm.name = ''
+        this.commandForm.exec = ''
+        await this.getCommandList()
+      },
+      fail: () => this.loading = false
+    })
+  }
+
+  /**
+   * 移除命令
+   */
+  @action
+  async onRemoveCommand(id: string) {
+    if (Utils.isBlank(id)) return
+    this.loading = true
+    return await $http.post({
+      url: BackUrls.REMOVE_COMMAND_URL,
+      data: {
+        id,
+        request: 'monitor'
+      },
+      success: async (res: Array<{[K: string]: any}> = [], resData: {[K: string]: any} = {}) => {
+        this.loading = false
+        if (resData.code !== 200) {
+          TOAST.show({ message: '移除命令失败!', type: 4 })
+          return false
+        }
+        await this.getCommandList()
+      },
+      fail: () => this.loading = false
+    })
+  }
+
+  /**
+   * 执行命令
+   */
+  @action
+  async onExecCommand(id: string) {
+    if (Utils.isBlank(id)) return
+    this.loading = true
+    return await $http.post({
+      url: BackUrls.EXEC_COMMAND_URL,
+      data: {
+        id,
+        request: 'monitor'
+      },
+      success: async (res: Array<{[K: string]: any}> = [], resData: {[K: string]: any} = {}) => {
+        this.loading = false
+        if (resData.code !== 200) {
+          TOAST.show({ message: '执行命令失败!', type: 4 })
+          return false
+        }
+      },
+      fail: () => this.loading = false
+    })
+  }
+
+  /**
+   * 获取命令行列表
+   */
+  async getCommandList() {
+    this.loading = true
+    this.commandList = []
+    return await $http.post({
+      url: BackUrls.GET_COMMAND_LIST_URL,
+      data: {
+        user_id: this.userId || '',
+        request: 'monitor'
+      },
+      success: (res: {[K: string]: any} = {}) => {
+        this.loading = false
+        let commandList = res.data || []
+        this.commandList = commandList.map((c: {[K: string]: string}, index: number) => {
+          let key = index
+          let exec = c.exec.replace('\n', '\\n')
+          return {...c, key, exec}
+        })
       },
       fail: () => this.loading = false
     })
