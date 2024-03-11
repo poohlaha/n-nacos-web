@@ -14,7 +14,7 @@ import { open } from '@tauri-apps/plugin-dialog'
 import PipelineProcess from '../process'
 import PipelineVariable from './variable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import {H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE} from '../process/templates/h5'
+import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE } from '../process/templates/h5'
 
 const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const navigate = useNavigate()
@@ -162,10 +162,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
   const getProcessHtml = () => {
     return (
       <div className="process-content wh100">
-        <PipelineProcess
-            data={pipelineStore.activeProcess}
-            isRun={false}
-        />
+        <PipelineProcess data={pipelineStore.activeProcess} isRun={false} />
       </div>
     )
   }

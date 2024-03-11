@@ -25,7 +25,7 @@
         "name": "",
         "label": "安装命令",
         "type": "select",
-        "value": "${installCommands}",
+        "value": "${installedCommands}",
         "default": "",
         "desc": "默认动态判断"
       },

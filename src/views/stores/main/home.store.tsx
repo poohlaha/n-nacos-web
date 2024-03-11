@@ -130,7 +130,7 @@ class HomeStore extends BaseStore {
         path: RouterUrls.PIPELINE.ADD_URL,
         belong: 'pipeline',
         // component: lazy(() => import(/* webpackChunkName:'pipelineAdd' */ '@pages/delivery/pipeline/add')),
-        component: PipelineAdd
+        component: PipelineAdd,
       },
       {
         key: 'pipelineDetail',
