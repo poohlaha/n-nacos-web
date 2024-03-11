@@ -4,17 +4,26 @@
  * @author poohlaha
  */
 import commonStore from './base/common.store'
-import leftStore from './main/left.store'
+import homeStore from './main/home.store'
 import dashboardStore from './modules/dashboard.store'
 import monitorStore from './modules/monitor.store'
 import nginxStore from './modules/nginx.store'
+import directoryStore from './modules/directory.store'
+import mainStore from './main/main.store'
+import pipelineStore from './main/pipeline.store'
+import serverStore from './modules/server.store'
+
 export function createStore() {
   return {
     commonStore,
-    leftStore,
+    homeStore,
     dashboardStore,
     monitorStore,
-    nginxStore
+    nginxStore,
+    directoryStore,
+    mainStore,
+    pipelineStore,
+    serverStore
   }
 }
 

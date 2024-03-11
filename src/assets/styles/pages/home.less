@@ -59,8 +59,8 @@
   }
 }
 
-// main
-.wrapper .main {
+// home
+.wrapper .home-page {
   overflow: hidden;
 
   // left
@@ -102,12 +102,18 @@
         user-select: none;
 
         .svg-icon {
-          margin-right: 20px;
+          width: 18px;
+          height: 18px;
+          margin-right: 10px;
+          color: @color;
         }
 
         &.active {
           background: @color_menu_active;
           color: @theme;
+          svg {
+            color: @theme!important;
+          }
         }
       }
 
@@ -121,11 +127,12 @@
   // right
   .right {
     background: @background_right;
-    padding: 20px;
     overflow: auto;
 
     .breadcrumb-top {
       height: 50px;
+      min-height: 50px;
+      border-bottom: @border;
     }
 
     .color-text {
@@ -234,6 +241,60 @@
 
   }
 }
+
+.home-page {
+  .left-back {
+    margin: 10px;
+    padding: 10px;
+    background: @theme;
+    color: #ffffff;
+    border-radius: @border_radius;
+
+    .back-left {
+      .svg-icon {
+        width: 32px;
+        height: 32px;
+
+        .svg-icon {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+    }
+
+    .back-right {
+      margin-left: 10px;
+
+      .ip {
+        font-size: @font_large;
+      }
+    }
+  }
+}
+
+.server-info-page {
+  .dist-info-card {
+    .card-item {
+      display: flex;
+      flex-wrap: wrap;
+
+      .ant-card {
+        margin-right: 20px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+
+  .line-tooltip {
+    .content-box {
+      p:last-child {
+        margin-left: 10px;
+        color: @theme;
+      }
+    }
+  }
+}
+
 
 
 

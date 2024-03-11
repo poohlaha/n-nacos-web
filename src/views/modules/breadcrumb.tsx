@@ -29,51 +29,45 @@ const MBreadcrumb: React.FC<IMBreadcrumbProps> = (props: IMBreadcrumbProps): Rea
   const getItems = () => {
     if (props.items.length === 0 || props.activeIndexes.length === 0) return props.items || []
     let items: Array<{[K: string]: any}> = []
-    let dashboard: {[K: string]: any} = {}
-    for(let i = 0; i < props.items.length; i++) {
+    for (let i = 0; i < props.items.length; i++) {
       let item = props.items[i]
       let children = item.children || []
-      if (children.length === 0) {
-        dashboard = item
-        continue
-      }
-
-      if (props.activeIndexes.length === 1) {
-        break
-      }
-
-      let parentIndex= props.activeIndexes[0]
-      let childIndex= props.activeIndexes[1]
-      if (parentIndex !== i) {
-        continue
-      }
 
       items.push({
+        key: i + item.key,
         title: (
-          <div onClick={() => toPage(RouterUrls.MAIN_URL + dashboard.url || '', [0])}>
+          <div
+            key={i}
+            className="h100 flex-align-center"
+            onClick={() => {
+              let url = item.url || ''
+              if (Utils.isBlank(url)) {
+                return
+              }
+
+              toPage(RouterUrls.HOME_URL + url, [0])
+            }}
+          >
             <div className="flex-align-center breadcrumb">
-              <p className="icon flex-center">{dashboard.icon}</p>
-              <p>{dashboard.name || ''}</p>
+              {
+                  item.icon && <p className="icon flex-center">{item.icon}</p>
+              }
+              <p>{item.name || ''}</p>
             </div>
           </div>
         )
       })
 
-      items.push({
-        title: item.name || ''
-      })
-
-      for(let j = 0; j < children.length; j++) {
-        if (childIndex !== j) {
-          continue
-        }
-
+      for (let j = 0; j < children.length; j++) {
         let child = children[j]
         items.push({
+          key: i + j + child.key,
           title: (
-            <div onClick={() => toPage(RouterUrls.MAIN_URL + child.url || '', [i, j])}>
+            <div key={i + j} onClick={() => toPage(RouterUrls.HOME_URL + child.url || '', [i, j])}>
               <div className="flex-align-center breadcrumb">
-                <p className="icon flex-center">{child.icon}</p>
+                {
+                    child.icon && <p className="icon flex-center">{child.icon}</p>
+                }
                 <p>{child.name || ''}</p>
               </div>
             </div>

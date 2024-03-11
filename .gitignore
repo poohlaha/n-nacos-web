@@ -52,4 +52,7 @@ src/views/stores/index.tsx
 src/@types/global.d.ts
 
 .vendor
-
+web/scripts/proxy.json
+Cargo.lock
+target
+output

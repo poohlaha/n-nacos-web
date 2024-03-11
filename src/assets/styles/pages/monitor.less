@@ -4,7 +4,9 @@
  * @author poohlaha
  */
 .process-page,
-.command-page {
+.command-page,
+.directory-page
+{
   font-size: @font;
 
   .breadcrumb-top {
@@ -26,7 +28,6 @@
       }
     }
   }
-
 }
 
 .command-page {
@@ -62,5 +63,25 @@
       }
     }
 
+  }
+}
+
+.directory-page {
+
+}
+
+.ant-drawer {
+  .ant-drawer-content-wrapper {
+    width: 600px!important;
+
+    .file-detail {
+      font-size: @font;
+    }
+  }
+}
+
+.process-page {
+  .description-exec.ant-descriptions-item-content {
+    min-width: 150px;
   }
 }

@@ -7,14 +7,14 @@ import React, {ReactElement, useState} from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import useMount from '@hooks/useMount'
-import {Collapse, Descriptions, Badge, Modal, Select} from 'antd'
+import { Collapse, Descriptions, Badge, Modal, Select, Popconfirm} from 'antd'
 import Loading from '@views/components/loading/loading'
 import MBreadcrumb from '@views/modules/breadcrumb'
 import NoData from '@views/components/noData'
 import Utils from '@utils/utils'
 const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
-  const {monitorStore, leftStore} = useStore()
+  const {monitorStore, homeStore} = useStore()
   const [showModal, setShowModal] = useState(false)
 
   useMount(async () => {
@@ -39,7 +39,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
             <Descriptions.Item label="parentPid"><p className="color-text">{process.parent_pid || ''}</p></Descriptions.Item>
             <Descriptions.Item label="start time"><p className="color-text">{process.start_time || ''}</p></Descriptions.Item>
             <Descriptions.Item label="cmd"><p className="color-text">{process.cmd || ''}</p></Descriptions.Item>
-            <Descriptions.Item label="exe"><p className="color-text">{process.exe || ''}</p></Descriptions.Item>
+            <Descriptions.Item label="exe" className="description-exec"><p className="color-text">{process.exe || ''}</p></Descriptions.Item>
             <Descriptions.Item label="virtual memory(bytes)"><p className="color-text">{process.virtual_memory || ''}</p></Descriptions.Item>
             <Descriptions.Item label="run time"><p className="color-text">{process.run_time || ''}</p></Descriptions.Item>
             <Descriptions.Item label="status">
@@ -75,11 +75,12 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   }
 
   const getCollapseItems = () => {
+    console.log('processes: ', monitorStore.processes)
     if (monitorStore.loading || monitorStore.processes.length === 0) {
       return []
     }
 
-    let items: Array<any> = []
+    let items: any = []
     monitorStore.processes.forEach((item: {[K: string]: any}, index: number) => {
       let name = item.name || ''
       let processes = item.processes || []
@@ -89,15 +90,23 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         children: getProcessHtml(processes),
         extra: (
          <div className="flex-align-center extra-item">
-           <p
-             onClick={async (event: any) => {
-                event.stopPropagation()
-                let pidList = processes.map((process: {[K: string]: any}) => process.pid)
-                await monitorStore.onKillProcess(name, pidList)
+           <Popconfirm
+             title="温馨提示"
+             description="是否结束进程?"
+             okText="确定"
+             cancelText="取消"
+             onConfirm={async (event: any) => {
+               console.log(event)
+               event.stopPropagation()
+               let pidList = processes.map((process: {[K: string]: any}) => process.pid)
+               await monitorStore.onKillProcess(name, pidList)
              }}
            >
-             结束进程
-           </p>
+             <p>
+               结束进程
+             </p>
+           </Popconfirm>
+
            <p
              onClick={async (event: any) => {
                 event.stopPropagation()
@@ -111,6 +120,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
       })
     })
 
+    console.log('items', items)
     return items
   }
 
@@ -119,7 +129,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     if (monitorStore.processList.length === 0) return []
 
     let processes: Array<any> = []
-    for(let process of monitorStore.processList) {
+    for (let process of monitorStore.processList) {
       if (Utils.isBlank(process.name) || Utils.isBlank(process.pid)) {
         continue
       }
@@ -142,9 +152,9 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         <div className="breadcrumb-top flex-align-center">
           <MBreadcrumb
             className="flex-1"
-            items={leftStore.menuList}
-            activeIndexes={leftStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => leftStore.setActiveIndexes(activeIndexes)}
+            items={homeStore.menuList}
+            activeIndexes={homeStore.activeIndexes}
+            onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
           />
 
           <div className="top-add flex-align-center">

@@ -3,7 +3,7 @@
  * @date 2023-04-12
  * @author poohlaha
  */
-const {Paths, Utils} = require('@bale-tools/utils')
+const { Paths, Utils } = require('@bale-tools/utils')
 const { WebpackCompiler, WebpackDllCompiler } = require('@bale-tools/mutate-service')
 const chalk = require('chalk')
 const fsExtra = require('fs-extra')
@@ -20,7 +20,7 @@ class ProjectBuilder {
   _copyDir = ''
   _projectUrl = ''
   _args = []
-   _copyDestDir = ''
+  _copyDestDir = ''
 
   constructor() {
     this._args = process.argv.slice(2) || []
@@ -97,7 +97,7 @@ class ProjectBuilder {
       }
     ]
 
-    for(let file of files) {
+    for (let file of files) {
       if (isDelete) {
         fsExtra.removeSync(path.resolve(this._appRootDir, file.to))
       } else {
@@ -115,11 +115,11 @@ class ProjectBuilder {
       mode: 'development',
       entry: {
         vendor: ['react', 'react-dom', 'react-router-dom', 'mobx', 'mobx-react-lite'],
-        other: ['axios', 'crypto-js'],
+        other: ['axios', 'crypto-js']
         // antd: ['antd']
       },
       output: {
-        path: this._dllDir,
+        path: this._dllDir
       },
       done: () => {
         const endTime = performance.now()
@@ -139,6 +139,7 @@ class ProjectBuilder {
       opts: {
         entry: path.resolve(this._appRootDir, 'src/communal/index.tsx'),
         settings: {
+          openBrowser: false,
           jsLoaderInclude: [path.resolve(this._copyDir, 'src/common'), path.resolve(this._copyDir, 'src', this._copyDestDir)],
           usePurgecssPlugin: false,
           usePwaPlugin: false,
@@ -150,18 +151,18 @@ class ProjectBuilder {
           },
           compress: {
             enable: false,
-            deleteOutput: false,
-            suffix: '.zip',
-          },
+            deleteOutput: true,
+            suffix: '.zip'
+          }
         },
         clean: true
       },
       done: () => {
         const endTime = performance.now()
         // 删除根目录下的 .vendor 文件
-        fsExtra.removeSync(this._dllDir);
+        fsExtra.removeSync(this._dllDir)
         console.log(LoggerPrefix, `Finished ${chalk.cyan('build')} after ${chalk.magenta(`${endTime - startTime} ms`)}`)
-      },
+      }
     }
 
     if (this._script !== this._SCRIPTS[0]) {

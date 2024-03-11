@@ -9,26 +9,24 @@
     margin-top: 20px;
   }
 
-  .disk-card {
-    .ant-card:not(:first-child) {
-      margin-left: 20px;
-    }
+  .ant-card.server-info-card {
+    table tbody {
+      tr.ant-descriptions-row {
+        display: flex;
 
-    .ant-card {
-      margin-top: 0!important;
-      width: 300px;
+        th.ant-descriptions-item-label {
+          min-width: 80px;
+        }
 
-      .ant-card-cover {
-        border-bottom: @border;
-        padding: 10px;
-      }
+        td.ant-descriptions-item-content {
+          display: flex;
+          flex: 1;
+          min-width: 80px;
+        }
 
-      .ant-card-body {
-        padding: 24px 18px;
-      }
-
-      .ant-card-meta:not(:first-child) {
-        margin-top: 10px;
+        .ant-descriptions-item-content.pwd-box > span {
+          width: 100%;
+        }
       }
     }
   }

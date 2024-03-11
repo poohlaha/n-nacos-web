@@ -96,7 +96,10 @@ body {
   height: 100%;
   font-family: PingFangSC-Regular, PingFang SC, sans-serif;
   -webkit-font-smoothing: antialiased;
-  color: #333333;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+  min-width: 900px;
+  overflow: hidden;
 }
 
 #root {
@@ -300,6 +303,9 @@ body {
   overflow: hidden;
 }
 
+.overflow {
+  overflow: auto;
+}
 
 /* 换行 */
 .line-break {
@@ -336,4 +342,40 @@ body {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
   transition: all 0.2s ease-in;
+}
+
+.page-padding {
+  padding: 24px;
+}
+
+.page-padding-top {
+  padding-top: 24px;
+}
+
+.page-margin-top {
+  margin-top: 24px;
+}
+
+.page-margin-bottom {
+  margin-bottom: 24px;
+}
+
+.page-margin-left {
+  margin-left: 24px;
+}
+
+.page-margin-right {
+  margin-right: 24px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.page-white {
+  background: #ffffff!important;
 }

@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "description": "n-nacos 后台管理系统, 使用 React 开发.",
+  "description": "n-nacos, 使用 React 开发.",
   "keywords": [
     "react",
     "css",
@@ -14,18 +14,19 @@
   ],
   "author": "poohlaha",
   "license": "ISC",
-  "homepage": "https://github.com/poohlaha/n-nacos-web",
+  "homepage": "",
   "scripts": {
-    "copy": "esno ./scripts/index.ts copy",
-    "start": "esno ./scripts/index.ts start",
-    "build": "esno ./scripts/index.ts dev",
-    "prod": "esno ./scripts/index.ts prod",
-    "clean": "esno ./scripts/index.ts clean",
+    "copy": "node ./scripts/index.js copy",
+    "start": "node ./scripts/index.js start",
+    "dev": "node ./scripts/index.js dev",
+    "prod": "node ./scripts/index.js prod",
+    "clean": "node ./scripts/index.js clean",
     "format": "npx prettier --write src/**/*.{vue,jsx,js,tsx,ts,json,css,md}"
   },
   "dependencies": {
     "bizcharts": "^4.1.22",
-    "antd": "^5.4.2",
+    "echarts": "^5.5.0",
+    "antd": "^5.10.2",
     "lib-flexible": "^0.3.2",
     "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
@@ -38,16 +39,20 @@
     "react-router-dom": "^6.10.0",
     "typescript": "^4.3.2",
     "@types/react": "^18.0.12",
-    "@types/react-dom": "^18.0.5"
+    "@types/react-dom": "^18.0.5",
+    "ansi-to-react": "^6.1.6",
+    "@tauri-apps/api": ">=2.0.0-beta.0",
+    "@tauri-apps/plugin-log": ">=2.0.0-beta.0",
+    "@tauri-apps/plugin-dialog": ">=2.0.0-beta.0",
+    "@bale-web/request": "^0.1.0"
   },
   "devDependencies": {
-    "@bale-tools/mutate-service": "^2.1.8",
+    "@bale-tools/mutate-service": "^2.2.0",
     "@bale-tools/utils": "^2.0.5",
-    "@bale-tools/mutate-version": "^2.0.8",
-    "@bale-sprint/react": "^1.0.7",
+    "@bale-tools/mutate-version": "^2.1.3",
+    "@bale-sprint/react": "^1.1.4",
     "core-js": "3",
     "autoprefixer": "^10.4.13",
-    "esno": "^0.16.3",
     "cssnano": "^6.0.0",
     "@commitlint/cli": "^12.1.4",
     "husky": "^8.0.3",

@@ -1,0 +1,34 @@
+/**
+ * @fileOverview main
+ * @date 2024-02-01
+ * @author poohlaha
+ */
+.main-page {
+  .server-box {
+    height: calc(100% - 56px);
+  }
+
+  .server-list {
+    .m-card:last-child {
+      margin-right: 0;
+    }
+
+    .m-card {
+      margin-right: 20px;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.page .status-bar {
+  font-size: @font;
+
+  .add {
+    color: @theme;
+    cursor: pointer;
+  }
+}
+
+.ant-modal-root {
+  z-index: 99;
+}

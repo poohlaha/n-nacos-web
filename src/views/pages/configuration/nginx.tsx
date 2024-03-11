@@ -10,7 +10,7 @@ import {Card, Drawer, Table} from 'antd'
 import useMount from '@hooks/useMount'
 import Loading from '@views/components/loading/loading'
 import Utils from '@utils/utils'
-import MBreadcrumb from "@views/modules/breadcrumb";
+import MBreadcrumb from '@views/modules/breadcrumb'
 
 interface DataType {
   key: string;
@@ -23,7 +23,7 @@ interface DataType {
 const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const [showDrawer, setShowDrawer] = useState(false) // 是否显示 nginx 配置文件
-  const {nginxStore, leftStore} = useStore()
+  const {nginxStore, homeStore} = useStore()
 
   useMount(async () => {
     await nginxStore.getList()
@@ -99,7 +99,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
       }
 
       results.push(object)
-      console.log("results:", results)
+      console.log('results:', results)
     }
   }
 
@@ -127,9 +127,9 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
       <div className="nginx-page w100 min-h100">
        <div className="breadcrumb-top flex-align-center">
          <MBreadcrumb
-           items={leftStore.menuList}
-           activeIndexes={leftStore.activeIndexes}
-           onChange={(activeIndexes: Array<number> = []) => leftStore.setActiveIndexes(activeIndexes)}
+           items={homeStore.menuList}
+           activeIndexes={homeStore.activeIndexes}
+           onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
          />
        </div>
 

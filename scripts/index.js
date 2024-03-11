@@ -3,11 +3,9 @@
  * @date 2023-04-12
  * @author poohlaha
  */
-const {Paths, Utils} = require('@bale-tools/utils')
+const { Paths } = require('@bale-tools/utils')
 const MutateVersion = require('@bale-tools/mutate-version')
 const chalk = require('chalk')
-const shell = require('shelljs')
-const fsExtra = require('fs-extra')
 const { performance } = require('node:perf_hooks')
 const path = require('node:path')
 const ProjectBuilder = require('./build')
@@ -16,18 +14,18 @@ const LoggerPrefix = chalk.cyan('[Bale Chat Compiler]:')
 
 class Builder {
   _SCRIPTS = ['start', 'dev', 'prod'] // scripts
-  private readonly _appRootDir: string = ''
-  private readonly _packageDir: string = ''
-  private readonly _configurationsDir: string = ''
-  private readonly _copyDir: string = ''
-  private readonly  _pcDestDir: string = ''
-  private readonly  _mobileDestDir: string = ''
-  private readonly _mutateVersion
-  private readonly _args: Array<string> = []
-  private readonly _command: number = 2 // default dev
-  private readonly _script: string // default dev
-  private readonly _descDir: string // dest dir
-  private readonly _projectBuilder // project builder
+  _appRootDir = ''
+  _packageDir = ''
+  _configurationsDir = ''
+  _copyDir = ''
+   _pcDestDir = ''
+   _mobileDestDir = ''
+  _mutateVersion
+  _args = []
+  _command = 2 // default dev
+  _script // default dev
+  _descDir // dest dir
+  _projectBuilder // project builder
 
   constructor() {
     this._appRootDir = Paths.getAppRootDir() || ''
@@ -40,13 +38,13 @@ class Builder {
     this._descDir = this._script === this._SCRIPTS[2] ? 'dist' : 'build'
     this._pcDestDir = path.join(this._packageDir, 'pc')
     this._mobileDestDir = path.join(this._packageDir, 'mobile')
-    this._projectBuilder = new ProjectBuilder();
+    this._projectBuilder = new ProjectBuilder()
     this._mutateVersion = new MutateVersion({ language: 'react', babelImportPluginName: '', useTypescript: true })
   }
 
 
   // 获取输入命令 0: clean 1: copy files 2: start 3: dev 4: prod
-  private _getCommand(): number {
+  _getCommand() {
     const commands = this._args.filter(x => !x.startsWith('--')) || []
     if (commands.includes('clean')) {
       return 0
@@ -71,12 +69,12 @@ class Builder {
     return 3
   }
 
-  private _copyFiles() {
+  _copyFiles() {
     this._mutateVersion.copy()
   }
 
   // clean
-  private _clean() {
+  _clean() {
     console.log(LoggerPrefix, `Starting ${chalk.cyan('clean')} ...`)
     const startTime = performance.now()
 
@@ -90,7 +88,7 @@ class Builder {
   }
 
   // get script
-  private _getScript() {
+  _getScript() {
     const commands = this._args.filter(x => !x.startsWith('--')) || []
     if (commands.includes(`${this._SCRIPTS[0]}`)) {
       return this._SCRIPTS[0]
@@ -107,16 +105,14 @@ class Builder {
     return this._SCRIPTS[1]
   }
 
-
   // build
-  private _build() {
+  _build() {
     this._copyFiles()
     this._projectBuilder.instance()
   }
 
-
   // instance 0: clean 1: copy files 2: start mobile 3: start pc 4: dev 5: prod
-  public instance() {
+  instance() {
     switch (this._command) {
       case 0: // clean
         this._clean()
@@ -133,4 +129,4 @@ class Builder {
     }
   }
 }
-export default new Builder().instance()
+module.exports = new Builder().instance()

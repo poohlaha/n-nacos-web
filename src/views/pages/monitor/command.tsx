@@ -3,16 +3,21 @@
  * @date 2023-07-27
  * @author poohlaha
  */
-import React, {ReactElement} from 'react'
+import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import useMount from '@hooks/useMount'
-import { Card, Input, Button, Table } from 'antd'
+import { Card, Input, Button, Table, Popconfirm, Alert, Drawer } from 'antd'
 import Loading from '@views/components/loading/loading'
 import MBreadcrumb from '@views/modules/breadcrumb'
+import { once } from '@tauri-apps/api/event'
+import Utils from '@utils/utils'
 
 const Command: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
-  const {monitorStore, leftStore} = useStore()
+  const {monitorStore, homeStore} = useStore()
+  const [disableButton, setDisableButton] = useState(false)
+  const [showDrawer, setShowDrawer] = useState(false)
+  const [alert, setAlert] = useState({ message: '', type: 'info', closable: false, name: '', log: '' })
 
   useMount(async () => {
     await onRefresh()
@@ -22,11 +27,75 @@ const Command: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     await monitorStore.getCommandList()
   }
 
+  const onDeleteConfirm = async (id: string) => {
+    await monitorStore.onRemoveCommand(id || '')
+  }
+
+  const onExecConfirm = async (text: string, id: string) => {
+    setDisableButton(true)
+    await monitorStore.onExecCommand(text, id || '', () => {
+      setAlert({ message: `命令 \`${monitorStore.execCommand || ''}\` 执行中 ...`, type: 'info', closable: false, log: '', name: '' })
+    },() => {
+      setDisableButton(false)
+    })
+
+    await once('exec_command', (event: any = {}) => {
+      console.log('exec command result', event)
+      setDisableButton(false)
+      const payload = event.payload || {}
+      let result = payload.data || {}
+      let name = result.name || monitorStore.execCommand || ''
+      let data = result.data || []
+
+      let message = ''
+      let type = ''
+      if (payload.code !== 200) {
+        message = `执行命令 \`${name}\` 失败 ...`
+        type = 'error'
+      } else {
+        message = `执行命令 \`${name}\` 成功 ...`
+        type = 'success'
+      }
+
+      let log = data.join('\n')
+
+      setAlert({ message, type, closable: true, log, name })
+    })
+  }
+
   const getOptions = (text = '', record: any = {}, index = 0) => {
     return (
       <div className="options" key={index}>
-        <a onClick={() => monitorStore.onExecCommand(record.id || '')}>执行</a>
-        <a onClick={() => monitorStore.onRemoveCommand(record.id || '')}>删除</a>
+        <Popconfirm
+          title="温馨提示"
+          description="是否删除命令?"
+          okText="确定"
+          cancelText="取消"
+          onConfirm={async () => {
+            if (disableButton) {
+              return
+            }
+
+            await onExecConfirm(record.name, record.id || '');
+          }}
+        >
+          <a>执行</a>
+        </Popconfirm>
+
+        <Popconfirm
+          title="温馨提示"
+          description="是否删除命令?"
+          okText="确定"
+          cancelText="取消"
+          onConfirm={async () => {
+            if (disableButton) {
+              return
+            }
+            await onDeleteConfirm(record.id || '')
+          }}
+        >
+          <a>删除</a>
+        </Popconfirm>
       </div>
     )
   }
@@ -40,6 +109,7 @@ const Command: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     {
       title: '脚本',
       dataIndex: 'exec',
+      // eslint-disable-next-line react/display-name
       render: (text = '', record: any = {}, index = 0) => {
         if (text.indexOf('\\n') === -1) {
           return <p key={index}>{text || ''}</p>
@@ -49,8 +119,8 @@ const Command: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         return (
           <div className="exec-column" key={index}>
             {
-              texts.length > 0 && texts.map((t: string) => {
-                return <p>{t || ''}</p>
+              texts.length > 0 && texts.map((t: string, i: number = 0) => {
+                return <p key={i}>{t || ''}</p>
               })
             }
           </div>
@@ -70,15 +140,42 @@ const Command: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     }
   ]
 
+  const getAlertAction = () => {
+    if (alert.type !== 'success') return null
+    return (<a onClick={() => setShowDrawer(true)}>查看日志</a>)
+  }
+
+  const getLogHtml = () => {
+    let log = alert.log || ''
+    // @ts-ignore
+    let prism = window['Prism']
+    const html = prism.highlight(log, prism.languages['log'], 'Log')
+    return (
+      <pre>
+        <code className="file-detail language-log" dangerouslySetInnerHTML={{ __html: html || '' }} />
+      </pre>
+    )
+  }
+
   const render = () => {
     return (
       <div className="command-page w100 min-h100 flex-direction-column">
+        {
+          !Utils.isBlank(alert.message || '') && (
+            <Alert
+              message={alert.message}
+              type={`${alert.type || 'info'}`}
+              closable={alert.closable} showIcon
+              action={getAlertAction()}
+            />
+          )
+        }
         <div className="breadcrumb-top flex-align-center">
           <MBreadcrumb
             className="flex-1"
-            items={leftStore.menuList}
-            activeIndexes={leftStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => leftStore.setActiveIndexes(activeIndexes)}
+            items={homeStore.menuList}
+            activeIndexes={homeStore.activeIndexes}
+            onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
           />
 
           <div className="top-add flex-align-center">
@@ -119,8 +216,8 @@ const Command: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
               />
             </div>
 
-            <div className="flex flex-jsc-end w100" onClick={() => monitorStore.onCommandSubmit()}>
-              <Button type="primary">提交</Button>
+            <div className="flex flex-jsc-end w100">
+              <Button type="primary" onClick={() => monitorStore.onCommandSubmit()}>提交</Button>
             </div>
           </Card>
         </div>
@@ -129,6 +226,15 @@ const Command: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         <div className="command-content">
           <Table columns={commandColumns} dataSource={monitorStore.commandList} />
         </div>
+
+        {/* 查看日志 */}
+        {
+          <Drawer title={alert.name || '日志'} placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
+            {
+              getLogHtml()
+            }
+          </Drawer>
+        }
 
         <Loading show={monitorStore.loading}/>
       </div>

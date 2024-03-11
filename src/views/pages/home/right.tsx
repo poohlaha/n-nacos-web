@@ -2,7 +2,7 @@
  * 右侧页面
  */
 import React, {ReactElement, Suspense} from 'react'
-import { Route, Routes } from 'react-router-dom'
+import {Route, Routes} from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import Utils from '@utils/utils'
@@ -12,26 +12,26 @@ import ScrollToTop from '@router/scrollToTop'
 
 const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
-  const {leftStore} = useStore()
+  const {homeStore} = useStore()
 
-  const getUrls = () => {
+  const getRightRoutes = () => {
     let urls: Array<{[K: string]: any}> = []
-    if (leftStore.menuList.length === 0) return []
+    if (homeStore.menuList.length === 0) return []
 
-    leftStore.menuList.map((item: {[K: string]: any}, index: number) => {
+    homeStore.menuList.map((item: {[K: string]: any}, index: number) => {
       let children = item.children || []
       if (children.length === 0) {
         if (!Utils.isBlank(item.url)) {
           urls.push({
-            path: `${RouterUrls.MAIN_URL}${item.url}`,
+            path: item.url,
             component: item.component
           })
         }
       } else {
-        for(let child of children) {
+        for (let child of children) {
           if (!Utils.isBlank(child.url)) {
             urls.push({
-              path: `${RouterUrls.MAIN_URL}${child.url}`,
+              path: child.url,
               component: child.component
             })
           }
@@ -41,36 +41,42 @@ const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
     return urls
   }
-  const render = () => {
-    let urls = getUrls();
+
+  const getRoutes = (routes: {[K: string]: any} = {}) => {
     return (
-      <div className="right flex-1">
-        {
-          <Routes>
-            {
-              urls.length > 0 && urls.map((route: {[K: string]: any}, index: number) => {
+        <Routes>
+          {
+              routes.length > 0 && routes.map((route: {[K: string]: any}, index: number) => {
                 return (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    element={
-                      <Suspense fallback={<Loading show={true} />}>
-                        <ScrollToTop />
-                        <route.component />
-                      </Suspense>
-                    }
-                  >
-                  </Route>
+                    <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Suspense fallback={<Loading show={true} />}>
+                            <ScrollToTop />
+                            <route.component />
+                          </Suspense>
+                        }
+                    >
+                    </Route>
                 )
               })
-            }
-          </Routes>
-        }
+          }
+        </Routes>
+    )
+  }
+  const render = () => {
+    let rightRoutes = getRightRoutes() || []
+    let otherSubRoutes = homeStore.getOtherSubRoutes() || []
+    let routes = rightRoutes.concat(otherSubRoutes)
+    return (
+      <div className="right flex-1">
+        {getRoutes(routes)}
       </div>
     )
   }
 
-  return render();
+  return render()
 }
 
 export default observer(Right)

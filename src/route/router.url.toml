@@ -4,5 +4,14 @@ MAIN_URL = '/main'
 DASHBOARD_URL = '/dashboard'
 PROCESS_URL = '/process'
 COMMAND_URL = '/command'
+DIRECTORY_URL = '/directory'
 NGINX_URL = '/nginx'
+
+[PIPELINE]
+URL = '/pipeline'
+ADD_URL = '/pipelineAdd'
+DETAIL_URL = '/pipelineDetail'
+
+[MONITOR]
+SERVER_URL = '/server'
 
