@@ -1,19 +1,19 @@
 /**
  * 流水线运行html
  */
-import React, {ReactElement} from 'react'
+import React, { ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
-import {Input, Radio, Select} from 'antd'
+import { Input, Radio, Select } from 'antd'
 import MTable from '@views/modules/table'
 import Utils from '@utils/utils'
 
 interface IPipelineRunDialogProps {
   isReadonly?: boolean // 是否只读
   datasource: Array<any>
-  columns: Array<{[K: string]: any}>
-  dialogProps: {[K: string]: any}
+  columns: Array<{ [K: string]: any }>
+  dialogProps: { [K: string]: any }
   tagList: Array<{ [K: string]: string }>
-  onSetVariable: (name: string, value: {[K: string]: any}) => void
+  onSetVariable: (name: string, value: { [K: string]: any }) => void
   onSetProps: (name: string, value: string, tag: string) => void
   hasNeedRadioChange: boolean
   onRadioChange: (value: string) => void
@@ -21,13 +21,12 @@ interface IPipelineRunDialogProps {
 }
 
 const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDialogProps): ReactElement => {
-
   const getColumns = () => {
-    let columns: {[K: string]: any} = props.columns || []
-    let nameColumn: {[K: string]: any} = columns[0] || {}
-    let genreColumn: {[K: string]: any} = columns[1] || {}
-    let valueColumn: {[K: string]: any} = columns[2] || {}
-    let descColumn: {[K: string]: any} = columns[3] || {}
+    let columns: { [K: string]: any } = props.columns || []
+    let nameColumn: { [K: string]: any } = columns[0] || {}
+    let genreColumn: { [K: string]: any } = columns[1] || {}
+    let valueColumn: { [K: string]: any } = columns[2] || {}
+    let descColumn: { [K: string]: any } = columns[3] || {}
     let dialogProps = props.dialogProps || {}
     let tagList = props.tagList || []
 
@@ -36,20 +35,18 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
     valueColumn.needTooltip = false
     descColumn.needTooltip = false
 
-    nameColumn.render = (record: {[K: string]: any} = {}) => {
+    nameColumn.render = (record: { [K: string]: any } = {}) => {
       return (
         <div className="name flex-align-center">
           <p>{record.name || ''}</p>
-          {
-            record.require === 'yes' && <span className="red">*</span>
-          }
+          {record.require === 'yes' && <span className="red">*</span>}
         </div>
       )
     }
 
     // 更改值的显示
     valueColumn.multiLine = false
-    valueColumn.render = (record: {[K: string]: any} = {}) => {
+    valueColumn.render = (record: { [K: string]: any } = {}) => {
       let value = record.value
       let isVariableMulti = false
       let isVariable = record.isVariable
@@ -58,14 +55,14 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
         let values = value.split('\n') || []
         // 组装 value
         value = values.map((v: string = '') => {
-          return {label: v, value: v}
+          return { label: v, value: v }
         })
       }
 
       let name = record.name || ''
       // 数组
       if (Array.isArray(value)) {
-        let h5: {[K: string]: any} = {}
+        let h5: { [K: string]: any } = {}
         let variable = dialogProps.variable || {}
         if (tagList.length > 0) {
           let h5Tag = tagList[tagList.length - 1].value
@@ -78,12 +75,12 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
         if (isVariableMulti) {
           selectValue = variable[name] || ''
         } else if (!Utils.isObjectNull(h5)) {
-            selectValue = h5[name] || ''
-          }
+          selectValue = h5[name] || ''
+        }
 
         return (
           <Select
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             placeholder="请选择"
             allowClear
             value={selectValue}
@@ -108,21 +105,16 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
       return <p></p>
     }
 
-    return [
-      nameColumn,
-      genreColumn,
-      valueColumn,
-      descColumn
-    ]
+    return [nameColumn, genreColumn, valueColumn, descColumn]
   }
 
   const setVariableValue = (name: string = '', value: string = '', id: string = '') => {
-    let v: {[K: string]: any} = {}
+    let v: { [K: string]: any } = {}
     if (!Utils.isBlank(value)) {
       v = {
         id: id || '',
         value: value || '',
-        name
+        name,
       }
     }
 
@@ -136,26 +128,22 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
         <div className="content-item page-margin-top">
           <div className="title">启动变量</div>
 
-          {
-            !props.isReadonly && (
-              <Radio.Group
-                value={dialogProps.value}
-                onChange={(e: any = {}) => {
-                  let value = e.target.value || '0'
-                  props.onRadioChange?.(value)
-                }}
-              >
-                <Radio value="0">默认启动变量</Radio>
-                <Radio value="1" disabled={!props.hasNeedRadioChange}>复用最近运行记录的启动变量</Radio>
-              </Radio.Group>
-            )
-          }
+          {!props.isReadonly && (
+            <Radio.Group
+              value={dialogProps.value}
+              onChange={(e: any = {}) => {
+                let value = e.target.value || '0'
+                props.onRadioChange?.(value)
+              }}
+            >
+              <Radio value="0">默认启动变量</Radio>
+              <Radio value="1" disabled={!props.hasNeedRadioChange}>
+                复用最近运行记录的启动变量
+              </Radio>
+            </Radio.Group>
+          )}
 
-          <MTable
-            className="border"
-            dataSource={props.datasource || []}
-            columns={getColumns()}
-          />
+          <MTable className="border" dataSource={props.datasource || []} columns={getColumns()} />
         </div>
 
         <div className="content-item page-margin-top">

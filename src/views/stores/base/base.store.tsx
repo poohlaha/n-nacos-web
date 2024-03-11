@@ -3,7 +3,7 @@
  * @date 2023-04-12
  * @author poohlaha
  */
-import {action, observable} from 'mobx'
+import { action, observable } from 'mobx'
 import Utils from '@utils/utils'
 import { COMMON, TOAST } from '@utils/base'
 
@@ -51,7 +51,7 @@ export default class BaseStore {
   }
 
   @action
-  handleResult = (result: {[K: string]: any} = {}) => {
+  handleResult = (result: { [K: string]: any } = {}) => {
     if (Utils.isObjectNull(result)) {
       TOAST.show({ message: COMMON.getLanguageText('ERROR_MESSAGE'), type: 4 })
       return
@@ -67,7 +67,7 @@ export default class BaseStore {
   }
 
   @action
-  analysisResult = (result: {[K: string]: any} = {}, errMsg: string = '') => {
+  analysisResult = (result: { [K: string]: any } = {}, errMsg: string = '') => {
     if (Utils.isObjectNull(result)) {
       TOAST.show({ message: errMsg || COMMON.getLanguageText('ERROR_MESSAGE'), type: 4 })
       return {}

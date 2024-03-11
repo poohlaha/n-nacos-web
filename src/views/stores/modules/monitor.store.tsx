@@ -10,14 +10,13 @@ import Utils from '@utils/utils'
 import { invoke } from '@tauri-apps/api/core'
 
 class MonitorStore extends BaseStore {
-
-  @observable processes: Array<{[K: string]: any}> = []
-  @observable processList: Array<{[K: string]: any}> = []
-  @observable commandList: Array<{[K: string]: any}> = []
+  @observable processes: Array<{ [K: string]: any }> = []
+  @observable processList: Array<{ [K: string]: any }> = []
+  @observable commandList: Array<{ [K: string]: any }> = []
   @observable addProcesses: Array<string> = []
-  @observable commandForm: {[K: string]: string} = {
+  @observable commandForm: { [K: string]: string } = {
     name: '',
-    exec: ''
+    exec: '',
   }
   @observable execCommand: string = ''
 
@@ -33,13 +32,13 @@ class MonitorStore extends BaseStore {
     this.loading = true
     this.processList = []
     this.processes = []
-    let result: {[K: string]: any} = await invoke('get_monitor_process_list',{userId: this.userId});
+    let result: { [K: string]: any } = await invoke('get_monitor_process_list', { userId: this.userId })
     console.log('result:', result)
     this.loading = false
     let data = this.analysisResult(result, '') || {}
     this.processes = data.processes || []
     this.processList = data.process_list || []
-    this.addProcesses = this.processes.map((process: {[K: string]: any}) => process.name)
+    this.addProcesses = this.processes.map((process: { [K: string]: any }) => process.name)
   }
 
   @action
@@ -53,7 +52,10 @@ class MonitorStore extends BaseStore {
   @action
   async onKillProcess(processName: string, pidList: Array<string>) {
     this.loading = true
-    let result: {[K: string]: any} = await invoke('kill_monitor_process',{userId: this.userId, processIds: pidList || []});
+    let result: { [K: string]: any } = await invoke('kill_monitor_process', {
+      userId: this.userId,
+      processIds: pidList || [],
+    })
     console.log('result:', result)
     this.loading = false
     this.analysisResult(result, '结束进程失败!') || {}
@@ -64,10 +66,13 @@ class MonitorStore extends BaseStore {
 
   /**
    * 添加进程
-    */
+   */
   async onAddProcesses(callback: Function) {
     this.loading = true
-    let result: {[K: string]: any} = await invoke('add_monitor_process',{userId: this.userId, processNames: this.addProcesses || []});
+    let result: { [K: string]: any } = await invoke('add_monitor_process', {
+      userId: this.userId,
+      processNames: this.addProcesses || [],
+    })
     console.log('result:', result)
     this.loading = false
     this.analysisResult(result, '添加进程失败!') || {}
@@ -84,7 +89,10 @@ class MonitorStore extends BaseStore {
   async onRemoveProcess(processName: string) {
     if (this.addProcesses.length === 0 || Utils.isBlank(processName)) return
     this.loading = true
-    let result: {[K: string]: any} = await invoke('remove_monitor_process',{userId: this.userId, processNames: [processName]});
+    let result: { [K: string]: any } = await invoke('remove_monitor_process', {
+      userId: this.userId,
+      processNames: [processName],
+    })
     console.log('result:', result)
     this.loading = false
     this.analysisResult(result, '移除进程失败!') || {}
@@ -108,7 +116,11 @@ class MonitorStore extends BaseStore {
     }
 
     this.loading = true
-    let result: {[K: string]: any}= await invoke('add_monitor_command',{ userId: this.userId, name:  this.commandForm.name || '', exec: this.commandForm.exec || '' });
+    let result: { [K: string]: any } = await invoke('add_monitor_command', {
+      userId: this.userId,
+      name: this.commandForm.name || '',
+      exec: this.commandForm.exec || '',
+    })
     console.log('result:', result)
     this.loading = false
 
@@ -127,7 +139,7 @@ class MonitorStore extends BaseStore {
   async onRemoveCommand(id: string) {
     if (Utils.isBlank(id)) return
     this.loading = true
-    let result: {[K: string]: any}= await invoke('delete_monitor_command',{ userId:this.userId, id });
+    let result: { [K: string]: any } = await invoke('delete_monitor_command', { userId: this.userId, id })
     console.log('result:', result)
     this.loading = false
     this.analysisResult(result, '移除命令失败!')
@@ -143,7 +155,7 @@ class MonitorStore extends BaseStore {
   async onExecCommand(text: string, id: string, callback: any = null, failedCallback: any = null) {
     if (Utils.isBlank(id)) return
     this.loading = true
-    let result: {[K: string]: any}= await invoke('exec_monitor_command',{ userId:this.userId, id});
+    let result: { [K: string]: any } = await invoke('exec_monitor_command', { userId: this.userId, id })
     console.log('result:', result)
     this.loading = false
     this.analysisResult(result, '执行命令失败!')
@@ -162,15 +174,15 @@ class MonitorStore extends BaseStore {
   async getCommandList() {
     this.loading = true
     this.commandList = []
-    let result: {[K: string]: any}= await invoke('get_monitor_command_list',{userId: this.userId});
+    let result: { [K: string]: any } = await invoke('get_monitor_command_list', { userId: this.userId })
     console.log('result:', result)
     this.loading = false
     const commandList = this.analysisResult(result, '') || []
-    this.commandList = commandList.map((c: {[K: string]: string}, index: number) => {
+    this.commandList = commandList.map((c: { [K: string]: string }, index: number) => {
       let key = index
       let exec = c.exec.replace(/\n/g, '\\n') || ''
       exec = exec.replace(/&&/g, '\\n') || ''
-      return { ...c, key, exec}
+      return { ...c, key, exec }
     })
 
     console.log('command list', this.commandList)

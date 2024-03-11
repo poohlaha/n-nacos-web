@@ -56,3 +56,4 @@ web/scripts/proxy.json
 Cargo.lock
 target
 output
+src/views/pages/delivery/pipeline/pipeline/**/*

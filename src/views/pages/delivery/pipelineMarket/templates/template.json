@@ -1,0 +1,148 @@
+[
+  {
+    "id": "1",
+    "key": "pull",
+    "label": "代码拉取",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "通用模板--代码拉取",
+    "date": "2024/03/11",
+    "command": "git clone -b ${branch} ${url}",
+    "module": "GitPull"
+  },
+  {
+    "id": "2",
+    "key": "h5Install",
+    "label": "H5依赖安装",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "通用模板--H5依赖安装",
+    "date": "2024/03/11",
+    "command": "",
+    "module": "H5Install",
+    "components": [
+      {
+        "name": "",
+        "label": "安装命令",
+        "type": "select",
+        "value": "${installCommands}",
+        "default": "",
+        "desc": "默认动态判断"
+      },
+      {
+        "name": "",
+        "label": "安装目录",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "以下规则只要满足一条就必须填写:\n1. 当工作空间下有多个项目\n2. 当只有一个项目时, 且安装依赖目录不为根目录"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "key": "pack",
+    "label": "项目打包",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "H5通用模板--项目打包",
+    "date": "2024/03/11",
+    "command": "",
+    "module": "Pack",
+    "components": [
+      {
+        "name": "",
+        "label": "打包目录",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "以下规则只要满足一条就必须填写:\n1. 当工作空间下有多个项目\n2. 当只有一个项目时, 且打包目录不为根目录"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "key": "compress",
+    "label": "文件压缩",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "通用模板--文件压缩",
+    "date": "2024/03/11",
+    "command": "",
+    "modules": "Compress",
+    "components": [
+      {
+        "name": "",
+        "label": "源目录",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": ""
+      },
+      {
+        "name": "",
+        "label": "目录目录",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": ""
+      },
+      {
+        "name": "",
+        "label": "品质(0-100)",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": ""
+      },
+      {
+        "name": "",
+        "label": "压缩比例(0-1)",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": ""
+      },
+      {
+        "name": "",
+        "label": "图片大小(KB)",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": ""
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "key": "deploy",
+    "label": "项目部署",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "通用模板--项目部署",
+    "date": "2024/03/11",
+    "command": "",
+    "modules": "Deploy",
+    "components": [
+      {
+        "name": "",
+        "label": "部署目录",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "默认 Development 环境: build, Production 环境: dist"
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "key": "notice",
+    "label": "发送通知",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "通用模板--发送通知",
+    "date": "2024/03/11",
+    "command": "",
+    "modules": "Notice"
+  }
+]

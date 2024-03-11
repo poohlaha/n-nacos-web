@@ -21,7 +21,7 @@
     "dev": "node ./scripts/index.js dev",
     "prod": "node ./scripts/index.js prod",
     "clean": "node ./scripts/index.js clean",
-    "format": "npx prettier --write src/**/*.{vue,jsx,js,tsx,ts,json,css,md}"
+    "format": "npx prettier --write src"
   },
   "dependencies": {
     "bizcharts": "^4.1.22",

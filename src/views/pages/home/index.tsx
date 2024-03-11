@@ -1,7 +1,7 @@
 /**
  * 主页面, 包括上部、左侧导航和右侧页面显示
  */
-import React, {ReactElement} from 'react'
+import React, { ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
 import Navigation from './navigation'
 import Left from './left'

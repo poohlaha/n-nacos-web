@@ -5,12 +5,11 @@
  */
 import { observable, action } from 'mobx'
 import BaseStore from '../base/base.store'
-import BackUrls from "@route/router.back.toml";
+import BackUrls from '@route/router.back.toml'
 
 class NginxStore extends BaseStore {
-
-  @observable fileData: {[K: string]: any} = {} // 系统信息
-  @observable data: Array<{[K: string]: any}> = []
+  @observable fileData: { [K: string]: any } = {} // 系统信息
+  @observable data: Array<{ [K: string]: any }> = []
 
   // 表头
   readonly tableHeaders: any = [
@@ -23,8 +22,8 @@ class NginxStore extends BaseStore {
     {
       title: '属性值',
       dataIndex: 'propValue',
-      key: 'propValue'
-    }
+      key: 'propValue',
+    },
   ]
 
   /**
@@ -37,12 +36,12 @@ class NginxStore extends BaseStore {
     return await $http.post({
       url: BackUrls.GET_NGINX_FILE_URL,
       data: {},
-      success: (res: {[K: string]: any} = {}) => {
+      success: (res: { [K: string]: any } = {}) => {
         this.loading = false
         this.fileData = res
         callback?.()
       },
-      fail: () => this.loading = false
+      fail: () => (this.loading = false),
     })
   }
 
@@ -55,14 +54,13 @@ class NginxStore extends BaseStore {
     return await $http.post({
       url: BackUrls.GET_NGINX_LIST_URL,
       data: {},
-      success: (res: Array<{[K: string]: any}> = []) => {
+      success: (res: Array<{ [K: string]: any }> = []) => {
         this.loading = false
         this.data = res || []
       },
-      fail: () => this.loading = false
+      fail: () => (this.loading = false),
     })
   }
-
 }
 
 export default new NginxStore()

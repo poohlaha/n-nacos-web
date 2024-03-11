@@ -3,27 +3,26 @@
  * @date 2023-04-12
  * @author poohlaha
  */
-import React, {ReactElement, useState} from 'react'
+import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
-import {Card, Drawer, Table} from 'antd'
+import { Card, Drawer, Table } from 'antd'
 import useMount from '@hooks/useMount'
 import Loading from '@views/components/loading/loading'
 import Utils from '@utils/utils'
 import MBreadcrumb from '@views/modules/breadcrumb'
 
 interface DataType {
-  key: string;
-  index: string;
-  propName: string;
-  propValue: string;
-  children?: DataType[];
+  key: string
+  index: string
+  propName: string
+  propValue: string
+  children?: DataType[]
 }
 
 const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
-
   const [showDrawer, setShowDrawer] = useState(false) // 是否显示 nginx 配置文件
-  const {nginxStore, homeStore} = useStore()
+  const { nginxStore, homeStore } = useStore()
 
   useMount(async () => {
     await nginxStore.getList()
@@ -49,8 +48,8 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     )
   }
 
-  const getTableData = (data: Array<{[K: string]: any}>, results: Array<any> = [], index: number) => {
-    for(let i = 0; i < data.length; i++) {
+  const getTableData = (data: Array<{ [K: string]: any }>, results: Array<any> = [], index: number) => {
+    for (let i = 0; i < data.length; i++) {
       let item = data[i] || {}
       if (Utils.isObjectNull(item)) {
         continue
@@ -75,7 +74,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
       let propValue = ''
       if (args.length > 0) {
         propValue = args.join(',') || ''
-        let specIndex= propValue.indexOf(';')
+        let specIndex = propValue.indexOf(';')
         if (specIndex !== -1) {
           propValue = propValue.substring(0, specIndex)
         }
@@ -85,10 +84,10 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         key: i + '' + (index || ''),
         propName: token.name || '',
         propValue,
-        children: []
+        children: [],
       }
 
-      let childrens = item.childrens|| []
+      let childrens = item.childrens || []
       if (childrens.length > 0) {
         getTableData(childrens, object.children, i)
       }
@@ -114,24 +113,19 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
     if (data.length === 0) return null
 
-    return (
-      <Table
-        columns={nginxStore.tableHeaders || []}
-        dataSource={data}
-      />
-    )
+    return <Table columns={nginxStore.tableHeaders || []} dataSource={data} />
   }
 
   const render = () => {
     return (
       <div className="nginx-page w100 min-h100">
-       <div className="breadcrumb-top flex-align-center">
-         <MBreadcrumb
-           items={homeStore.menuList}
-           activeIndexes={homeStore.activeIndexes}
-           onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
-         />
-       </div>
+        <div className="breadcrumb-top flex-align-center">
+          <MBreadcrumb
+            items={homeStore.menuList}
+            activeIndexes={homeStore.activeIndexes}
+            onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
+          />
+        </div>
 
         <Card title="Nginx 配置文件" extra={<p onClick={onShowDrawer}>查看配置文件</p>}>
           {getTable()}
@@ -140,9 +134,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         {/* 查看配置文件 */}
         {
           <Drawer title="Nginx配置文件" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
-            {
-              getNginxFileConfHtml()
-            }
+            {getNginxFileConfHtml()}
           </Drawer>
         }
 
@@ -151,7 +143,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     )
   }
 
-  return render();
+  return render()
 }
 
 export default observer(Nginx)

@@ -1,12 +1,12 @@
 /**
  * 锚点
  */
-import React, {ReactElement, useState, useRef} from 'react'
+import React, { ReactElement, useState, useRef } from 'react'
 import { observer } from 'mobx-react-lite'
 import useMount from '@hooks/useMount'
 
 interface IMAnchorProps {
-  columns: Array<IMAnchorColumnProps>,
+  columns: Array<IMAnchorColumnProps>
   contents: Array<React.ReactNode>
 }
 
@@ -16,10 +16,9 @@ interface IMAnchorColumnProps {
   title: string
 }
 const MAnchor: React.FC<IMAnchorProps> = (props: IMAnchorProps): ReactElement => {
-
   const [leftActiveIndex, setLeftActiveIndex] = useState(0)
 
-  const leftChangeRef = useRef(-1);
+  const leftChangeRef = useRef(-1)
   useMount(() => {
     onScroll()
   })
@@ -37,12 +36,12 @@ const MAnchor: React.FC<IMAnchorProps> = (props: IMAnchorProps): ReactElement =>
       contents = dom.querySelectorAll('.m-anchor-content')
     }
 
-    let newColumns : Array<{[K: string]: any}> = []
+    let newColumns: Array<{ [K: string]: any }> = []
     contents.forEach((content: any, index: number) => {
       let rect = content.getBoundingClientRect()
       newColumns.push({
         ...props.columns[index],
-        rect
+        rect,
       })
     })
 
@@ -80,7 +79,7 @@ const MAnchor: React.FC<IMAnchorProps> = (props: IMAnchorProps): ReactElement =>
     return handler
   }
 
-  const onRunScroll = debounce((dom: HTMLDivElement, leftList: Array<{[K: string]: any}>) => {
+  const onRunScroll = debounce((dom: HTMLDivElement, leftList: Array<{ [K: string]: any }>) => {
     let domTop = dom.scrollTop
 
     // 判断 domTop 在哪个区间
@@ -103,57 +102,51 @@ const MAnchor: React.FC<IMAnchorProps> = (props: IMAnchorProps): ReactElement =>
         }
       }
     }
-
   }, 50)
 
   const render = () => {
     if (props.columns.length === 0 || props.contents.length === 0) {
-      return (<div className="m-anchor"></div>)
+      return <div className="m-anchor"></div>
     }
 
     return (
       <div className="m-anchor wh100 flex">
         <div className="m-anchor-left flex">
           <div className="m-anchor-links w100">
-            {
-              props.columns.map((item, index) => {
-                return (
-                  <div
-                    className={`m-anchor-link cursor-pointer ${leftActiveIndex === index ? 'active' : ''}`}
-                    key={item.key || index}
-                    onClick={() => {
-                      if (leftActiveIndex === index) return
-                      let dom = document.getElementById(item.href || '')
-                      if (dom) {
-                        onScroll(true)
-                        setLeftActiveIndex(index)
-                        leftChangeRef.current = index
-                        dom.scrollIntoView({ behavior: 'smooth' })
-                        setTimeout(() => {
-                          leftChangeRef.current = -1
-                        }, 500)
-                      }
-                    }}
-                  >
-                    <div className="m-anchor-link-title">{item.title || ''}</div>
-                  </div>
-                )
-              })
-            }
+            {props.columns.map((item, index) => {
+              return (
+                <div
+                  className={`m-anchor-link cursor-pointer ${leftActiveIndex === index ? 'active' : ''}`}
+                  key={item.key || index}
+                  onClick={() => {
+                    if (leftActiveIndex === index) return
+                    let dom = document.getElementById(item.href || '')
+                    if (dom) {
+                      onScroll(true)
+                      setLeftActiveIndex(index)
+                      leftChangeRef.current = index
+                      dom.scrollIntoView({ behavior: 'smooth' })
+                      setTimeout(() => {
+                        leftChangeRef.current = -1
+                      }, 500)
+                    }
+                  }}
+                >
+                  <div className="m-anchor-link-title">{item.title || ''}</div>
+                </div>
+              )
+            })}
           </div>
-
         </div>
         <div className="m-anchor-right flex-1">
           <div className="m-anchor-right-scroll">
-            {
-              props.contents.map((item, index) => {
-                return (
-                  <div className="m-anchor-content" key={index}>
-                    {item}
-                  </div>
-                )
-              })
-            }
+            {props.contents.map((item, index) => {
+              return (
+                <div className="m-anchor-content" key={index}>
+                  {item}
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>

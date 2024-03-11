@@ -14,9 +14,8 @@ import Loading from '@views/components/loading/loading'
 // const { Search } = Input
 
 const Directory = (): ReactElement => {
-
   const [showDrawer, setShowDrawer] = useState(false)
-  const {homeStore, directoryStore} = useStore()
+  const { homeStore, directoryStore } = useStore()
 
   const tableHeaders: any = [
     {
@@ -28,23 +27,23 @@ const Directory = (): ReactElement => {
     {
       title: '文件大小',
       dataIndex: 'size',
-      key: 'size'
+      key: 'size',
     },
     {
       title: '修改日期',
       dataIndex: 'modified',
-      key: 'modified'
+      key: 'modified',
     },
     {
       title: '文件权限',
       dataIndex: 'permissions',
-      key: 'permissions'
+      key: 'permissions',
     },
     {
       title: '操作',
       dataIndex: '',
       key: 'x',
-      render: (text: string, record: {[K: string]: any}) => {
+      render: (text: string, record: { [K: string]: any }) => {
         let children = record.children || []
         let hasPreview = false
         if (children.length === 0) {
@@ -54,16 +53,17 @@ const Directory = (): ReactElement => {
             return ''
           }
 
-
           let suffixList = name.split('.')
           let suffix = suffixList[suffixList.length - 1]
           if (
             name.toLowerCase() === directoryStore.MAKE_FILE.toLowerCase() ||
-            (directoryStore.EXCLUDE_SUFFIX_LIST.indexOf(suffix) === -1 && directoryStore.EXCLUDE_FILE_LIST.indexOf(name) === -1)) {
+            (directoryStore.EXCLUDE_SUFFIX_LIST.indexOf(suffix) === -1 &&
+              directoryStore.EXCLUDE_FILE_LIST.indexOf(name) === -1)
+          ) {
             hasPreview = true
           }
         }
-        return hasPreview ? (<a onClick={() => onShowDrawer(record.path || '', record.name || '')}>查看</a>) : ''
+        return hasPreview ? <a onClick={() => onShowDrawer(record.path || '', record.name || '')}>查看</a> : ''
       },
     },
   ]
@@ -82,7 +82,8 @@ const Directory = (): ReactElement => {
   }
 
   const getFileHtml = () => {
-    if (directoryStore.loading || Utils.isBlank(directoryStore.fileData) || Utils.isBlank(directoryStore.fileName)) return null
+    if (directoryStore.loading || Utils.isBlank(directoryStore.fileData) || Utils.isBlank(directoryStore.fileName))
+      return null
 
     let suffixList = directoryStore.fileName.split('.')
     let suffix = suffixList[suffixList.length - 1]
@@ -137,7 +138,10 @@ const Directory = (): ReactElement => {
           <div className="top-add flex-align-center">
             <div className="refresh-item flex-align-center" onClick={onRefresh}>
               <svg className="svg-icon" viewBox="0 0 1029 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1007.2 262.4c-12.8-6.4-32 0-38.4 19.2l-25.6 70.4C904.8 256 847.2 179.2 757.6 128c-108.8-64-230.4-89.6-352-57.6C232.8 108.8 104.8 236.8 60 409.6 53.6 428.8 66.4 441.6 79.2 448 98.4 448 111.2 441.6 117.6 422.4c38.4-153.6 153.6-268.8 307.2-300.8 108.8-25.6 217.6-6.4 307.2 51.2 76.8 44.8 134.4 115.2 166.4 198.4l-76.8-32c-12.8-6.4-32 0-38.4 19.2-6.4 12.8 0 32 12.8 38.4l128 51.2c6.4 6.4 12.8 6.4 19.2 6.4 0 0 6.4 0 6.4 0 0 0 0 0 0 0 0 0 0 0 6.4 0 6.4 0 12.8-6.4 12.8-12.8L1026.4 294.4C1032.8 281.6 1020 268.8 1007.2 262.4zM949.6 576c-12.8-6.4-32 6.4-32 19.2-38.4 153.6-153.6 268.8-307.2 300.8-108.8 25.6-217.6 6.4-307.2-51.2-76.8-44.8-134.4-115.2-166.4-198.4l76.8 32c12.8 6.4 32 0 38.4-19.2 6.4-12.8 0-32-12.8-38.4L104.8 576C98.4 576 92 569.6 85.6 569.6c0 0-6.4 0-6.4 0 0 0 0 0 0 0 0 0 0 0-6.4 0C66.4 576 60 582.4 60 588.8L2.4 729.6c-6.4 12.8 0 32 19.2 38.4 12.8 6.4 32 0 38.4-19.2l25.6-70.4C124 768 181.6 844.8 271.2 896c108.8 64 230.4 89.6 352 57.6 172.8-38.4 307.2-172.8 345.6-345.6C975.2 595.2 962.4 582.4 949.6 576z" fill="currentColor"></path>
+                <path
+                  d="M1007.2 262.4c-12.8-6.4-32 0-38.4 19.2l-25.6 70.4C904.8 256 847.2 179.2 757.6 128c-108.8-64-230.4-89.6-352-57.6C232.8 108.8 104.8 236.8 60 409.6 53.6 428.8 66.4 441.6 79.2 448 98.4 448 111.2 441.6 117.6 422.4c38.4-153.6 153.6-268.8 307.2-300.8 108.8-25.6 217.6-6.4 307.2 51.2 76.8 44.8 134.4 115.2 166.4 198.4l-76.8-32c-12.8-6.4-32 0-38.4 19.2-6.4 12.8 0 32 12.8 38.4l128 51.2c6.4 6.4 12.8 6.4 19.2 6.4 0 0 6.4 0 6.4 0 0 0 0 0 0 0 0 0 0 0 6.4 0 6.4 0 12.8-6.4 12.8-12.8L1026.4 294.4C1032.8 281.6 1020 268.8 1007.2 262.4zM949.6 576c-12.8-6.4-32 6.4-32 19.2-38.4 153.6-153.6 268.8-307.2 300.8-108.8 25.6-217.6 6.4-307.2-51.2-76.8-44.8-134.4-115.2-166.4-198.4l76.8 32c12.8 6.4 32 0 38.4-19.2 6.4-12.8 0-32-12.8-38.4L104.8 576C98.4 576 92 569.6 85.6 569.6c0 0-6.4 0-6.4 0 0 0 0 0 0 0 0 0 0 0-6.4 0C66.4 576 60 582.4 60 588.8L2.4 729.6c-6.4 12.8 0 32 19.2 38.4 12.8 6.4 32 0 38.4-19.2l25.6-70.4C124 768 181.6 844.8 271.2 896c108.8 64 230.4 89.6 352 57.6 172.8-38.4 307.2-172.8 345.6-345.6C975.2 595.2 962.4 582.4 949.6 576z"
+                  fill="currentColor"
+                ></path>
               </svg>
               <p>刷新</p>
             </div>
@@ -151,25 +155,23 @@ const Directory = (): ReactElement => {
           */}
 
           <Card title={directoryStore.dir || '目录'}>
-            <Table
-              columns={tableHeaders || []}
-              dataSource={directoryStore.directoryInfo || []}
-              pagination={false}
-            />
+            <Table columns={tableHeaders || []} dataSource={directoryStore.directoryInfo || []} pagination={false} />
           </Card>
         </div>
 
         {/* 查看配置文件 */}
         {
-          <Drawer title={directoryStore.fileName || '文件'} placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
-            {
-              getFileHtml()
-            }
+          <Drawer
+            title={directoryStore.fileName || '文件'}
+            placement="right"
+            onClose={() => setShowDrawer(false)}
+            open={showDrawer}
+          >
+            {getFileHtml()}
           </Drawer>
         }
 
         <Loading show={directoryStore.loading} />
-
       </div>
     )
   }

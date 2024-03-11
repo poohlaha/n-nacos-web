@@ -14,20 +14,20 @@ export const routes: RouteInterface[] = [
     exact: true,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/main/index')),
     auth: false,
-    title: '首页'
+    title: '首页',
   },
   {
     path: RouterUrls.MAIN_URL,
     exact: true,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/main/index')),
     auth: false,
-    title: '首页'
+    title: '首页',
   },
   {
     path: `${RouterUrls.HOME_URL}/*`,
     exact: false,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/home/index')),
     auth: false,
-    title: '首页'
+    title: '首页',
   },
 ]

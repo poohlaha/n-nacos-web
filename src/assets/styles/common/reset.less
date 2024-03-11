@@ -45,14 +45,16 @@
   /*滚动条里面小方块*/
   border-radius: 5px;
   background-color: darkgrey; // #6b6f83
-  background-image: -webkit-linear-gradient(45deg,
-  rgba(255, 255, 255, 0.2) 25%,
-  transparent 25%,
-  transparent 50%,
-  rgba(255, 255, 255, 0.2) 50%,
-  rgba(255, 255, 255, 0.2) 75%,
-  transparent 75%,
-  transparent);
+  background-image: -webkit-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
+    transparent 75%,
+    transparent
+  );
 }
 
 a {
@@ -307,6 +309,16 @@ body {
   overflow: auto;
 }
 
+.overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.overflow-y-auto {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 /* 换行 */
 .line-break {
   word-wrap: break-word;
@@ -377,5 +389,11 @@ body {
 }
 
 .page-white {
-  background: #ffffff!important;
+  background: #ffffff !important;
+}
+
+.tag-orange {
+  color: #d46b08;
+  background: #fff7e6;
+  border-color: #ffd591;
 }

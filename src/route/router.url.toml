@@ -11,6 +11,7 @@ NGINX_URL = '/nginx'
 URL = '/pipeline'
 ADD_URL = '/pipelineAdd'
 DETAIL_URL = '/pipelineDetail'
+MARKET_URL = '/pipelinePluginMarket'
 
 [MONITOR]
 SERVER_URL = '/server'

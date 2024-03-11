@@ -6,8 +6,6 @@
 import { observable } from 'mobx'
 import BaseStore from '../base/base.store'
 
-class DashboardStore extends BaseStore {
-
-}
+class DashboardStore extends BaseStore {}
 
 export default new DashboardStore()

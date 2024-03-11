@@ -22,7 +22,7 @@ class DashboardStore extends BaseStore {
   @action
   async getDirectoryList() {
     this.loading = true
-    let result: {[K: string]: any} = await invoke('get_listen_dir_info',{userId: this.userId});
+    let result: { [K: string]: any } = await invoke('get_listen_dir_info', { userId: this.userId })
     console.log('result:', result)
     this.loading = false
     let data = this.analysisResult(result, '')
@@ -37,7 +37,7 @@ class DashboardStore extends BaseStore {
    * 过滤当 children 为空时, 删除 children 键
    */
   @action
-  filterData(result: Array<{[K: string]: any}> = []) {
+  filterData(result: Array<{ [K: string]: any }> = []) {
     for (let data of result) {
       let children = data.children || []
       if (children.length === 0) {
@@ -51,7 +51,7 @@ class DashboardStore extends BaseStore {
   @action
   async getFileData(path: string, name: string) {
     this.loading = true
-    let result: {[K: string]: any} = await invoke('get_listen_file_content',{ path, userId: this.userId }) || ''
+    let result: { [K: string]: any } = (await invoke('get_listen_file_content', { path, userId: this.userId })) || ''
     this.loading = false
     console.log('result:', result)
 

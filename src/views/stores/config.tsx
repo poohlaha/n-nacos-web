@@ -12,6 +12,7 @@ import directoryStore from './modules/directory.store'
 import mainStore from './main/main.store'
 import pipelineStore from './main/pipeline.store'
 import serverStore from './modules/server.store'
+import pipelineMarketStore from './main/pipeline.market.store'
 
 export function createStore() {
   return {
@@ -23,7 +24,8 @@ export function createStore() {
     directoryStore,
     mainStore,
     pipelineStore,
-    serverStore
+    serverStore,
+    pipelineMarketStore,
   }
 }
 

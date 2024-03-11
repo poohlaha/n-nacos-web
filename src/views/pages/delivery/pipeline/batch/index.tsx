@@ -5,7 +5,7 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import Utils from '@utils/utils'
-import {Modal} from 'antd'
+import { Modal } from 'antd'
 import PipelineRunDom from '@pages/delivery/pipeline/run/dom'
 import MAnchor from '@views/components/anchor'
 
@@ -13,15 +13,16 @@ interface IPipelineBatchRunDialogProps {
   open: boolean
   selectedRowKeys: any[]
   onCancel: () => void
-  onOk: (data: Array<{[K: string]: any}>) => void
-  getTagHtml: Function,
-  datasource: Array<{[K: string]: any}>
+  onOk: (data: Array<{ [K: string]: any }>) => void
+  getTagHtml: Function
+  datasource: Array<{ [K: string]: any }>
 }
 
-const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (props: IPipelineBatchRunDialogProps): ReactElement => {
-
-  const {pipelineStore, homeStore} = useStore()
-  const [batchRunDatasource, setBatchRunDatasource] = useState<Array<{[K: string]: any}>>([])
+const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (
+  props: IPipelineBatchRunDialogProps
+): ReactElement => {
+  const { pipelineStore, homeStore } = useStore()
+  const [batchRunDatasource, setBatchRunDatasource] = useState<Array<{ [K: string]: any }>>([])
 
   useEffect(() => {
     if (props.datasource.length > 0) {
@@ -57,7 +58,7 @@ const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (props: I
           props.onCancel?.()
         }}
         style={{
-          height: 550
+          height: 550,
         }}
         onOk={() => {
           let flag = onValidate()
@@ -74,7 +75,7 @@ const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (props: I
     )
   }
 
-  const getRunProps = (selectedItemList: Array<{[K: string]: any}> = []) => {
+  const getRunProps = (selectedItemList: Array<{ [K: string]: any }> = []) => {
     if (selectedItemList.length === 0) return []
 
     let list: Array<any> = []
@@ -85,9 +86,7 @@ const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (props: I
         <div className="run-box" id={`#pipeline${index}`} key={index}>
           <div className="name-box flex">
             <p className="title font-bold page-margin-right">{basic.name || ''}</p>
-            {
-              props.getTagHtml?.(basic.tag || '')
-            }
+            {props.getTagHtml?.(basic.tag || '')}
           </div>
 
           <PipelineRunDom
@@ -102,7 +101,7 @@ const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (props: I
                 setBatchRunDatasource(selectedItemList || [])
               }
             }}
-            onSetVariable={(name: string, value: {[K: string]: any} = {}) => {
+            onSetVariable={(name: string, value: { [K: string]: any } = {}) => {
               selectItem.runDialogProps.variable[name] = value || {}
               setBatchRunDatasource(selectedItemList || [])
             }}
@@ -129,19 +128,17 @@ const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (props: I
     return list
   }
 
-  const getRunColumns = (selectedItemList: Array<{[K: string]: any}> = []) => {
+  const getRunColumns = (selectedItemList: Array<{ [K: string]: any }> = []) => {
     if (selectedItemList.length === 0) return []
 
     let list: Array<any> = []
     selectedItemList.forEach((s, index) => {
       let basic = s.basic || {}
-      list.push(
-        {
-          key: `part-${index}`,
-          href: `#pipeline${index}`,
-          title: (<div className="name">{basic.name || ''}</div>),
-        }
-      )
+      list.push({
+        key: `part-${index}`,
+        href: `#pipeline${index}`,
+        title: <div className="name">{basic.name || ''}</div>,
+      })
     })
 
     return list

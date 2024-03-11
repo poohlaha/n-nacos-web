@@ -22,7 +22,7 @@
   position: relative;
 
   .ant-modal-header {
-    background: transparent!important;
+    background: transparent !important;
 
     .ant-modal-title {
       color: @color!important;
@@ -32,7 +32,8 @@
   .ant-modal-content {
     background: @background_card!important;
 
-    .ant-input, .ant-input-password {
+    .ant-input,
+    .ant-input-password {
       background: @background_card!important;
     }
 
@@ -55,7 +56,7 @@
             min-width: 90px;
 
             span {
-              color: #F5222D;
+              color: #f5222d;
               margin-left: 3px;
             }
           }
@@ -80,13 +81,13 @@
       }
     }
   }
-
 }
 
 // select
 .ant-select {
-
-  &:hover, &.ant-select-open, &.ant-select-focused {
+  &:hover,
+  &.ant-select-open,
+  &.ant-select-focused {
     .ant-select-selector {
       border-color: @theme!important;
       box-shadow: 0 0 0 2px @theme_to!important;
@@ -94,7 +95,7 @@
   }
 
   .ant-select-selector {
-    height: 100%!important;
+    height: 100% !important;
 
     .ant-select-selection-item {
     }
@@ -116,12 +117,12 @@
 
 // input search
 .search {
-  border-radius: 0!important;
+  border-radius: 0 !important;
   height: 32px;
   font-weight: 700;
   background: transparent;
   width: 100%;
-  border-bottom:@border;
+  border-bottom: @border;
   border-top: unset;
   border-left: unset;
   border-right: unset;
@@ -142,14 +143,14 @@
   }
 }
 
-
 .ant-input-affix-wrapper {
-
   &:hover {
     border-color: @theme!important;
   }
 
-  &:focus, &:focus-visible, &.ant-input-affix-wrapper-focused {
+  &:focus,
+  &:focus-visible,
+  &.ant-input-affix-wrapper-focused {
     border-color: @theme!important;
     box-shadow: 0 0 0 2px @theme_to!important;
   }
@@ -169,7 +170,9 @@
 .ant-input-search {
   height: 40px;
 
-  .ant-input-wrapper, input, .ant-input-group-addon button {
+  .ant-input-wrapper,
+  input,
+  .ant-input-group-addon button {
     height: 100%;
   }
 }
@@ -180,11 +183,11 @@
 
   .ant-tree-list-holder-inner {
     .ant-tree-treenode {
-      padding: 0 0 8px 0!important;
+      padding: 0 0 8px 0 !important;
     }
 
     .ant-tree-node-content-wrapper {
-      padding: 0 4px!important;
+      padding: 0 4px !important;
 
       &:hover {
         .ant-tree-title {
@@ -193,7 +196,8 @@
       }
     }
 
-    .ant-tree-node-content-wrapper-open, .ant-tree-node-content-wrapper-close {
+    .ant-tree-node-content-wrapper-open,
+    .ant-tree-node-content-wrapper-close {
       font-weight: bold;
     }
   }
@@ -237,22 +241,25 @@
   }
 }
 
-*::-webkit-input-placeholder, &::-webkit-input-placeholder {
+*::-webkit-input-placeholder,
+&::-webkit-input-placeholder {
   color: @color_gray_light!important;
 }
 
-*:-moz-placeholder, &:-moz-placeholder {
+*:-moz-placeholder,
+&:-moz-placeholder {
   /* FF 4-18 */
   color: @color_gray_light!important;
 }
 
-*::-moz-placeholder, &::-moz-placeholder {
+*::-moz-placeholder,
+&::-moz-placeholder {
   /* FF 19+ */
   color: @color_gray_light!important;
 }
 
-*:-ms-input-placeholder, &:-ms-input-placeholder {
+*:-ms-input-placeholder,
+&:-ms-input-placeholder {
   /* IE 10+ */
   color: @color_gray_light!important;
 }
-
