@@ -14,14 +14,20 @@ import { open } from '@tauri-apps/plugin-dialog'
 import PipelineProcess from '../process'
 import PipelineVariable from './variable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE } from '../process/templates/h5'
+import {
+  H5_LOCAL_TEMPLATE,
+  H5_REMOTE_TEMPLATE,
+  updateMarket
+} from '../process/templates/h5'
 
 const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const navigate = useNavigate()
 
   const { pipelineStore, homeStore } = useStore()
 
-  useMount(async () => {})
+  useMount(async () => {
+      await pipelineStore.queryOsCommand()
+  })
 
   const getProjectToolTipHtml = () => {
     return (
@@ -160,9 +166,17 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
 
   // 流程配置
   const getProcessHtml = () => {
+    // 替换系统变量
+    // let activeProcess = replaceStepsComponentValue(pipelineStore.activeProcess || [], pipelineStore.osCommands || {})
     return (
       <div className="process-content wh100">
-        <PipelineProcess data={pipelineStore.activeProcess} isRun={false} />
+        <PipelineProcess
+            data={pipelineStore.activeProcess}
+            isRun={false}
+            onUpdateData={(market: { [K: string]: any }) => {
+              pipelineStore.activeProcess = updateMarket(pipelineStore.activeProcess, market)
+            }}
+        />
       </div>
     )
   }

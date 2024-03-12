@@ -11,6 +11,59 @@ import { TOAST } from '@utils/base'
 import { invoke } from '@tauri-apps/api/core'
 import { info } from '@tauri-apps/plugin-log'
 
+class PipelineProcessConfig {
+  stages: Array<PipelineStage>
+  constructor(stages: Array<PipelineStage>) {
+    this.stages = stages
+  }
+}
+
+class PipelineStage {
+    groups: Array<PipelineGroup>
+
+  constructor(groups: Array<PipelineGroup>) {
+    this.groups = groups
+  }
+}
+
+class PipelineGroup {
+  title: string
+  steps: Array<PipelineStep>
+
+  constructor(title: string, steps: Array<PipelineStep>) {
+    this.title = title
+    this.steps = steps
+  }
+}
+
+class PipelineStep {
+  id: string
+  module: string
+  command: string
+  label: string
+  status: string
+  components: Array<PipelineStepComponent>
+
+  constructor(id: string, module: string, command: string, label: string, status: string, components: Array<PipelineStepComponent>) {
+    this.id = id
+    this.command = command
+    this.label = label
+    this.module = module
+    this.status = status
+    this.components = components
+  }
+}
+
+class PipelineStepComponent {
+  prop: string
+  value: string
+
+  constructor(prop: string, value: string) {
+    this.prop = prop
+    this.value = value
+  }
+}
+
 class PipelineStore extends BaseStore {
   // 添加面包宵
   readonly ADD_PIPELINE_BREADCRUMB: { [K: string]: any } = {
@@ -172,6 +225,7 @@ class PipelineStore extends BaseStore {
 
   @observable addForm: { [K: string]: any } = Utils.deepCopy(this.addDefaultForm)
   @observable detailInfo: { [K: string]: any } = {} // 详情
+  @observable osCommands: { [K: string]: any } = {} // 系统命令
 
   // H5 本地模板
   readonly H5_LOCAL_TEMPLATE: Array<{ [K: string]: any }> = [
@@ -396,6 +450,37 @@ class PipelineStore extends BaseStore {
     }
   }
 
+  @action
+  getProcessConfig() {
+    if (this.activeProcess.length === 0) return {stages: []}
+
+    let stages: Array<PipelineStage> = []
+    this.activeProcess.forEach((items: Array<{[K: string]: any}>) => {
+      let groups: Array<PipelineGroup> = []
+
+      items.forEach((item: {[K: string]: any}) => {
+        let newSteps: Array<PipelineStep> = []
+        let steps = item.steps || []
+
+        steps.forEach((step: {[K: string]: any}) => {
+          let newComponents: Array<PipelineStepComponent> = []
+          let components = step.components || []
+          components.forEach((component: {[K: string]: any}) => {
+            newComponents.push(new PipelineStepComponent(component.name || '', component.value || ''))
+          })
+
+          newSteps.push(new PipelineStep(step.id || '', step.module || '', step.command || '', step.label || '', 'None', newComponents))
+        })
+
+        groups.push(new PipelineGroup(item.title?.label || '', newSteps))
+      })
+
+      stages.push(new PipelineStage(groups))
+    })
+
+    return stages
+  }
+
   /**
    * 保存流水线
    */
@@ -432,7 +517,7 @@ class PipelineStore extends BaseStore {
       basic,
       status: 'No',
       processConfig: {
-        steps: this.activeProcess || [],
+        stages: this.getProcessConfig(),
       },
       variables: this.addVariableList || [],
     }
@@ -442,7 +527,8 @@ class PipelineStore extends BaseStore {
       await info(`save pipeline params: ${JSON.stringify(pipeline)}`)
       this.loading = true
       let cmd = !Utils.isBlank(pipeline.id) ? 'update_pipeline' : 'insert_pipeline'
-      let result: { [K: string]: any } = (await invoke(cmd, { pipeline })) || {}
+
+      let result: { [K: string]: any } = (await invoke(cmd, {pipeline})) || {}
       this.loading = false
       console.log('save pipeline result:', result)
       let success = this.handleResult(result)
@@ -988,6 +1074,29 @@ class PipelineStore extends BaseStore {
       throw new Error(e)
     }
   }
+
+  /**
+   * 查询系统已安装的 commands 列表
+   */
+  @action
+  async queryOsCommand(callback?: Function) {
+    try {
+      let result: { [K: string]: any } = (await invoke('query_os_commands', {})) || {}
+      this.loading = false
+      console.log('get query os command:', result)
+      let res = this.handleResult(result) || {}
+      if (Utils.isObjectNull(res)) {
+        return
+      }
+
+      this.osCommands = res || {}
+      callback?.()
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
 }
 
 export default new PipelineStore()

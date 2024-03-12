@@ -14,6 +14,7 @@ interface IPipelineProcessProps {
   isRun: boolean
   currentStep?: number
   currentStepStatus?: string
+  onUpdateData?: (stepForm: {[K: string]: any}) => void
 }
 
 const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
@@ -34,6 +35,23 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
     setStepIndex(-1)
   }
 
+  const onUpdateStepForm = (component: {[K: string]: any} = {}) => {
+    if (Utils.isObjectNull(stepForm || {})) return
+
+      let form = Utils.deepCopy(stepForm) || {}
+     let components = form.components || []
+     let newComponents = components.map((comp: {[K: string]: any} = {}, index: number) => {
+          if (index === stepIndex) {
+              return component
+          }
+
+          return comp
+      })
+
+      form.components = newComponents || []
+      setStepForm(form)
+  }
+
   const getDrawerFooterHtml = () => {
     return (
       <div className="footer flex-jsc-end">
@@ -49,6 +67,7 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
           type="primary"
           className="page-margin-left"
           onClick={() => {
+            props.onUpdateData?.(stepForm)
             onResetForm()
             setOpen(false)
           }}
@@ -84,7 +103,7 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
             onStepClick={(groupIndex: number, groupChildIndex: number, stepIndex: number, step: IPipelineStepProps) => {
               console.log('on click step:', step)
               onResetForm()
-              setStepForm(step)
+              setStepForm(Utils.deepCopy(step))
               setGroupIndex(groupIndex)
               setGroupChildIndex(groupChildIndex)
               setStepIndex(stepIndex)
@@ -154,7 +173,12 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                       <div className="item-content page-margin-top flex" key={index}>
                         <p>{component.label || ''}:</p>
                         <div className="item-component flex-1 flex-direction-column">
-                          {component.type === 'input' && <Input placeholder="请输入" value={component.value || ''} />}
+                          {component.type === 'input' && <Input placeholder="请输入" allowClear value={component.value || ''} onChange={(e: any) => {
+                              let comp = Utils.deepCopy(component) || {}
+                              comp.value = e.target.value || ''
+                              onUpdateStepForm(comp)
+                              // props.onUpdateData?.(stepForm.id, stepIndex, comp)
+                          }} />}
 
                           {component.type === 'textarea' && (
                             <Input.TextArea placeholder="请输入" value={component.value || ''} />
@@ -167,7 +191,7 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                               allowClear
                               value={component.value || undefined}
                               onChange={(value: string) => {}}
-                              options={[]}
+                              options={component.options || []}
                             />
                           )}
 

@@ -264,6 +264,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => {
+                  pipelineStore.onResetAddConfig()
                   navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}`)
                 }}
               >

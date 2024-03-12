@@ -81,7 +81,83 @@ const getSteps = (list: Array<Array<any>> = []) => {
   })
 }
 
+const getH5InstalledSelect = (h5InstalledCommands: Array<string>) => {
+  if (h5InstalledCommands.length === 0) return []
+
+  let options: Array<{[K: string]: any}> = []
+  h5InstalledCommands.forEach((command) => {
+    options.push({
+      label: command,
+      value: command
+    })
+  })
+
+  return  options
+}
+
+const replaceStepsComponentValue = (list: Array<Array<any>> = [], os: {[K: string]: any} = {}) => {
+  if (Utils.isObjectNull(os)) return list
+  if (list.length === 0) return []
+
+  let h5InstalledCommands = os.h5InstalledCommands || []
+  if (h5InstalledCommands.length === 0) return list
+
+  let h5InstalledOptions = getH5InstalledSelect(h5InstalledCommands) || []
+  return list.map((items: Array<{ [K: string]: any }> = []) => {
+    return items.map(item => {
+      let marketId = item.marketId || ''
+      let marketTemplate: { [K: string]: any } =
+          MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === marketId) || {}
+      if (!Utils.isObjectNull(marketTemplate)) {
+        let components = marketTemplate.components || []
+        if (components.length === 0) {
+          item.steps = [marketTemplate]
+        } else {
+          components.map((component: {[K: string]: any}) => {
+            let type = component.type || ''
+            if (type === 'select') {
+              let options = component.options || ''
+
+              // h5InstalledCommands
+              if (options === '${h5InstalledCommands}') {
+                component.options = h5InstalledOptions || []
+              }
+            }
+
+            return component
+          })
+        }
+      }
+      return item
+    })
+  })
+}
+
+const updateMarket = (list: Array<Array<any>> = [], market: {[K: string]: any} = {}) => {
+  if (Utils.isObjectNull(market)) return list
+  if (list.length === 0) return []
+
+  return list.map((items: Array<{ [K: string]: any }> = []) => {
+    return items.map(item => {
+      let steps = item.steps || []
+      item.steps = steps.map((step: { [K: string]: any } = {}) => {
+        if (step.id === market.id) {
+          return market
+        }
+
+        return step
+      })
+      return item
+    })
+  })
+}
+
 const H5_LOCAL_TEMPLATE = getSteps(LOCAL_TEMPLATE)
 const H5_REMOTE_TEMPLATE = getSteps(REMOTE_TEMPLATE)
 
-export { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE }
+export {
+  H5_LOCAL_TEMPLATE,
+  H5_REMOTE_TEMPLATE,
+  replaceStepsComponentValue,
+  updateMarket
+}

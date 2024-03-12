@@ -22,15 +22,7 @@
     "module": "H5Install",
     "components": [
       {
-        "name": "",
-        "label": "安装命令",
-        "type": "select",
-        "value": "${installedCommands}",
-        "default": "",
-        "desc": "默认动态判断"
-      },
-      {
-        "name": "",
+        "name": "installDir",
         "label": "安装目录",
         "type": "input",
         "value": "",
@@ -51,7 +43,7 @@
     "module": "Pack",
     "components": [
       {
-        "name": "",
+        "name": "packDir",
         "label": "打包目录",
         "type": "input",
         "value": "",
@@ -72,7 +64,7 @@
     "modules": "Compress",
     "components": [
       {
-        "name": "",
+        "name": "origin",
         "label": "源目录",
         "type": "input",
         "value": "",
@@ -80,7 +72,7 @@
         "desc": ""
       },
       {
-        "name": "",
+        "name": "dest",
         "label": "目录目录",
         "type": "input",
         "value": "",
@@ -88,7 +80,7 @@
         "desc": ""
       },
       {
-        "name": "",
+        "name": "quality",
         "label": "品质(0-100)",
         "type": "input",
         "value": "",
@@ -96,7 +88,7 @@
         "desc": ""
       },
       {
-        "name": "",
+        "name": "sizeRatio",
         "label": "压缩比例(0-1)",
         "type": "input",
         "value": "",
@@ -104,7 +96,7 @@
         "desc": ""
       },
       {
-        "name": "",
+        "name": "imageSize",
         "label": "图片大小(KB)",
         "type": "input",
         "value": "",
@@ -125,7 +117,7 @@
     "modules": "Deploy",
     "components": [
       {
-        "name": "",
+        "name": "deployDir",
         "label": "部署目录",
         "type": "input",
         "value": "",
