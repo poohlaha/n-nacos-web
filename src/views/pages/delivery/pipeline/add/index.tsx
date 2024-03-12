@@ -26,7 +26,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
   const { pipelineStore, homeStore } = useStore()
 
   useMount(async () => {
-      await pipelineStore.queryOsCommand()
+      // await pipelineStore.queryOsCommand()
   })
 
   const getProjectToolTipHtml = () => {

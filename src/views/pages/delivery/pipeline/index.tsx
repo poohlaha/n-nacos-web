@@ -96,13 +96,13 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       render: (_: any, record: { [K: string]: any } = {}) => {
         let run = record.run || {}
         let current = run.current || {}
-        let steps = current.steps || []
+        let stages = current.stages || []
         let step = current.step || 0
         let status = current.status || 'No'
 
         let arr: Array<React.ReactNode> = []
-        for (let i = 0; i < steps.length; i++) {
-          let s = steps[i] || {}
+        for (let i = 0; i < stages.length; i++) {
+          let s = stages[i] || {}
           if (Utils.isObjectNull(s)) {
             return <div className="step-box" />
           }
@@ -114,7 +114,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
           }
 
           // 运行到最后一步
-          if (step === steps.length - 1) {
+          if (step === stages.length - 1) {
             className = 'step-success'
           }
 
@@ -145,8 +145,9 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
             }
           }
 
+          let label = (s.groups || []).map((ss: {[K: string]: any}) => ss.title).join(',')
           arr.push(
-            <Tooltip key={s.key} className="tooltip-question" placement="top" title={s.label || ''}>
+            <Tooltip key={i} className="tooltip-question" placement="top" title={label || ''}>
               <div className="step-box">
                 <div className={`step ${className || ''}`} />
               </div>

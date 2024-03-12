@@ -73,6 +73,7 @@ const PipelineRunDialog: React.FC<IPipelineRunDialogProps> = (props: IPipelineRu
             pipelineStore.runDialogProps
           )}
           onSetProps={(name: string, value: string, tag: string) => {
+            // H5
             if (tag === pipelineStore.TAGS[pipelineStore.TAGS.length - 1].value) {
               pipelineStore.runDialogProps.h5[name] = value || ''
             }

@@ -11,6 +11,7 @@ import React from 'react'
 import Utils from '@utils/utils'
 import { CONSTANT, SYSTEM } from '@config/index'
 import PipelineAdd from '@pages/delivery/pipeline/add'
+import PipelineDetail from '@pages/delivery/pipeline/detail'
 
 class HomeStore extends BaseStore {
   readonly menuList = [
@@ -136,7 +137,7 @@ class HomeStore extends BaseStore {
         key: 'pipelineDetail',
         path: RouterUrls.PIPELINE.DETAIL_URL,
         belong: 'pipeline',
-        component: lazy(() => import(/* webpackChunkName:'pipelineDetail' */ '@pages/delivery/pipeline/detail')),
+        component: PipelineDetail,
       },
     ]
   }

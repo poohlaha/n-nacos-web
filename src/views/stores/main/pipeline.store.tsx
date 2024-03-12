@@ -914,44 +914,21 @@ class PipelineStore extends BaseStore {
    */
   @action
   getDialogRunProps(item: { [K: string]: any } = {}) {
-    let tag = (item.basic || {}).tag || ''
     let extra = item.extra || {}
-    let h5Extra = extra.h5 || {}
-    let makeCommands = h5Extra.makeCommands || []
     let h5 = this.TAGS[this.TAGS.length - 1].value
-    let isH5 = tag === h5
+    let h5Extra = extra[h5.toLowerCase()] || {}
     let branches = extra.branches || []
-    let url = (item.basic || {}).path || ''
-    let isRemoteUrl = this.isRemoteUrl(url)
+    let displayFields = h5Extra.displayFields || []
 
     let list: Array<{ [K: string]: any }> = []
-    for (let prop of this.DIALOG_PROPS_LIST) {
-      let owner = prop.owner
-      if (isH5) {
-        if (owner === 'all' || owner === h5) {
-          // make
-          if (prop.value === this.DIALOG_PROPS_LIST[2].value) {
-            if (makeCommands.length === 0) {
-              continue
-            }
-          }
-
-          // remote url
-          if (isRemoteUrl) {
-            if (prop.value === this.DIALOG_PROPS_LIST[3].value || prop.value === this.DIALOG_PROPS_LIST[4].value) {
-              continue
-            }
-          }
-
-          list.push({
-            name: prop.label,
-            value: prop.key === 'branches' ? branches : h5Extra[prop.key],
-            genre: prop.type,
-            desc: prop.desc || '',
-            tag: h5,
-          })
-        }
-      }
+    for (let field of displayFields) {
+      list.push({
+        name: field.label,
+        value: field.key === 'branches' ? branches : h5Extra[field.key],
+        genre: field.type,
+        desc: field.desc || '',
+        tag: h5,
+      })
     }
 
     return list
@@ -961,33 +938,20 @@ class PipelineStore extends BaseStore {
   getReadonlyDialogRunProps(item: { [K: string]: any } = {}) {
     let current = item.current || {}
     let extra = item.extra || {}
-    let h5Extra = extra.h5 || {}
     let h5 = this.TAGS[this.TAGS.length - 1].value
+    let h5Extra = extra[h5.toLowerCase()] || {}
     let runnable = current.runnable || {}
-    let isH5 = runnable.tag === h5
-    let makeCommands = h5Extra.makeCommands || []
+    let displayFields = h5Extra.displayFields || []
 
     let list: Array<{ [K: string]: any }> = []
-    for (let prop of this.DIALOG_PROPS_LIST) {
-      let owner = prop.owner
-      if (isH5) {
-        if (owner === 'all' || owner === h5) {
-          // make
-          if (prop.value === this.DIALOG_PROPS_LIST[2].value) {
-            if (makeCommands.length === 0) {
-              continue
-            }
-          }
-
-          list.push({
-            name: prop.label,
-            value: runnable[prop.value || ''],
-            genre: this.VARIABLE_OPTIONS[0].value,
-            desc: prop.desc || '',
-            tag: h5,
-          })
-        }
-      }
+    for (let field of displayFields) {
+      list.push({
+        name: field.label,
+        value: runnable[field.value || ''],
+        genre: this.VARIABLE_OPTIONS[0].value,
+        desc: field.desc || '',
+        tag: h5,
+      })
     }
 
     return list

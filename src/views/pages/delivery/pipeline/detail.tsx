@@ -13,13 +13,13 @@ import { Tabs, Button, Tag, Drawer, Popconfirm, Space } from 'antd'
 import useMount from '@hooks/useMount'
 import { ADDRESS, TOAST } from '@utils/base'
 import Loading from '@views/components/loading/loading'
-import PipelineProcess from './process'
 import NoData from '@views/components/noData'
 import RunDialog from '@pages/delivery/pipeline/run'
 import { listen } from '@tauri-apps/api/event'
 import Ansi from 'ansi-to-react'
 import MTable from '@views/modules/table'
 import RouterUrls from '@route/router.url.toml'
+import {IPipelineStepProps, IPipelineViewGroupProps, PipelineView} from '../pipeline/pipeline/index'
 
 const PipelineDetail = (): ReactElement => {
   const navigate = useNavigate()
@@ -289,6 +289,48 @@ const PipelineDetail = (): ReactElement => {
     )
   }
 
+  const getViewFooterHtml = () => {
+    return (
+        <div className="view-footer flex-jsc-end">
+          <div className="view-footer-right">0s</div>
+        </div>
+    )
+  }
+
+  const getViewGroups = (stages: Array<any> = []) => {
+    if (stages.length === 0) return []
+
+    let groups: Array<Array<IPipelineViewGroupProps>> = []
+    stages.forEach((stage: any) => {
+      let g: Array<IPipelineViewGroupProps> = []
+      let stageGroups = stage.groups || []
+
+      stageGroups.forEach((group: {[K: string]: any} = {}) => {
+        let steps = group.steps || []
+        let newSteps: Array<IPipelineStepProps> = []
+        steps.forEach((step: {[K: string]: any} = {}) => {
+          newSteps.push({
+            label: step.label,
+            ...step
+          })
+        })
+
+        g.push({
+          title: {
+            label: group.title || '',
+            footer: getViewFooterHtml()
+          },
+          steps: newSteps || []
+        })
+      })
+
+      groups.push(g)
+    })
+
+    console.log('groups:', groups)
+    return groups
+  }
+
   // 构建过程
   const getBuildProcessHtml = () => {
     let detailInfo = pipelineStore.detailInfo || {}
@@ -302,11 +344,9 @@ const PipelineDetail = (): ReactElement => {
           </p>
         </div>
 
-        <PipelineProcess
-          currentStep={current.step}
-          data={current.steps || []}
-          currentStepStatus={current.status}
-          isRun={true}
+        <PipelineView
+          step={current.step || []}
+          groups={getViewGroups(current.stages || []) || []}
         />
       </div>
     )
