@@ -46,6 +46,49 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
     return <div className="tag"></div>
   }
 
+  const getStepClassName = (stage: {[K: string]: any} = {}, i: number) => {
+    if (Utils.isObjectNull(stage || {})) return ''
+
+    // index 从 1 开始
+    let index = stage.index || 0
+    let status = stage.status || 'No'
+
+    if (index === 0) {
+      return 'step-gray'
+    }
+
+    // 进行中
+    if (i + 1 === index) {
+      if (status === 'No') {
+        return 'step-gray'
+      }
+
+      if (status === 'Process') {
+        return 'step-process'
+      }
+
+      if (status === 'Success') {
+        return 'step-success'
+      }
+
+      if (status === 'Failed') {
+        return 'step-failed'
+      }
+
+      if (status === 'Stop') {
+        return 'step-stop'
+      }
+
+      return ''
+    }
+
+    if (index < i + 1) {
+      return 'step-success'
+    }
+
+    return 'step-gray'
+  }
+
   const tableHeaders: Array<{ [K: string]: any }> = [
     {
       title: '流水线名称',
@@ -98,8 +141,6 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
         let run = record.run || {}
         let current = run.current || {}
         let stages = current.stages || []
-        let step = current.step || 0
-        let status = current.status || 'No'
 
         let arr: Array<React.ReactNode> = []
         for (let i = 0; i < stages.length; i++) {
@@ -108,43 +149,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
             return <div className="step-box" />
           }
 
-          let className = ''
-          // 未运行
-          if (step === 0 || step < i + 1) {
-            className = 'step-gray'
-          }
-
-          // 运行到最后一步
-          if (step === stages.length - 1) {
-            className = 'step-success'
-          }
-
-          // 其他运行成功
-          if (i + 1 < step) {
-            className = 'step-success'
-          }
-
-          if (i + 1 === step) {
-            if (status === 'No') {
-              className = 'step-gray'
-            }
-
-            if (status === 'Process') {
-              className = 'step-process'
-            }
-
-            if (status === 'Success') {
-              className = 'step-success'
-            }
-
-            if (status === 'Failed') {
-              className = 'step-failed'
-            }
-
-            if (status === 'Stop') {
-              className = 'step-stop'
-            }
-          }
+          let className = getStepClassName(current.stage, i)
 
           let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.title).join(',')
           arr.push(
@@ -171,11 +176,17 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       title: '上次运行时间',
       dataIndex: 'lastRunTime',
       key: 'lastRunTime',
+      render: (_: any, record: { [K: string]: any } = {}) => {
+        return <p>{record.lastRunTime || '-'}</p>
+      },
     },
     {
       title: '耗时',
       dataIndex: 'runTime',
       key: 'runTime',
+      render: (_: any, record: { [K: string]: any } = {}) => {
+        return <p>{record.runTime || '-'}</p>
+      },
     },
     {
       title: '操作',

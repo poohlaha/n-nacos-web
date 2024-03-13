@@ -344,7 +344,7 @@ const PipelineDetail = (): ReactElement => {
           </p>
         </div>
 
-        <PipelineView step={current.step || []} groups={getViewGroups(current.stages || []) || []} />
+        <PipelineView className="overflow-hidden" step={current.step || []} groups={getViewGroups(current.stages || []) || []} />
       </div>
     )
   }
