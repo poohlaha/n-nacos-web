@@ -14,11 +14,8 @@ import { open } from '@tauri-apps/plugin-dialog'
 import PipelineProcess from '../process'
 import PipelineVariable from './variable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import {
-  H5_LOCAL_TEMPLATE,
-  H5_REMOTE_TEMPLATE,
-  updateMarket
-} from '../process/templates/h5'
+import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, updateMarket } from '../process/templates/h5'
+import Page from '@views/components/page'
 
 const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const navigate = useNavigate()
@@ -26,7 +23,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
   const { pipelineStore, homeStore } = useStore()
 
   useMount(async () => {
-      // await pipelineStore.queryOsCommand()
+    // await pipelineStore.queryOsCommand()
   })
 
   const getProjectToolTipHtml = () => {
@@ -171,11 +168,11 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
     return (
       <div className="process-content wh100">
         <PipelineProcess
-            data={pipelineStore.activeProcess}
-            isRun={false}
-            onUpdateData={(market: { [K: string]: any }) => {
-              pipelineStore.activeProcess = updateMarket(pipelineStore.activeProcess, market)
-            }}
+          data={pipelineStore.activeProcess}
+          isRun={false}
+          onUpdateData={(market: { [K: string]: any }) => {
+            pipelineStore.activeProcess = updateMarket(pipelineStore.activeProcess, market)
+          }}
         />
       </div>
     )
@@ -208,26 +205,32 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
     },
   ]
 
-  const getBreadcrumb = () => {
-    let menuList = Utils.deepCopy(homeStore.menuList || [])
-    menuList.push(pipelineStore.ADD_PIPELINE_BREADCRUMB)
-    return menuList
+  const getBreadcrumbItemList = () => {
+    let detailInfo = pipelineStore.detailInfo || {}
+    let basic = detailInfo.basic || {}
+
+    let routes: Array<{[K: string]: any}> = []
+    let menu: {[K: string]: any} = homeStore.menuList[2] || {}
+    routes.push(menu.children[0])
+
+    let otherSubRoutes = homeStore.getOtherSubRoutes() || []
+    let route: {[K: string]: any} = otherSubRoutes.find((route: {[K: string]: any}) => route.key === 'pipelineAdd') || {}
+    if (!Utils.isObjectNull(route || {})) {
+      routes.push(route)
+    }
+
+    return routes
   }
 
   const render = () => {
     return (
-      <div className="pipeline-add-page page page-white page-padding flex-direction-column wh100">
-        <div className="breadcrumb-top flex-align-center">
-          <MBreadcrumb
-            items={getBreadcrumb()}
-            activeIndexes={homeStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => {
-              pipelineStore.onResetAddConfig()
-              homeStore.setActiveIndexes(activeIndexes)
-            }}
-          />
-        </div>
-
+      <Page
+        className="pipeline-add-page page-white overflow-y-auto page-padding-left page-padding-right page-padding-bottom"
+        needNavigation={false}
+        pageBodyNeedPadding={false}
+        needBreadcrumb={true}
+        breadCrumbItemList={getBreadcrumbItemList()}
+      >
         <div className="content-box overflow flex-1">
           <Tabs
             defaultActiveKey="0"
@@ -268,7 +271,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
         </div>
 
         <Loading show={pipelineStore.loading} />
-      </div>
+      </Page>
     )
   }
 

@@ -3,7 +3,7 @@
  * @date 2024-02-29
  * @author poohlaha
  */
-import React, { Fragment, ReactElement, useState, useRef } from 'react'
+import React, { ReactElement, useState, useRef } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Card, Descriptions, Button } from 'antd'
 import useMount from '@hooks/useMount'
@@ -16,6 +16,7 @@ import * as echarts from 'echarts'
 
 import { Chart, Interval, Coordinate, Legend, View, Geom, Annotation } from 'bizcharts'
 import MBreadcrumb from '@views/modules/breadcrumb'
+import Page from '@views/components/page'
 
 const Server = (): ReactElement => {
   const [showPwd, setShowPwd] = useState(false)
@@ -416,7 +417,7 @@ const Server = (): ReactElement => {
 
   const getHtml = () => {
     return (
-      <div className="page-margin-top">
+      <div className="flex-direction-column">
         {/* 服务器基本信息 */}
         {getServerInfoHtml()}
 
@@ -428,16 +429,15 @@ const Server = (): ReactElement => {
 
   const render = () => {
     return (
-      <div className="server-info-page page-padding w100 min-h100">
-        <MBreadcrumb
-          items={homeStore.menuList}
-          activeIndexes={homeStore.activeIndexes}
-          onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
-        />
-
+      <Page
+        className="server-info-page page-padding-left page-padding-right page-padding-bottom"
+        pageBodyNeedPadding={false}
+        needNavigation={false}
+        needBreadcrumb={true}
+      >
         {getHtml()}
         <Loading show={serverStore.loading} />
-      </div>
+      </Page>
     )
   }
 

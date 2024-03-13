@@ -9,6 +9,7 @@ import Templates from './templates/template.json'
 import MBreadcrumb from '@views/modules/breadcrumb'
 import { useStore } from '@views/stores'
 import { Drawer } from 'antd'
+import Page from '@views/components/page'
 
 const PipelinePluginMarket = (): ReactElement => {
   const [open, setOpen] = useState(false)
@@ -90,20 +91,17 @@ const PipelinePluginMarket = (): ReactElement => {
     let language = prism.languages['json']
     const html = prism.highlight(JSON.stringify(selectedPlugin || '', null, 2), language, 'json')
     return (
-      <div className="pipeline-plugin-market-page wh100 overflow-y-auto page-padding">
-        <div className="breadcrumb-top flex-align-center">
-          <MBreadcrumb
-            items={homeStore.menuList}
-            activeIndexes={homeStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
-          />
-        </div>
-
+      <Page
+        className="pipeline-plugin-market-page overflow-y-auto page-padding-left page-padding-right page-padding-bottom"
+        pageBodyNeedPadding={false}
+        needBreadcrumb={true}
+        needNavigation={false}
+      >
         {/* form */}
         <div className="form"></div>
 
         {/* list */}
-        <div className="plugin-list w100 flex-wrap page-margin-top">
+        <div className="plugin-list page-margin-top w100 flex-wrap">
           {Templates.map((template: { [K: string]: any }, index: number) => {
             return (
               <div key={template.key || `${index}`} className="list-item">
@@ -129,7 +127,7 @@ const PipelinePluginMarket = (): ReactElement => {
             <code className="file-detail language-json" dangerouslySetInnerHTML={{ __html: html || '' }} />
           </pre>
         </Drawer>
-      </div>
+      </Page>
     )
   }
 

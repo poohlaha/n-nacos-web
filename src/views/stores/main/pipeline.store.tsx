@@ -19,7 +19,7 @@ class PipelineProcessConfig {
 }
 
 class PipelineStage {
-    groups: Array<PipelineGroup>
+  groups: Array<PipelineGroup>
 
   constructor(groups: Array<PipelineGroup>) {
     this.groups = groups
@@ -44,7 +44,14 @@ class PipelineStep {
   status: string
   components: Array<PipelineStepComponent>
 
-  constructor(id: string, module: string, command: string, label: string, status: string, components: Array<PipelineStepComponent>) {
+  constructor(
+    id: string,
+    module: string,
+    command: string,
+    label: string,
+    status: string,
+    components: Array<PipelineStepComponent>
+  ) {
     this.id = id
     this.command = command
     this.label = label
@@ -65,30 +72,6 @@ class PipelineStepComponent {
 }
 
 class PipelineStore extends BaseStore {
-  // 添加面包宵
-  readonly ADD_PIPELINE_BREADCRUMB: { [K: string]: any } = {
-    key: 'pipeline-add',
-    name: '新建',
-    icon: (
-      <svg
-        key="pipeline-add-svg"
-        className="svg-icon"
-        viewBox="0 0 1024 1024"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M754.753851 475.715769a29.759795 29.759795 0 0 0-29.759795 29.759796v187.518711H545.731288a29.759795 29.759795 0 0 0-29.759795 29.823795v0.063999c0 16.447887 13.311908 29.759795 29.759795 29.759796h179.262768v185.470724c0 16.447887 13.311908 29.759795 29.759795 29.759796h0.127999a29.759795 29.759795 0 0 0 29.759796-29.759796V752.641866h163.006879a29.759795 29.759795 0 0 0 29.759795-29.759796v-0.127999a29.759795 29.759795 0 0 0-29.759795-29.759795H784.641646v-187.518711a29.759795 29.759795 0 0 0-29.887795-29.759796z"
-          fill="currentColor"
-        ></path>
-        <path
-          d="M393.412335 662.594485c18.047876 0 30.079793-12.031917 30.079794-30.079794 0-18.111875-12.031917-30.143793-30.079794-30.143792H92.230406V361.412555h783.098616c0 18.111875 12.031917 30.079793 30.079793 30.079793s30.079793-11.967918 30.079794-30.079793V150.598005A149.118975 149.118975 0 0 0 785.025643 0.00704H182.597785A149.118975 149.118975 0 0 0 32.00682 150.598005v662.587444a149.118975 149.118975 0 0 0 150.590965 150.590965h210.81455c18.047876 0 30.079793-12.031917 30.079794-30.079793 0-18.111875-12.031917-30.143793-30.079794-30.143793H182.597785c-48.191669 0-90.367379-42.17571-90.367379-90.367379v-150.590964h301.181929z m-301.181929-511.99648C92.230406 102.406336 134.406116 60.230626 182.597785 60.230626h602.363858c48.191669 0 90.367379 42.23971 90.367379 90.367379v150.590964H92.166406V150.598005z"
-          fill="currentColor"
-        ></path>
-      </svg>
-    ),
-  }
-
   // 标签类型
   readonly TAGS: Array<{ [K: string]: string }> = [
     {
@@ -226,37 +209,6 @@ class PipelineStore extends BaseStore {
   @observable addForm: { [K: string]: any } = Utils.deepCopy(this.addDefaultForm)
   @observable detailInfo: { [K: string]: any } = {} // 详情
   @observable osCommands: { [K: string]: any } = {} // 系统命令
-
-  // H5 本地模板
-  readonly H5_LOCAL_TEMPLATE: Array<{ [K: string]: any }> = [
-    {
-      key: '1-3',
-      label: '项目打包',
-      status: 'Pack',
-      commands: [],
-    },
-    {
-      key: '1-4',
-      label: '文件压缩',
-      status: 'Compress',
-      commands: [],
-    },
-    {
-      key: '1-5',
-      label: '项目部署',
-      status: 'Deploy',
-      commands: [],
-    },
-    {
-      key: '1-6',
-      label: '发送通知',
-      status: 'Notice',
-      commands: [],
-    },
-  ]
-
-  // H5 远程模板
-  @observable H5_REMOTE_TEMPLATE: Array<{ [K: string]: any }> = []
 
   // 是否显示运行对话框
   @observable showRunDialog: boolean = false
@@ -452,24 +404,33 @@ class PipelineStore extends BaseStore {
 
   @action
   getProcessConfig() {
-    if (this.activeProcess.length === 0) return {stages: []}
+    if (this.activeProcess.length === 0) return { stages: [] }
 
     let stages: Array<PipelineStage> = []
-    this.activeProcess.forEach((items: Array<{[K: string]: any}>) => {
+    this.activeProcess.forEach((items: Array<{ [K: string]: any }>) => {
       let groups: Array<PipelineGroup> = []
 
-      items.forEach((item: {[K: string]: any}) => {
+      items.forEach((item: { [K: string]: any }) => {
         let newSteps: Array<PipelineStep> = []
         let steps = item.steps || []
 
-        steps.forEach((step: {[K: string]: any}) => {
+        steps.forEach((step: { [K: string]: any }) => {
           let newComponents: Array<PipelineStepComponent> = []
           let components = step.components || []
-          components.forEach((component: {[K: string]: any}) => {
+          components.forEach((component: { [K: string]: any }) => {
             newComponents.push(new PipelineStepComponent(component.name || '', component.value || ''))
           })
 
-          newSteps.push(new PipelineStep(step.id || '', step.module || '', step.command || '', step.label || '', 'None', newComponents))
+          newSteps.push(
+            new PipelineStep(
+              step.id || '',
+              step.module || '',
+              step.command || '',
+              step.label || '',
+              'None',
+              newComponents
+            )
+          )
         })
 
         groups.push(new PipelineGroup(item.title?.label || '', newSteps))
@@ -528,7 +489,7 @@ class PipelineStore extends BaseStore {
       this.loading = true
       let cmd = !Utils.isBlank(pipeline.id) ? 'update_pipeline' : 'insert_pipeline'
 
-      let result: { [K: string]: any } = (await invoke(cmd, {pipeline})) || {}
+      let result: { [K: string]: any } = (await invoke(cmd, { pipeline })) || {}
       this.loading = false
       console.log('save pipeline result:', result)
       let success = this.handleResult(result)
@@ -1060,7 +1021,6 @@ class PipelineStore extends BaseStore {
       throw new Error(e)
     }
   }
-
 }
 
 export default new PipelineStore()

@@ -5,7 +5,6 @@
  */
 import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import MBreadcrumb from '@views/modules/breadcrumb'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@views/stores'
 import Utils from '@utils/utils'
@@ -19,7 +18,8 @@ import { listen } from '@tauri-apps/api/event'
 import Ansi from 'ansi-to-react'
 import MTable from '@views/modules/table'
 import RouterUrls from '@route/router.url.toml'
-import {IPipelineStepProps, IPipelineViewGroupProps, PipelineView} from '../pipeline/pipeline/index'
+import { IPipelineStepProps, IPipelineViewGroupProps, PipelineView } from '../pipeline/pipeline/index'
+import Page from '@views/components/page'
 
 const PipelineDetail = (): ReactElement => {
   const navigate = useNavigate()
@@ -291,9 +291,9 @@ const PipelineDetail = (): ReactElement => {
 
   const getViewFooterHtml = () => {
     return (
-        <div className="view-footer flex-jsc-end">
-          <div className="view-footer-right">0s</div>
-        </div>
+      <div className="view-footer flex-jsc-end">
+        <div className="view-footer-right">0s</div>
+      </div>
     )
   }
 
@@ -305,22 +305,22 @@ const PipelineDetail = (): ReactElement => {
       let g: Array<IPipelineViewGroupProps> = []
       let stageGroups = stage.groups || []
 
-      stageGroups.forEach((group: {[K: string]: any} = {}) => {
+      stageGroups.forEach((group: { [K: string]: any } = {}) => {
         let steps = group.steps || []
         let newSteps: Array<IPipelineStepProps> = []
-        steps.forEach((step: {[K: string]: any} = {}) => {
+        steps.forEach((step: { [K: string]: any } = {}) => {
           newSteps.push({
             label: step.label,
-            ...step
+            ...step,
           })
         })
 
         g.push({
           title: {
             label: group.title || '',
-            footer: getViewFooterHtml()
+            footer: getViewFooterHtml(),
           },
-          steps: newSteps || []
+          steps: newSteps || [],
         })
       })
 
@@ -344,10 +344,7 @@ const PipelineDetail = (): ReactElement => {
           </p>
         </div>
 
-        <PipelineView
-          step={current.step || []}
-          groups={getViewGroups(current.stages || []) || []}
-        />
+        <PipelineView step={current.step || []} groups={getViewGroups(current.stages || []) || []} />
       </div>
     )
   }
@@ -613,49 +610,33 @@ const PipelineDetail = (): ReactElement => {
     },
   ]
 
-  const getBreadcrumb = () => {
-    let menuList = Utils.deepCopy(homeStore.menuList || [])
+  const getBreadcrumbItemList = () => {
     let detailInfo = pipelineStore.detailInfo || {}
     let basic = detailInfo.basic || {}
-    menuList.push({
-      key: 'pipeline-detail',
-      name: basic.name,
-      icon: (
-        <svg
-          key="pipeline-add-svg"
-          className="svg-icon"
-          viewBox="0 0 1024 1024"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M754.753851 475.715769a29.759795 29.759795 0 0 0-29.759795 29.759796v187.518711H545.731288a29.759795 29.759795 0 0 0-29.759795 29.823795v0.063999c0 16.447887 13.311908 29.759795 29.759795 29.759796h179.262768v185.470724c0 16.447887 13.311908 29.759795 29.759795 29.759796h0.127999a29.759795 29.759795 0 0 0 29.759796-29.759796V752.641866h163.006879a29.759795 29.759795 0 0 0 29.759795-29.759796v-0.127999a29.759795 29.759795 0 0 0-29.759795-29.759795H784.641646v-187.518711a29.759795 29.759795 0 0 0-29.887795-29.759796z"
-            fill="currentColor"
-          ></path>
-          <path
-            d="M393.412335 662.594485c18.047876 0 30.079793-12.031917 30.079794-30.079794 0-18.111875-12.031917-30.143793-30.079794-30.143792H92.230406V361.412555h783.098616c0 18.111875 12.031917 30.079793 30.079793 30.079793s30.079793-11.967918 30.079794-30.079793V150.598005A149.118975 149.118975 0 0 0 785.025643 0.00704H182.597785A149.118975 149.118975 0 0 0 32.00682 150.598005v662.587444a149.118975 149.118975 0 0 0 150.590965 150.590965h210.81455c18.047876 0 30.079793-12.031917 30.079794-30.079793 0-18.111875-12.031917-30.143793-30.079794-30.143793H182.597785c-48.191669 0-90.367379-42.17571-90.367379-90.367379v-150.590964h301.181929z m-301.181929-511.99648C92.230406 102.406336 134.406116 60.230626 182.597785 60.230626h602.363858c48.191669 0 90.367379 42.23971 90.367379 90.367379v150.590964H92.166406V150.598005z"
-            fill="currentColor"
-          ></path>
-        </svg>
-      ),
-    })
-    return menuList
+
+    let routes: Array<{[K: string]: any}> = []
+    let menu: {[K: string]: any} = homeStore.menuList[2] || {}
+    routes.push(menu.children[0])
+
+    let otherSubRoutes = homeStore.getOtherSubRoutes() || []
+    let route: {[K: string]: any} = otherSubRoutes.find((route: {[K: string]: any}) => route.key === 'pipelineDetail') || {}
+    if (!Utils.isObjectNull(route || {})) {
+      route.name = basic.name
+      routes.push(route)
+    }
+
+    return routes
   }
 
   const render = () => {
     return (
-      <div className="pipeline-detail-page overflow page page-padding page-white flex-direction-column wh100">
-        <div className="breadcrumb-top flex-align-center">
-          <MBreadcrumb
-            items={getBreadcrumb()}
-            activeIndexes={homeStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => {
-              pipelineStore.onResetAddConfig()
-              homeStore.setActiveIndexes(activeIndexes)
-            }}
-          />
-        </div>
-
+      <Page
+        className="pipeline-detail-page page-white page-padding-left page-padding-right page-padding-bottom"
+        needNavigation={false}
+        pageBodyNeedPadding={false}
+        needBreadcrumb={true}
+        breadCrumbItemList={getBreadcrumbItemList()}
+      >
         <div className="content-box flex-1">
           <Tabs
             defaultActiveKey="0"
@@ -689,7 +670,7 @@ const PipelineDetail = (): ReactElement => {
           )}
         </Drawer>
         <Loading show={pipelineStore.loading} />
-      </div>
+      </Page>
     )
   }
 

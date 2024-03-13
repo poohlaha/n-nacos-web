@@ -18,7 +18,8 @@ export default class BaseStore {
    * 获取相对路径
    */
   @action
-  getRelativePath(url: string) {
+  getRelativePath(url: string = '') {
+    if (Utils.isBlank(url)) return ''
     const match = url.match(this.DOMAIN_PORT_REG)
     if (match) {
       let matchUrl = match[1] || ''

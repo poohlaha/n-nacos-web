@@ -14,7 +14,7 @@ interface IPipelineProcessProps {
   isRun: boolean
   currentStep?: number
   currentStepStatus?: string
-  onUpdateData?: (stepForm: {[K: string]: any}) => void
+  onUpdateData?: (stepForm: { [K: string]: any }) => void
 }
 
 const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
@@ -35,21 +35,21 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
     setStepIndex(-1)
   }
 
-  const onUpdateStepForm = (component: {[K: string]: any} = {}) => {
+  const onUpdateStepForm = (component: { [K: string]: any } = {}) => {
     if (Utils.isObjectNull(stepForm || {})) return
 
-      let form = Utils.deepCopy(stepForm) || {}
-     let components = form.components || []
-     let newComponents = components.map((comp: {[K: string]: any} = {}, index: number) => {
-          if (index === stepIndex) {
-              return component
-          }
+    let form = Utils.deepCopy(stepForm) || {}
+    let components = form.components || []
+    let newComponents = components.map((comp: { [K: string]: any } = {}, index: number) => {
+      if (index === stepIndex) {
+        return component
+      }
 
-          return comp
-      })
+      return comp
+    })
 
-      form.components = newComponents || []
-      setStepForm(form)
+    form.components = newComponents || []
+    setStepForm(form)
   }
 
   const getDrawerFooterHtml = () => {
@@ -173,12 +173,19 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                       <div className="item-content page-margin-top flex" key={index}>
                         <p>{component.label || ''}:</p>
                         <div className="item-component flex-1 flex-direction-column">
-                          {component.type === 'input' && <Input placeholder="请输入" allowClear value={component.value || ''} onChange={(e: any) => {
-                              let comp = Utils.deepCopy(component) || {}
-                              comp.value = e.target.value || ''
-                              onUpdateStepForm(comp)
-                              // props.onUpdateData?.(stepForm.id, stepIndex, comp)
-                          }} />}
+                          {component.type === 'input' && (
+                            <Input
+                              placeholder="请输入"
+                              allowClear
+                              value={component.value || ''}
+                              onChange={(e: any) => {
+                                let comp = Utils.deepCopy(component) || {}
+                                comp.value = e.target.value || ''
+                                onUpdateStepForm(comp)
+                                // props.onUpdateData?.(stepForm.id, stepIndex, comp)
+                              }}
+                            />
+                          )}
 
                           {component.type === 'textarea' && (
                             <Input.TextArea placeholder="请输入" value={component.value || ''} />

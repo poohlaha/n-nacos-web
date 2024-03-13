@@ -14,6 +14,7 @@ import NoData from '@views/components/noData'
 import useMount from '@hooks/useMount'
 import { useNavigate } from 'react-router-dom'
 import RouterUrls from '@route/router.url.toml'
+import Page from '@/views/components/page'
 
 const Main: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const { mainStore, homeStore } = useStore()
@@ -34,18 +35,14 @@ const Main: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const toPage = (item: { [K: string]: any } = {}) => {
     mainStore.onSelectServer(item)
     homeStore.reset()
-    navigate(`${RouterUrls.HOME_URL}/${RouterUrls.DASHBOARD_URL}`)
+    navigate(`${RouterUrls.HOME_URL}${RouterUrls.DASHBOARD_URL}`)
   }
 
   const render = () => {
-    // @ts-ignore
     return (
-      <div className="main-page page flex-direction-column wh100">
-        {/* 导航栏 */}
-        <Navigation />
-
+      <Page className="main-page">
         {/* 服务器列表 */}
-        <div className="server-box page-padding flex flex-direction-column">
+        <div className="server-box flex flex-direction-column">
           <div className="status-bar flex-jsc-end">
             <Button
               className="add"
@@ -275,7 +272,7 @@ const Main: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         </Modal>
 
         <Loading show={mainStore.loading} />
-      </div>
+      </Page>
     )
   }
 

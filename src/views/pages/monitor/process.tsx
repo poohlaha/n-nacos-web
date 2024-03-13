@@ -159,12 +159,7 @@ const Process: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     return (
       <div className="process-page w100 min-h100 flex-direction-column">
         <div className="breadcrumb-top flex-align-center">
-          <MBreadcrumb
-            className="flex-1"
-            items={homeStore.menuList}
-            activeIndexes={homeStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
-          />
+          <MBreadcrumb className="flex-1" items={homeStore.menuList} />
 
           <div className="top-add flex-align-center">
             <div className="add-item flex-align-center" onClick={() => setShowModal(true)}>

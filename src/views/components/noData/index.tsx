@@ -1,5 +1,5 @@
 /**
- * @fileOverview no chat for left
+ * @fileOverview no data
  * @date 2023-04-14
  * @author poohlaha
  */

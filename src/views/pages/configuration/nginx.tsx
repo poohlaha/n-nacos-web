@@ -120,11 +120,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     return (
       <div className="nginx-page w100 min-h100">
         <div className="breadcrumb-top flex-align-center">
-          <MBreadcrumb
-            items={homeStore.menuList}
-            activeIndexes={homeStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
-          />
+          <MBreadcrumb items={homeStore.menuList} />
         </div>
 
         <Card title="Nginx 配置文件" extra={<p onClick={onShowDrawer}>查看配置文件</p>}>

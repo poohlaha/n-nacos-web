@@ -84,18 +84,18 @@ const getSteps = (list: Array<Array<any>> = []) => {
 const getH5InstalledSelect = (h5InstalledCommands: Array<string>) => {
   if (h5InstalledCommands.length === 0) return []
 
-  let options: Array<{[K: string]: any}> = []
-  h5InstalledCommands.forEach((command) => {
+  let options: Array<{ [K: string]: any }> = []
+  h5InstalledCommands.forEach(command => {
     options.push({
       label: command,
-      value: command
+      value: command,
     })
   })
 
-  return  options
+  return options
 }
 
-const replaceStepsComponentValue = (list: Array<Array<any>> = [], os: {[K: string]: any} = {}) => {
+const replaceStepsComponentValue = (list: Array<Array<any>> = [], os: { [K: string]: any } = {}) => {
   if (Utils.isObjectNull(os)) return list
   if (list.length === 0) return []
 
@@ -107,13 +107,13 @@ const replaceStepsComponentValue = (list: Array<Array<any>> = [], os: {[K: strin
     return items.map(item => {
       let marketId = item.marketId || ''
       let marketTemplate: { [K: string]: any } =
-          MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === marketId) || {}
+        MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === marketId) || {}
       if (!Utils.isObjectNull(marketTemplate)) {
         let components = marketTemplate.components || []
         if (components.length === 0) {
           item.steps = [marketTemplate]
         } else {
-          components.map((component: {[K: string]: any}) => {
+          components.map((component: { [K: string]: any }) => {
             let type = component.type || ''
             if (type === 'select') {
               let options = component.options || ''
@@ -133,7 +133,7 @@ const replaceStepsComponentValue = (list: Array<Array<any>> = [], os: {[K: strin
   })
 }
 
-const updateMarket = (list: Array<Array<any>> = [], market: {[K: string]: any} = {}) => {
+const updateMarket = (list: Array<Array<any>> = [], market: { [K: string]: any } = {}) => {
   if (Utils.isObjectNull(market)) return list
   if (list.length === 0) return []
 
@@ -155,9 +155,4 @@ const updateMarket = (list: Array<Array<any>> = [], market: {[K: string]: any} =
 const H5_LOCAL_TEMPLATE = getSteps(LOCAL_TEMPLATE)
 const H5_REMOTE_TEMPLATE = getSteps(REMOTE_TEMPLATE)
 
-export {
-  H5_LOCAL_TEMPLATE,
-  H5_REMOTE_TEMPLATE,
-  replaceStepsComponentValue,
-  updateMarket
-}
+export { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, replaceStepsComponentValue, updateMarket }

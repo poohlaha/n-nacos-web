@@ -3,13 +3,12 @@
  * @date 2023-07-05
  * @author poohlaha
  */
-import React, { Fragment, ReactElement, useState } from 'react'
+import React, { ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import useMount from '@hooks/useMount'
-import { Card, Descriptions, Button } from 'antd'
 import Loading from '@views/components/loading/loading'
-import { TOAST } from '@utils/base'
+import Page from '@views/components/page'
 
 const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const { dashboardStore, mainStore } = useStore()
@@ -18,10 +17,10 @@ const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement =>
 
   const render = () => {
     return (
-      <div className="dashboard-page page-padding w100 min-h100">
+      <Page className="dashboard-page" needNavigation={false}>
         <p>Dashboard</p>
         <Loading show={dashboardStore.loading} />
-      </div>
+      </Page>
     )
   }
 

@@ -14,20 +14,21 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const { homeStore, mainStore } = useStore()
 
   useMount(() => {
-    let url = homeStore.initMenu()
+    let url = homeStore.getUrl()
     if (!Utils.isBlank(url)) {
       navigate(`${RouterUrls.HOME_URL}${url}`)
     }
   })
 
-  const toPage = (url: string, activeIndexes: Array<number> = []) => {
+  const toPage = (url: string) => {
     if (Utils.isBlank(url)) return
-    homeStore.setActiveIndexes(activeIndexes)
-    navigate(url)
+    navigate(`${RouterUrls.HOME_URL}${url}`)
   }
 
   const render = () => {
     let selectServer = mainStore.getSelectServer() || {}
+    let url = homeStore.getUrl()
+
     return (
       <div className="left flex-direction-column">
         {/* back */}
@@ -66,8 +67,8 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
             let name = item.name || ''
             let icon = item.icon || null
             let children = item.children || []
-            let url = `${RouterUrls.HOME_URL}${item.url || ''}`
-            let parentActive = homeStore.activeIndexes.length === 1 && homeStore.activeIndexes[0] === index
+            let itemUrl = item.url || ''
+            let parentActive = itemUrl === url
 
             return (
               <div key={index} className="left-group">
@@ -78,19 +79,14 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
                     {/* group list */}
                     {children.map((child: { [K: string]: any }, i: number) => {
-                      let childActive = false
-                      let childUrl = `${RouterUrls.HOME_URL}${child.url || ''}`
-                      if (homeStore.activeIndexes.length > 1) {
-                        let parentIndex = homeStore.activeIndexes[0]
-                        let childIndex = homeStore.activeIndexes[1]
-                        childActive = parentIndex === index && childIndex === i
-                      }
+                      let childUrl = child.url || ''
+                      let childActive = childUrl === url
 
                       return (
                         <ul key={i}>
                           <li
                             className={`flex-align-center ${childActive ? 'active' : ''}`}
-                            onClick={() => toPage(childUrl, [index, i])}
+                            onClick={() => toPage(childUrl)}
                           >
                             {child.icon || null}
                             <p>{child.name || ''}</p>
@@ -102,7 +98,7 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
                 ) : (
                   <div
                     className={`left-item flex-align-center ${parentActive ? 'active' : ''}`}
-                    onClick={() => toPage(url, [index])}
+                    onClick={() => toPage(itemUrl)}
                   >
                     {icon}
                     <p>{name || ''}</p>

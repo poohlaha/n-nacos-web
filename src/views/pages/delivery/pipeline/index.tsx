@@ -14,6 +14,7 @@ import { Tag, Button, Select, Input, Tooltip, Table, Space, Popconfirm, Modal } 
 import { PlusOutlined, PlayCircleOutlined, SearchOutlined, RedoOutlined } from '@ant-design/icons'
 import RunDialog from '@pages/delivery/pipeline/run'
 import PipelineBatchRunDialog from './batch'
+import Page from '@views/components/page'
 
 const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const { pipelineStore, homeStore } = useStore()
@@ -145,7 +146,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
             }
           }
 
-          let label = (s.groups || []).map((ss: {[K: string]: any}) => ss.title).join(',')
+          let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.title).join(',')
           arr.push(
             <Tooltip key={i} className="tooltip-question" placement="top" title={label || ''}>
               <div className="step-box">
@@ -222,15 +223,12 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
 
   const render = () => {
     return (
-      <div className="pipeline-page overflow page page-padding page-white flex-direction-column wh100">
-        <div className="breadcrumb-top flex-align-center">
-          <MBreadcrumb
-            items={homeStore.menuList}
-            activeIndexes={homeStore.activeIndexes}
-            onChange={(activeIndexes: Array<number> = []) => homeStore.setActiveIndexes(activeIndexes)}
-          />
-        </div>
-
+      <Page
+        className="pipeline-page overflow page-white page-padding-left page-padding-right page-padding-bottom"
+        needNavigation={false}
+        pageBodyNeedPadding={false}
+        needBreadcrumb={true}
+      >
         <div className="content-box">
           {/* tags */}
           <div className="tags flex-align-center">
@@ -375,7 +373,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
           }}
         />
         <Loading show={pipelineStore.loading} />
-      </div>
+      </Page>
     )
   }
 

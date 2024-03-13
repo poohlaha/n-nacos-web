@@ -3,20 +3,19 @@
  */
 import React, { ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
-import Navigation from './navigation'
 import Left from './left'
 import Right from './right'
+import Page from '@views/components/page'
 
-const Dashboard: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
+const Dashboard: React.FC<IRouterProps> = (): ReactElement => {
   const render = () => {
     return (
-      <div className="flex-direction-column wh100">
-        <Navigation />
-        <div className="home-page flex-1 flex">
+      <Page className="home-page" pageBodyNeedPadding={false}>
+        <div className="home-content wh100 flex">
           <Left />
           <Right />
         </div>
-      </div>
+      </Page>
     )
   }
 

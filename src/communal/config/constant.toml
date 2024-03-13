@@ -5,7 +5,6 @@ PRODUCT_NAME = 'CHAT'
 SKINS = ['theme_orange', 'theme_blue']
 LANGUAGES_NAME = 'lang'
 LANGUAGES = ['zh', 'en']
-MENU_CACHE = '7NxzmQMTsw!QzmdcCFm#Q2p^&5KaTstq'
 ALERT_DURATION = 3
 
 [CONSTANT.REQUEST]

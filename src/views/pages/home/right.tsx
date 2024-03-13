@@ -6,11 +6,11 @@ import { Route, Routes } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import Utils from '@utils/utils'
-import RouterUrls from '@route/router.url.toml'
 import Loading from '@views/components/loading/loading'
 import ScrollToTop from '@router/scrollToTop'
+import Page from '@views/components/page'
 
-const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
+const Right: React.FC<IRouterProps> = (): ReactElement => {
   const { homeStore } = useStore()
 
   const getRightRoutes = () => {
@@ -62,11 +62,16 @@ const Right: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
       </Routes>
     )
   }
+
   const render = () => {
     let rightRoutes = getRightRoutes() || []
     let otherSubRoutes = homeStore.getOtherSubRoutes() || []
     let routes = rightRoutes.concat(otherSubRoutes)
-    return <div className="right flex-1">{getRoutes(routes)}</div>
+    return (
+      <Page className="right" needNavigation={false} pageBodyNeedPadding={false}>
+        {getRoutes(routes)}
+      </Page>
+    )
   }
 
   return render()

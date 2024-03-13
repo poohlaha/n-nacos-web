@@ -115,7 +115,7 @@ class HomeStore extends BaseStore {
     },
   ]
 
-  @observable activeIndexes: Array<number> = [] // 激活的索引
+  @observable breadcrumbItems: Array<{ [K: string]: any }> = [] // 面包屑
 
   constructor() {
     super()
@@ -127,14 +127,18 @@ class HomeStore extends BaseStore {
   getOtherSubRoutes() {
     return [
       {
+        name: '新建',
         key: 'pipelineAdd',
+        type: 'new',
         path: RouterUrls.PIPELINE.ADD_URL,
         belong: 'pipeline',
         // component: lazy(() => import(/* webpackChunkName:'pipelineAdd' */ '@pages/delivery/pipeline/add')),
         component: PipelineAdd,
       },
       {
+        name: '',
         key: 'pipelineDetail',
+        type: 'detail',
         path: RouterUrls.PIPELINE.DETAIL_URL,
         belong: 'pipeline',
         component: PipelineDetail,
@@ -226,77 +230,16 @@ class HomeStore extends BaseStore {
     }
   }
 
-  initMenu() {
-    let activeIndexes = this.getCache() || []
-    if (typeof activeIndexes === 'string') {
-      activeIndexes = JSON.parse(activeIndexes)
-    }
-
-    this.activeIndexes = activeIndexes.length === 0 ? [0] : activeIndexes
-
-    if (this.activeIndexes.length === 1) {
-      let index = this.activeIndexes[0]
-      if (index > this.menuList.length) {
-        index = 0
-        this.activeIndexes = [0]
-      }
-      return this.menuList[index].url || ''
-    }
-
-    let menuId = this.activeIndexes[0]
-    let childMenuId = this.activeIndexes[1]
-    let menu = this.menuList[menuId]
-    let menuChildren = menu.children || []
-    let menuSubChildren = this.getOtherSubRoutes().filter(m => m.belong === menu.key) || []
-    if (menuChildren.length === 0 && menuSubChildren.length === 0) {
-      this.activeIndexes = [0]
-      return this.menuList[0].url || ''
-    }
-
-    let menuUrl = menu.url || ''
-    let url = ''
-    // 根据 url 查找
-    if (menuSubChildren.length > 0) {
-      for (let m of menuSubChildren) {
-        let subUrl = `${menuUrl}${m.path}`
-        if (window.location.href.indexOf(subUrl) !== -1) {
-          url = this.getRelativePath(window.location.href) || ''
-          url = url.replace(RouterUrls.HOME_URL, '')
-          break
-        }
-      }
-    }
-
-    if (Utils.isBlank(url)) {
-      if (menuChildren.length > 0) {
-        url = menuChildren[childMenuId].url || ''
-      }
-    }
-
-    return url
-  }
-
-  @action
-  setCache() {
-    Utils.setLocal(CONSTANT.MENU_CACHE, this.activeIndexes)
-  }
-
-  @action
-  getCache() {
-    return Utils.getLocal(CONSTANT.MENU_CACHE)
-  }
-
-  @action
-  setActiveIndexes(activeIndexes: Array<number> = []) {
-    if (activeIndexes.length === 0) return
-    this.activeIndexes = activeIndexes
-    this.setCache()
+  // 直接根据 url 查找
+  getUrl() {
+    let relativePath = this.getRelativePath(window.location.href || '')
+    relativePath = relativePath.replace(RouterUrls.HOME_URL, '')
+    return relativePath
   }
 
   @action
   reset() {
-    this.activeIndexes = []
-    this.setCache()
+    this.breadcrumbItems = []
   }
 
   /**
