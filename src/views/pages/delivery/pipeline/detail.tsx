@@ -212,8 +212,9 @@ const PipelineDetail = (): ReactElement => {
             <Button
               className="page-margin-right"
               onClick={() => {
-                pipelineStore.setAddForm(pipelineStore.detailInfo || {})
-                navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}`)
+                navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}?id=${Utils.encrypt(
+                    encodeURIComponent(pipelineStore.detailInfo?.id || '')
+                )}&serverId=${Utils.encrypt(encodeURIComponent(pipelineStore.detailInfo?.serverId || ''))}`)
               }}
             >
               编辑
@@ -344,7 +345,11 @@ const PipelineDetail = (): ReactElement => {
           </p>
         </div>
 
-        <PipelineView className="overflow-hidden" step={current.step || []} groups={getViewGroups(current.stages || []) || []} />
+        <PipelineView
+          className="overflow-hidden"
+          step={current.step || []}
+          groups={getViewGroups(current.stages || []) || []}
+        />
       </div>
     )
   }
@@ -614,12 +619,13 @@ const PipelineDetail = (): ReactElement => {
     let detailInfo = pipelineStore.detailInfo || {}
     let basic = detailInfo.basic || {}
 
-    let routes: Array<{[K: string]: any}> = []
-    let menu: {[K: string]: any} = homeStore.menuList[2] || {}
+    let routes: Array<{ [K: string]: any }> = []
+    let menu: { [K: string]: any } = homeStore.menuList[2] || {}
     routes.push(menu.children[0])
 
     let otherSubRoutes = homeStore.getOtherSubRoutes() || []
-    let route: {[K: string]: any} = otherSubRoutes.find((route: {[K: string]: any}) => route.key === 'pipelineDetail') || {}
+    let route: { [K: string]: any } =
+      otherSubRoutes.find((route: { [K: string]: any }) => route.key === 'pipelineDetail') || {}
     if (!Utils.isObjectNull(route || {})) {
       route.name = basic.name
       routes.push(route)

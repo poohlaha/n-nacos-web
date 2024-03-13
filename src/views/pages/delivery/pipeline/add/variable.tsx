@@ -144,7 +144,7 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
           destroyOnClose={true}
           maskClosable={false}
         >
-          <div className="modal-body flex-direction-column">
+          <div className="modal-body flex-direction-column page-margin-top">
             <div className="name form-item flex-align-center">
               <div className="label page-margin-right flex-align-center">
                 <p>变量名</p>

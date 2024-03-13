@@ -9,7 +9,7 @@ import { lazy } from 'react'
 import RouterUrls from '@route/router.url.toml'
 import React from 'react'
 import Utils from '@utils/utils'
-import { CONSTANT, SYSTEM } from '@config/index'
+import { SYSTEM } from '@config/index'
 import PipelineAdd from '@pages/delivery/pipeline/add'
 import PipelineDetail from '@pages/delivery/pipeline/detail'
 
@@ -116,10 +116,6 @@ class HomeStore extends BaseStore {
   ]
 
   @observable breadcrumbItems: Array<{ [K: string]: any }> = [] // 面包屑
-
-  constructor() {
-    super()
-  }
 
   /**
    * 获取其他子路由

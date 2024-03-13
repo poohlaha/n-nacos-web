@@ -8,7 +8,6 @@ import Loading from '@views/components/loading/loading'
 import Utils from '@utils/utils'
 import useMount from '@hooks/useMount'
 import { useNavigate } from 'react-router-dom'
-import MBreadcrumb from '@views/modules/breadcrumb'
 import { Button, Select, Input, Tabs, Tooltip } from 'antd'
 import { open } from '@tauri-apps/plugin-dialog'
 import PipelineProcess from '../process'
@@ -16,15 +15,69 @@ import PipelineVariable from './variable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, updateMarket } from '../process/templates/h5'
 import Page from '@views/components/page'
+import {ADDRESS} from '@utils/base'
+import MarketTemplateData from "@pages/delivery/pipelineMarket/templates/template.json";
 
+// eslint-disable-next-line no-undef
 const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
   const navigate = useNavigate()
 
   const { pipelineStore, homeStore } = useStore()
 
   useMount(async () => {
-    // await pipelineStore.queryOsCommand()
+    let id = ADDRESS.getAddressQueryString('id') || ''
+    let serverId = ADDRESS.getAddressQueryString('serverId') || ''
+    pipelineStore.isEditor = false
+
+    if (!Utils.isBlank(id) && !Utils.isBlank(serverId)) {
+      id = Utils.decrypt(decodeURIComponent(id))
+      serverId = Utils.decrypt(decodeURIComponent(serverId))
+      await pipelineStore.getDetailInfo(id, serverId)
+      pipelineStore.setAddForm(pipelineStore.detailInfo || {})
+      pipelineStore.activeProcess = getDetailActiveProcess(pipelineStore.detailInfo?.processConfig?.stages || [])
+      pipelineStore.isEditor = true
+    }
   })
+
+  const getDetailActiveProcess = (stages: Array<{[K: string]: any}> = []) => {
+    if (stages.length === 0) return []
+
+    let processes: Array<Array<any>> = []
+    stages.forEach((stage) => {
+      let groups: Array<any> = stage.groups || []
+      let newGroups: Array<any> = []
+      groups.forEach(group => {
+        let steps: Array<any> = group.steps || []
+        let newSteps: Array<any> = []
+        steps.forEach(step => {
+          let marketTemplate: { [K: string]: any } = MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === step.id) || {}
+          marketTemplate = Utils.deepCopy(marketTemplate)
+          let components = marketTemplate.components || []
+          let newComponents: Array<any> = []
+          let comps: Array<any> = step.components || []
+          comps.forEach(com => {
+            let component = components.find((d: { [K: string]: any } = {}) => d.name === com.prop) || {}
+            component.value = com.value || ''
+            newComponents.push(component)
+          })
+
+          newSteps.push({...step, components: newComponents, comps})
+        })
+
+        newGroups.push({
+          title: {
+            label: group.title || ''
+          },
+          steps: newSteps || []
+        })
+      })
+
+      processes.push(newGroups)
+    })
+
+    console.log('processes:', processes)
+    return processes
+  }
 
   const getProjectToolTipHtml = () => {
     return (
@@ -40,6 +93,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
   }
 
   const getActiveProcess = () => {
+    if (pipelineStore.isEditor) return
     // H5
     if (pipelineStore.addForm.basic.tag === pipelineStore.TAGS[7].value) {
       let isRemoteUrl = pipelineStore.isRemoteUrl(pipelineStore.addForm.basic.path || '')
@@ -209,12 +263,13 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
     let detailInfo = pipelineStore.detailInfo || {}
     let basic = detailInfo.basic || {}
 
-    let routes: Array<{[K: string]: any}> = []
-    let menu: {[K: string]: any} = homeStore.menuList[2] || {}
+    let routes: Array<{ [K: string]: any }> = []
+    let menu: { [K: string]: any } = homeStore.menuList[2] || {}
     routes.push(menu.children[0])
 
     let otherSubRoutes = homeStore.getOtherSubRoutes() || []
-    let route: {[K: string]: any} = otherSubRoutes.find((route: {[K: string]: any}) => route.key === 'pipelineAdd') || {}
+    let route: { [K: string]: any } =
+      otherSubRoutes.find((route: { [K: string]: any }) => route.key === 'pipelineAdd') || {}
     if (!Utils.isObjectNull(route || {})) {
       routes.push(route)
     }

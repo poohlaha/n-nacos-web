@@ -209,6 +209,7 @@ class PipelineStore extends BaseStore {
   @observable addForm: { [K: string]: any } = Utils.deepCopy(this.addDefaultForm)
   @observable detailInfo: { [K: string]: any } = {} // 详情
   @observable osCommands: { [K: string]: any } = {} // 系统命令
+  @observable isEditor: boolean = false // 是否为编辑状态
 
   // 是否显示运行对话框
   @observable showRunDialog: boolean = false
@@ -463,13 +464,6 @@ class PipelineStore extends BaseStore {
     if (Utils.isBlank(basic.path)) {
       TOAST.show({ message: '请输入或选择项目路径', type: 4 })
       return false
-    }
-
-    // 判断是不是远程 url
-    if (this.isRemoteUrl(basic.path || '')) {
-      // this.activeProcess = this.H5_REMOTE_TEMPLATE
-    } else {
-      // this.activeProcess = this.H5_LOCAL_TEMPLATE
     }
 
     let pipeline = {
@@ -840,7 +834,8 @@ class PipelineStore extends BaseStore {
       let params = this.getStepProps(isReadonly ? this.selectItem || {} : this.detailInfo || {}, this.runDialogProps)
       console.log('run pipeline params:', params)
       await info(`run pipeline param: ${JSON.stringify(params)}`)
-      let result: { [K: string]: any } = (await invoke('pipeline_run', { props: params })) || {}
+      //let result: { [K: string]: any } = (await invoke('pipeline_run', { props: params })) || {}
+      let result = {}
       this.loading = false
       console.log('get run pipeline result:', result)
       let res = this.handleResult(result) || {}
@@ -849,7 +844,7 @@ class PipelineStore extends BaseStore {
       }
 
       this.detailInfo = res || {}
-      this.onRunStep(params)
+      // this.onRunStep(params)
       callback?.()
     } catch (e: any) {
       this.loading = false

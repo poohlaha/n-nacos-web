@@ -46,7 +46,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
     return <div className="tag"></div>
   }
 
-  const getStepClassName = (stage: {[K: string]: any} = {}, i: number) => {
+  const getStepClassName = (stage: { [K: string]: any } = {}, i: number) => {
     if (Utils.isObjectNull(stage || {})) return ''
 
     // index 从 1 开始
@@ -208,8 +208,9 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
 
             <a
               onClick={() => {
-                pipelineStore.setAddForm(record)
-                navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}`)
+                navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}?id=${Utils.encrypt(
+                    encodeURIComponent(record.id || '')
+                )}&serverId=${Utils.encrypt(encodeURIComponent(record.serverId || ''))}`)
               }}
             >
               修改
