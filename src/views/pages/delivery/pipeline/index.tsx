@@ -57,32 +57,44 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       return 'step-gray'
     }
 
-    // 进行中
-    if (i + 1 === index) {
-      if (status === 'No') {
-        return 'step-gray'
-      }
-
-      if (status === 'Process') {
-        return 'step-process'
-      }
-
-      if (status === 'Success') {
-        return 'step-success'
-      }
-
-      if (status === 'Failed') {
+    if (i + 1 > index) {
+      if (status === pipelineStore.RUN_STATUS[4].value || status === pipelineStore.RUN_STATUS[5].value) {
         return 'step-failed'
       }
 
-      if (status === 'Stop') {
+      return 'step-gray'
+    }
+
+    // 进行中
+    if (i + 1 === index) {
+      if (status === pipelineStore.RUN_STATUS[0].value) {
+        return 'step-gray'
+      }
+
+      if (status === pipelineStore.RUN_STATUS[1].value) {
+        return 'step-process'
+      }
+
+      if (status === pipelineStore.RUN_STATUS[2].value) {
+        return 'step-process'
+      }
+
+      if (status === pipelineStore.RUN_STATUS[3].value) {
+        return 'step-success'
+      }
+
+      if (status === pipelineStore.RUN_STATUS[4].value) {
+        return 'step-failed'
+      }
+
+      if (status === pipelineStore.RUN_STATUS[5].value) {
         return 'step-stop'
       }
 
       return ''
     }
 
-    if (index < i + 1) {
+    if (i + 1 < index) {
       return 'step-success'
     }
 
@@ -208,9 +220,11 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
 
             <a
               onClick={() => {
-                navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}?id=${Utils.encrypt(
+                navigate(
+                  `${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}?id=${Utils.encrypt(
                     encodeURIComponent(record.id || '')
-                )}&serverId=${Utils.encrypt(encodeURIComponent(record.serverId || ''))}`)
+                  )}&serverId=${Utils.encrypt(encodeURIComponent(record.serverId || ''))}`
+                )
               }}
             >
               修改
@@ -395,7 +409,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
     let selectedItemList: Array<{ [K: string]: any }> = selectedRowKeys.map(s => {
       let item = pipelineStore.list.find(l => l.id === s) || {}
       let runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
-      pipelineStore.isNeedSelectedLastSelected(item.run || {}, runDialogProps)
+      pipelineStore.isNeedSelectedLastSelected(item || {}, runDialogProps)
       pipelineStore.onSetRadioRunProps(item || {}, runDialogProps)
       return { ...item, runDialogProps }
     })

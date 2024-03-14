@@ -143,6 +143,11 @@ class PipelineStore extends BaseStore {
       value: 'Failed',
       color: 'error',
     },
+    {
+      label: '运行中止',
+      value: 'Stop',
+      color: 'error',
+    },
   ]
 
   readonly SELECT_OPTIONS: any = [
@@ -428,7 +433,7 @@ class PipelineStore extends BaseStore {
               step.module || '',
               step.command || '',
               step.label || '',
-              'None',
+              this.RUN_STATUS[0].value,
               newComponents
             )
           )
@@ -470,7 +475,7 @@ class PipelineStore extends BaseStore {
       id: this.addForm.id || '',
       serverId: serverId,
       basic,
-      status: 'No',
+      status: this.RUN_STATUS[0].value,
       processConfig: {
         stages: this.getProcessConfig(),
       },
@@ -494,6 +499,7 @@ class PipelineStore extends BaseStore {
       }
     } catch (e: any) {
       this.loading = false
+      TOAST.show({ message: `保存流水线失败: ${e}`, type: 4 })
       throw new Error(e)
     }
   }
@@ -522,50 +528,6 @@ class PipelineStore extends BaseStore {
       throw new Error(e)
     }
   }
-
-  readonly DIALOG_PROPS_LIST: Array<{ [K: string]: any }> = [
-    {
-      label: 'node',
-      value: 'node',
-      type: this.VARIABLE_OPTIONS[0].value,
-      owner: 'H5',
-      desc: 'NodeJs版本号',
-      key: 'node',
-    },
-    {
-      label: 'branch',
-      value: 'branch',
-      type: this.VARIABLE_OPTIONS[1].value,
-      owner: 'all',
-      desc: '分支列表',
-      key: 'branches',
-    },
-    {
-      label: 'make',
-      value: 'make',
-      type: this.VARIABLE_OPTIONS[1].value,
-      owner: 'H5',
-      desc: 'Make命令',
-      key: 'makeCommands',
-    },
-    {
-      label: 'command',
-      value: 'command',
-      type: this.VARIABLE_OPTIONS[1].value,
-      owner: 'H5',
-      desc: '本机安装的命令列表',
-      key: 'installedCommands',
-    },
-
-    {
-      label: 'script',
-      value: 'script',
-      type: this.VARIABLE_OPTIONS[1].value,
-      owner: 'H5',
-      desc: 'package.json中的scripts命令',
-      key: 'packageCommands',
-    },
-  ]
 
   /**
    * 获取变量相同的列
@@ -652,7 +614,7 @@ class PipelineStore extends BaseStore {
       this.loggerList = logger.split('\r\n') || []
 
       // 如果存在记录，默认选择上一条
-      let flag = this.isNeedSelectedLastSelected(this.detailInfo?.run || {}, this.runDialogProps)
+      let flag = this.isNeedSelectedLastSelected(this.detailInfo || {}, this.runDialogProps)
       if (flag) {
         this.runDialogProps = Utils.deepCopy(this.runDialogDefaultProps)
         this.onSetRadioRunProps(this.detailInfo || {}, this.runDialogDefaultProps)
@@ -666,8 +628,8 @@ class PipelineStore extends BaseStore {
   }
 
   @action
-  isNeedSelectedLastSelected(run: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
-    let flag = this.hasRadioNeedChange(run, runDialogProps)
+  isNeedSelectedLastSelected(detailInfo: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
+    let flag = this.hasRadioNeedChange(detailInfo)
     if (flag) {
       runDialogProps.value = '1'
     }
@@ -676,20 +638,26 @@ class PipelineStore extends BaseStore {
   }
 
   @action
-  hasRadioNeedChange(run: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
+  hasRadioNeedChange(detailInfo: { [K: string]: any } = {}) {
+    let run = detailInfo.run || {}
     let current = run.current || {}
     let runnable = current.runnable || {}
+    let basic = detailInfo.basic || {}
+    let extra = detailInfo.extra || {}
+    let tag = basic.tag || ''
+    let tagExtra = extra[tag.toLowerCase()] || {}
+    let displayFields = tagExtra.displayFields || []
 
-    if (
-      !Utils.isBlank(runnable.branch || '') ||
-      !Utils.isBlank(runnable.make || '') ||
-      !Utils.isBlank(runnable.command || '') ||
-      !Utils.isBlank(runnable.script || '')
-    ) {
-      return true
+    let hasEmpty = true
+    for (let field of displayFields) {
+      if (Object.prototype.hasOwnProperty.call(runnable, field.value)) {
+        if (!Utils.isBlank(runnable[field.value] || '')) {
+          hasEmpty = false
+        }
+      }
     }
 
-    return false
+    return !hasEmpty
   }
 
   /**
@@ -697,16 +665,25 @@ class PipelineStore extends BaseStore {
    */
   @action
   onSetRadioRunProps(selectedItem: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
-    let detail = selectedItem || {}
-    let run = detail.run || {}
+    let detailInfo = selectedItem || {}
+    let run = detailInfo.run || {}
     let current = run.current || {}
     let runnable = current.runnable || {}
-    runDialogProps.h5 = {
-      branch: runnable.branch || '',
-      make: runnable.make || '',
-      command: runnable.command || '',
-      script: runnable.script || '',
+
+    let basic = detailInfo.basic || {}
+    let extra = detailInfo.extra || {}
+    let tag = (basic.tag || '').toLowerCase()
+    let tagExtra = extra[tag.toLowerCase()] || {}
+    let displayFields = tagExtra.displayFields || []
+
+    runDialogProps[tag] = {}
+    for (let field of displayFields) {
+      if (Object.prototype.hasOwnProperty.call(runnable, field.value)) {
+        runDialogProps[tag][field.value] = runnable[field.value] || ''
+      }
     }
+
+    runDialogProps.remark = runnable.remark || ''
 
     // 设置 variable
     runDialogProps.variable = {}
@@ -797,7 +774,13 @@ class PipelineStore extends BaseStore {
     let params = {
       id,
       serverId,
-      step: 1, // 从第一步开始
+      stage: {
+        index: 0,
+        groupIndex: 0,
+        stepIndex: 0,
+        finishGroupCount: 0,
+        finished: false,
+      },
       tag,
       ...h5,
       remark: runDialogProps.remark || '',
@@ -834,8 +817,7 @@ class PipelineStore extends BaseStore {
       let params = this.getStepProps(isReadonly ? this.selectItem || {} : this.detailInfo || {}, this.runDialogProps)
       console.log('run pipeline params:', params)
       await info(`run pipeline param: ${JSON.stringify(params)}`)
-      //let result: { [K: string]: any } = (await invoke('pipeline_run', { props: params })) || {}
-      let result = {}
+      let result: { [K: string]: any } = (await invoke('pipeline_run', { props: params })) || {}
       this.loading = false
       console.log('get run pipeline result:', result)
       let res = this.handleResult(result) || {}
@@ -844,23 +826,10 @@ class PipelineStore extends BaseStore {
       }
 
       this.detailInfo = res || {}
-      // this.onRunStep(params)
       callback?.()
     } catch (e: any) {
       this.loading = false
-      throw new Error(e)
-    }
-  }
-
-  /**
-   * 异步运行流水线步骤
-   */
-  @action
-  onRunStep(params: { [K: string]: any }) {
-    try {
-      console.log('run pipeline step params:', params)
-      invoke('exec_steps', { props: params }) || {}
-    } catch (e: any) {
+      TOAST.show({ message: `运行流水线失败: ${e}`, type: 4 })
       throw new Error(e)
     }
   }
@@ -871,19 +840,20 @@ class PipelineStore extends BaseStore {
   @action
   getDialogRunProps(item: { [K: string]: any } = {}) {
     let extra = item.extra || {}
-    let h5 = this.TAGS[this.TAGS.length - 1].value
-    let h5Extra = extra[h5.toLowerCase()] || {}
+    let basic = item.basic || {}
+    let tag = basic.tag || ''
+    let tagExtra = extra[tag.toLowerCase()] || {}
     let branches = extra.branches || []
-    let displayFields = h5Extra.displayFields || []
+    let displayFields = tagExtra.displayFields || []
 
     let list: Array<{ [K: string]: any }> = []
     for (let field of displayFields) {
       list.push({
         name: field.label,
-        value: field.key === 'branches' ? branches : h5Extra[field.key],
+        value: field.key === 'branches' ? branches : tagExtra[field.key],
         genre: field.type,
         desc: field.desc || '',
-        tag: h5,
+        tag,
       })
     }
 
@@ -894,10 +864,11 @@ class PipelineStore extends BaseStore {
   getReadonlyDialogRunProps(item: { [K: string]: any } = {}) {
     let current = item.current || {}
     let extra = item.extra || {}
-    let h5 = this.TAGS[this.TAGS.length - 1].value
-    let h5Extra = extra[h5.toLowerCase()] || {}
+    let basic = item.basic || {}
+    let tag = basic.tag || ''
+    let tagExtra = extra[tag.toLowerCase()] || {}
     let runnable = current.runnable || {}
-    let displayFields = h5Extra.displayFields || []
+    let displayFields = tagExtra.displayFields || []
 
     let list: Array<{ [K: string]: any }> = []
     for (let field of displayFields) {
@@ -906,7 +877,7 @@ class PipelineStore extends BaseStore {
         value: runnable[field.value || ''],
         genre: this.VARIABLE_OPTIONS[0].value,
         desc: field.desc || '',
-        tag: h5,
+        tag,
       })
     }
 

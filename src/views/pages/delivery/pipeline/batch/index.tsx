@@ -94,7 +94,7 @@ const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (
             columns={pipelineStore.getAddVariableCommonColumns() || []}
             tagList={pipelineStore.TAGS || []}
             dialogProps={selectItem.runDialogProps || {}}
-            hasNeedRadioChange={pipelineStore.hasRadioNeedChange(selectItem.run || {}, selectItem.runDialogProps || {})}
+            hasNeedRadioChange={pipelineStore.hasRadioNeedChange(selectItem || {})}
             onSetProps={(name: string, value: string, tag: string) => {
               if (tag === pipelineStore.TAGS[pipelineStore.TAGS.length - 1].value) {
                 selectItem.runDialogProps.h5[name] = value || ''

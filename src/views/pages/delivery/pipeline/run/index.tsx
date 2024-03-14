@@ -68,10 +68,7 @@ const PipelineRunDialog: React.FC<IPipelineRunDialogProps> = (props: IPipelineRu
           columns={pipelineStore.getAddVariableCommonColumns() || []}
           dialogProps={pipelineStore.runDialogProps}
           tagList={pipelineStore.TAGS || []}
-          hasNeedRadioChange={pipelineStore.hasRadioNeedChange(
-            pipelineStore.detailInfo?.run || {},
-            pipelineStore.runDialogProps
-          )}
+          hasNeedRadioChange={pipelineStore.hasRadioNeedChange(pipelineStore.detailInfo || {})}
           onSetProps={(name: string, value: string, tag: string) => {
             // H5
             if (tag === pipelineStore.TAGS[pipelineStore.TAGS.length - 1].value) {

@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@views/stores'
 import Utils from '@utils/utils'
-import { Tabs, Button, Tag, Drawer, Popconfirm, Space } from 'antd'
+import { Tabs, Button, Tag, Drawer, Popconfirm, Space, notification } from 'antd'
 import useMount from '@hooks/useMount'
 import { ADDRESS, TOAST } from '@utils/base'
 import Loading from '@views/components/loading/loading'
@@ -18,7 +18,7 @@ import { listen } from '@tauri-apps/api/event'
 import Ansi from 'ansi-to-react'
 import MTable from '@views/modules/table'
 import RouterUrls from '@route/router.url.toml'
-import { IPipelineStepProps, IPipelineViewGroupProps, PipelineView } from '../pipeline/pipeline/index'
+import { IPipelineStepProps, IPipelineViewGroupProps, PipelineView, IPipelineStatus } from '../pipeline/pipeline/index'
 import Page from '@views/components/page'
 
 const PipelineDetail = (): ReactElement => {
@@ -27,6 +27,24 @@ const PipelineDetail = (): ReactElement => {
   const [open, setOpen] = useState(false)
   const [runReadonly, setRunReadonly] = useState(false)
   const [runTabIndex, setRunTabIndex] = useState('0')
+
+
+  const openNotification = (name: string = '') => {
+    notification.open({
+      message: '友情提示',
+      description: (
+          <div className="notice-body flex-align-center">
+            <p>流水线</p>
+            <p className="theme-color pipeline-name">{name || ''}</p>
+            <p>发布成功 !</p>
+          </div>
+      ),
+      onClick: () => {
+
+      },
+      placement: 'bottomRight'
+    })
+  }
 
   useMount(async () => {
     let id = ADDRESS.getAddressQueryString('id') || ''
@@ -48,6 +66,19 @@ const PipelineDetail = (): ReactElement => {
       }
 
       pipelineStore.detailInfo = data.body || {}
+    })
+
+    // 监听发送通知事件
+    await listen('pipeline_exec_step_notice', async (event: any = {}) => {
+      let data = event.payload || {}
+      console.log('receive pipeline exec response', data)
+      if (data.code !== 200) {
+        return
+      }
+
+      pipelineStore.detailInfo = data.body || {}
+      let name = pipelineStore.detailInfo?.basic?.name || ''
+      openNotification(name)
     })
 
     // 监听流水线步骤事件
@@ -195,10 +226,7 @@ const PipelineDetail = (): ReactElement => {
                 pipelineStore.showRunDialog = true
                 pipelineStore.selectItem = pipelineStore.detailInfo || {}
                 pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
-                pipelineStore.isNeedSelectedLastSelected(
-                  pipelineStore.detailInfo?.run || {},
-                  pipelineStore.runDialogProps
-                )
+                pipelineStore.isNeedSelectedLastSelected(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
                 pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogDefaultProps)
                 setRunReadonly(false)
               }}
@@ -212,9 +240,11 @@ const PipelineDetail = (): ReactElement => {
             <Button
               className="page-margin-right"
               onClick={() => {
-                navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}?id=${Utils.encrypt(
+                navigate(
+                  `${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.ADD_URL}?id=${Utils.encrypt(
                     encodeURIComponent(pipelineStore.detailInfo?.id || '')
-                )}&serverId=${Utils.encrypt(encodeURIComponent(pipelineStore.detailInfo?.serverId || ''))}`)
+                  )}&serverId=${Utils.encrypt(encodeURIComponent(pipelineStore.detailInfo?.serverId || ''))}`
+                )
               }}
             >
               编辑
@@ -298,18 +328,67 @@ const PipelineDetail = (): ReactElement => {
     )
   }
 
-  const getViewGroups = (stages: Array<any> = []) => {
+  // 获取状态
+  const getViewStagesStatus = (stage: {[K: string]: any} = {}, stageI: number, groupI: number) => {
+    let status = stage.status
+    let stageIndex = stage.index || 0
+    let groupIndex = stage.groupIndex || 0
+
+    if (stage.finished) {
+      return IPipelineStatus.Success
+    }
+
+    if (stageI + 1 < stageIndex) {
+      return IPipelineStatus.Success
+    }
+
+    if (stageI + 1 > stageIndex) {
+      // 失败
+      if (status === pipelineStore.RUN_STATUS[4].value) {
+        return IPipelineStatus.Failed
+      }
+
+      return IPipelineStatus.No
+    }
+
+    if (stageI + 1 === stageIndex) {
+      if (groupIndex < groupI) {
+        return IPipelineStatus.Success
+      }
+
+      if (groupIndex > groupI) {
+        // 失败
+        if (status === pipelineStore.RUN_STATUS[4].value) {
+          return IPipelineStatus.Failed
+        }
+
+        return IPipelineStatus.No
+      }
+
+      // 相等
+      if (status === pipelineStore.RUN_STATUS[4].value) {
+        return IPipelineStatus.Failed
+      }
+
+      return IPipelineStatus.Process
+    }
+
+    return IPipelineStatus.No
+  }
+
+  const getViewGroups = (stepStage: {[K: string]: any} = {}, stages: Array<any> = []) => {
     if (stages.length === 0) return []
 
     let groups: Array<Array<IPipelineViewGroupProps>> = []
-    stages.forEach((stage: any) => {
+    stages.forEach((stage: any, i: number) => {
       let g: Array<IPipelineViewGroupProps> = []
       let stageGroups = stage.groups || []
 
-      stageGroups.forEach((group: { [K: string]: any } = {}) => {
+      stageGroups.forEach((group: { [K: string]: any } = {}, j: number) => {
         let steps = group.steps || []
         let newSteps: Array<IPipelineStepProps> = []
-        steps.forEach((step: { [K: string]: any } = {}) => {
+        let status = getViewStagesStatus(stepStage, i, j)
+        steps.forEach((step: { [K: string]: any } = {}, k: number) => {
           newSteps.push({
             label: step.label,
             ...step,
@@ -322,6 +401,7 @@ const PipelineDetail = (): ReactElement => {
             footer: getViewFooterHtml(),
           },
           steps: newSteps || [],
+          status
         })
       })
 
@@ -348,7 +428,7 @@ const PipelineDetail = (): ReactElement => {
         <PipelineView
           className="overflow-hidden"
           step={current.step || []}
-          groups={getViewGroups(current.stages || []) || []}
+          groups={getViewGroups(current.stage || {},current.stages || []) || []}
         />
       </div>
     )
@@ -362,6 +442,11 @@ const PipelineDetail = (): ReactElement => {
     let snapshot = current.runnable || {}
     let variables = snapshot.variables || []
     let selectedVariables = snapshot.selectedVariables || []
+    let basic = detailInfo.basic || {}
+    let extra = detailInfo.extra || {}
+    let tag = basic.tag || ''
+    let tagExtra = extra[tag.toLowerCase()] || {}
+    let displayFields = tagExtra.displayFields || []
     if (Utils.isObjectNull(snapshot)) {
       return (
         <div className="result-build-snapshot h100">
@@ -376,7 +461,7 @@ const PipelineDetail = (): ReactElement => {
       <div className="result-build-snapshot h100">
         <div className="build-item">
           <p className="font-bold title flex-align-center">运行属性</p>
-          <MTable dataSource={getRunProps(snapshot)} columns={getColumns()} />
+          <MTable dataSource={getRunProps(snapshot, displayFields)} columns={getColumns()} />
         </div>
 
         <div className="build-item page-margin-top">
@@ -428,29 +513,20 @@ const PipelineDetail = (): ReactElement => {
     })
   }
 
-  const getRunProps = (runnable: { [K: string]: any } = {}) => {
+  const getRunProps = (runnable: { [K: string]: any } = {}, displayFields: Array<{ [K: string]: any }> = []) => {
+    if (displayFields.length === 0) return []
+
     let list: Array<{ [K: string]: any }> = []
-    let h5 = pipelineStore.TAGS[pipelineStore.TAGS.length - 1].value
-    let isH5 = runnable.tag === h5
 
-    for (let item of pipelineStore.DIALOG_PROPS_LIST) {
-      let owner = item.owner
-      if (isH5 && Object.prototype.hasOwnProperty.call(runnable, item.value)) {
-        if (owner === 'all' || owner === h5) {
-          let value = runnable[item.value]
-          if (item.value === pipelineStore.DIALOG_PROPS_LIST[2].value) {
-            if (value.length === 0) {
-              continue
-            }
-          }
-
-          list.push({
-            name: item.label,
-            value: runnable[item.value],
-            genre: item.type,
-            desc: item.desc || '',
-          })
-        }
+    for (let field of displayFields) {
+      if (Object.prototype.hasOwnProperty.call(runnable, field.value)) {
+        let value = runnable[field.value]
+        list.push({
+          name: field.label,
+          value: value,
+          genre: field.type,
+          desc: field.desc || '',
+        })
       }
     }
 
@@ -474,7 +550,7 @@ const PipelineDetail = (): ReactElement => {
   const getRunHistoryHtml = () => {
     let detailInfo = pipelineStore.detailInfo || {}
     let run = detailInfo.run || {}
-    let historyList = run.historyList || []
+    let historyList = (run.historyList || []).slice().reverse()
     if (historyList.length === 0) {
       return (
         <div className="history-content h100">
@@ -536,10 +612,11 @@ const PipelineDetail = (): ReactElement => {
               needTooltip: false,
               render: (record: { [K: string]: any } = {}) => {
                 let current = record.current || {}
+                let runStatus = current.stage?.status || ''
                 let status =
                   pipelineStore.RUN_STATUS.find(
                     (status: { [K: string]: any } = {}) =>
-                      status.value.toLowerCase() === (current.status || '').toLowerCase()
+                      status.value.toLowerCase() === runStatus.toLowerCase()
                   ) || {}
                 if (!Utils.isObjectNull(status)) {
                   return <Tag color={status.color || ''}>{status.label || ''}</Tag>

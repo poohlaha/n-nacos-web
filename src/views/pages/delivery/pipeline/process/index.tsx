@@ -40,8 +40,8 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
 
     let form = Utils.deepCopy(stepForm) || {}
     let components = form.components || []
-    let newComponents = components.map((comp: { [K: string]: any } = {}, index: number) => {
-      if (index === stepIndex) {
+    let newComponents = components.map((comp: { [K: string]: any } = {}) => {
+      if (component.name === comp.name) {
         return component
       }
 
@@ -197,7 +197,11 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                               placeholder="请选择"
                               allowClear
                               value={component.value || undefined}
-                              onChange={(value: string) => {}}
+                              onChange={(value: string) => {
+                                  let comp = Utils.deepCopy(component) || {}
+                                  comp.value = value || ''
+                                  onUpdateStepForm(comp)
+                              }}
                               options={component.options || []}
                             />
                           )}

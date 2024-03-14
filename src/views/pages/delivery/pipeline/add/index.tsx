@@ -15,8 +15,8 @@ import PipelineVariable from './variable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, updateMarket } from '../process/templates/h5'
 import Page from '@views/components/page'
-import {ADDRESS} from '@utils/base'
-import MarketTemplateData from "@pages/delivery/pipelineMarket/templates/template.json";
+import { ADDRESS } from '@utils/base'
+import MarketTemplateData from '@pages/delivery/pipelineMarket/templates/template.json'
 
 // eslint-disable-next-line no-undef
 const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
@@ -39,36 +39,43 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
     }
   })
 
-  const getDetailActiveProcess = (stages: Array<{[K: string]: any}> = []) => {
+  const getDetailActiveProcess = (stages: Array<{ [K: string]: any }> = []) => {
     if (stages.length === 0) return []
 
     let processes: Array<Array<any>> = []
-    stages.forEach((stage) => {
+    stages.forEach(stage => {
       let groups: Array<any> = stage.groups || []
       let newGroups: Array<any> = []
       groups.forEach(group => {
         let steps: Array<any> = group.steps || []
         let newSteps: Array<any> = []
         steps.forEach(step => {
-          let marketTemplate: { [K: string]: any } = MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === step.id) || {}
+          let marketTemplate: { [K: string]: any } =
+            MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === step.id) || {}
           marketTemplate = Utils.deepCopy(marketTemplate)
-          let components = marketTemplate.components || []
+          let components: Array<any> = marketTemplate.components || []
           let newComponents: Array<any> = []
           let comps: Array<any> = step.components || []
-          comps.forEach(com => {
-            let component = components.find((d: { [K: string]: any } = {}) => d.name === com.prop) || {}
-            component.value = com.value || ''
-            newComponents.push(component)
-          })
+          if (components.length > 0) {
+            components.forEach(com => {
+              let component = comps.find((d: { [K: string]: any } = {}) => d.prop === com.name) || {}
+              if (!Utils.isObjectNull(component)) {
+                com.value = component.value || ''
+                newComponents.push(com)
+              } else {
+                newComponents.push(com)
+              }
+            })
+          }
 
-          newSteps.push({...step, components: newComponents, comps})
+          newSteps.push({ ...step, components: newComponents, comps })
         })
 
         newGroups.push({
           title: {
-            label: group.title || ''
+            label: group.title || '',
           },
-          steps: newSteps || []
+          steps: newSteps || [],
         })
       })
 

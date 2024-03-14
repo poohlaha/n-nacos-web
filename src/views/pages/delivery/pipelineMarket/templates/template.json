@@ -41,16 +41,7 @@
     "date": "2024/03/11",
     "command": "",
     "module": "Pack",
-    "components": [
-      {
-        "name": "packDir",
-        "label": "打包目录",
-        "type": "input",
-        "value": "",
-        "default": "",
-        "desc": "以下规则只要满足一条就必须填写:\n1. 当工作空间下有多个项目\n2. 当只有一个项目时, 且打包目录不为根目录"
-      }
-    ]
+    "components": []
   },
   {
     "id": "4",
@@ -61,7 +52,7 @@
     "desc": "通用模板--文件压缩",
     "date": "2024/03/11",
     "command": "",
-    "modules": "Compress",
+    "module": "Compress",
     "components": [
       {
         "name": "origin",
@@ -114,7 +105,7 @@
     "desc": "通用模板--项目部署",
     "date": "2024/03/11",
     "command": "",
-    "modules": "Deploy",
+    "module": "Deploy",
     "components": [
       {
         "name": "deployDir",
@@ -122,7 +113,15 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "默认 Development 环境: build, Production 环境: dist"
+        "desc": "默认为:build, 可以 `启动变量` 中配置"
+      },
+      {
+        "name": "serverDir",
+        "label": "服务器目录",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "发布到服务器目录"
       }
     ]
   },
@@ -135,6 +134,6 @@
     "desc": "通用模板--发送通知",
     "date": "2024/03/11",
     "command": "",
-    "modules": "Notice"
+    "module": "Notice"
   }
 ]
