@@ -963,6 +963,7 @@ class PipelineStore extends BaseStore {
       }
 
       // this.onRunStep(params)
+      await this.getList()
       callback?.()
     } catch (e: any) {
       this.loading = false
