@@ -42,7 +42,7 @@ const PipelineRunDialog: React.FC<IPipelineRunDialogProps> = (props: IPipelineRu
           let value = pipelineStore.runDialogProps.value || '0'
           pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
           pipelineStore.runDialogProps.value = value
-          pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogDefaultProps)
+          // pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogDefaultProps)
         }}
         onOk={async () => {
           let flag = pipelineStore.onValidateRun()

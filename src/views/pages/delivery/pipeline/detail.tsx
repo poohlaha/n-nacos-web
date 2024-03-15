@@ -3,7 +3,7 @@
  * @date 2024-02-21
  * @author poohlaha
  */
-import React, { ReactElement, useState } from 'react'
+import React, {ReactElement, useEffect, useState} from 'react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@views/stores'
@@ -28,6 +28,14 @@ const PipelineDetail = (): ReactElement => {
   const [runReadonly, setRunReadonly] = useState(false)
   const [runTabIndex, setRunTabIndex] = useState('0')
 
+  useEffect(() => {
+
+    return () => {
+      // 卸载
+      console.log('leave pipeline detail')
+      pipelineStore.onResetAddConfig()
+    }
+  }, [])
 
   const openNotification = (name: string = '') => {
     notification.open({
@@ -226,8 +234,9 @@ const PipelineDetail = (): ReactElement => {
                 pipelineStore.showRunDialog = true
                 pipelineStore.selectItem = pipelineStore.detailInfo || {}
                 pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
+                console.log('runDialogProps:', pipelineStore.runDialogProps.h5)
                 pipelineStore.isNeedSelectedLastSelected(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
-                pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogDefaultProps)
+                pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
                 setRunReadonly(false)
               }}
             >
@@ -579,7 +588,7 @@ const PipelineDetail = (): ReactElement => {
                         pipelineStore.runDialogProps.remark = record.current?.runnable?.remark || ''
                         pipelineStore.onSetRadioRunProps(
                           pipelineStore.selectItem || {},
-                          pipelineStore.runDialogDefaultProps
+                          pipelineStore.runDialogProps
                         )
                         setRunReadonly(true)
                       }}

@@ -197,9 +197,6 @@ class PipelineStore extends BaseStore {
     desc: '',
   }
 
-  @observable addBasicForm: { [K: string]: any } = Utils.deepCopy(this.addBasicDefaultForm)
-  @observable addVariableForm: { [K: string]: any } = Utils.deepCopy(this.addVariableDefaultForm)
-
   @observable addDefaultForm: { [K: string]: any } = {
     id: '',
     serverId: '',
@@ -362,7 +359,14 @@ class PipelineStore extends BaseStore {
   onResetAddConfig() {
     this.addForm = Utils.deepCopy(this.addDefaultForm)
     this.addVariableList = []
-    // this.activeProcess = this.H5_LOCAL_TEMPLATE
+    this.activeProcess = []
+    this.loggerList = []
+    this.detailInfo = {}
+    this.runDialogProps = Utils.deepCopy(this.runDialogDefaultProps)
+    this.selectItem = {}
+    this.showRunDialog = false
+    this.isEditor = false
+    this.osCommands = {}
   }
 
   /**
@@ -617,7 +621,7 @@ class PipelineStore extends BaseStore {
       let flag = this.isNeedSelectedLastSelected(this.detailInfo || {}, this.runDialogProps)
       if (flag) {
         this.runDialogProps = Utils.deepCopy(this.runDialogDefaultProps)
-        this.onSetRadioRunProps(this.detailInfo || {}, this.runDialogDefaultProps)
+        // this.onSetRadioRunProps(this.detailInfo || {}, this.runDialogProps)
       }
 
       callback?.()

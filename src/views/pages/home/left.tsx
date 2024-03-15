@@ -27,7 +27,7 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
 
   const render = () => {
     let selectServer = mainStore.getSelectServer() || {}
-    let url = homeStore.getUrl()
+    let url = homeStore.getUrl(false)
 
     return (
       <div className="left flex-direction-column">
@@ -80,7 +80,7 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
                     {/* group list */}
                     {children.map((child: { [K: string]: any }, i: number) => {
                       let childUrl = child.url || ''
-                      let childActive = childUrl === url
+                      let childActive = childUrl === url || url.startsWith(childUrl)
 
                       return (
                         <ul key={i}>

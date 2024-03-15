@@ -227,9 +227,16 @@ class HomeStore extends BaseStore {
   }
 
   // 直接根据 url 查找
-  getUrl() {
+  getUrl(needParams: boolean = true) {
     let relativePath = this.getRelativePath(window.location.href || '')
     relativePath = relativePath.replace(RouterUrls.HOME_URL, '')
+    if (!needParams) {
+      let index = relativePath.indexOf('?')
+      if (index !== -1) {
+        relativePath = relativePath.substring(0, index)
+      }
+    }
+
     return relativePath
   }
 
