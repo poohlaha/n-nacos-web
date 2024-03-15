@@ -608,7 +608,8 @@ const PipelineDetail = (): ReactElement => {
               width: '10%',
               needTooltip: false,
               render: (record: { [K: string]: any } = {}) => {
-                let current = record.current || {}
+                let run = record.run || {}
+                let current = run.current || {}
                 let order = current.order || ''
                 return <span>#{order}</span>
               },
@@ -620,7 +621,8 @@ const PipelineDetail = (): ReactElement => {
               width: '10%',
               needTooltip: false,
               render: (record: { [K: string]: any } = {}) => {
-                let current = record.current || {}
+                let run = record.run || {}
+                let current = run.current || {}
                 let runStatus = current.stage?.status || ''
                 let status =
                   pipelineStore.RUN_STATUS.find(
@@ -639,7 +641,8 @@ const PipelineDetail = (): ReactElement => {
               dataIndex: 'startTime',
               width: '20%',
               render: (record: { [K: string]: any } = {}) => {
-                let current = record.current || {}
+                let run = record.run || {}
+                let current = run.current || {}
                 return <span>{current.startTime || '-'}</span>
               },
             },
@@ -650,7 +653,8 @@ const PipelineDetail = (): ReactElement => {
               needTooltip: false,
               width: '20%',
               render: (record: { [K: string]: any } = {}) => {
-                let current = record.current || {}
+                let run = record.run || {}
+                let current = run.current || {}
                 let duration = current.duration || 0
                 if (duration === 0) {
                   return <span>-</span>
@@ -666,7 +670,9 @@ const PipelineDetail = (): ReactElement => {
               needTooltip: false,
               width: '20%',
               render: (record: { [K: string]: any } = {}) => {
-                let current = record.current || {}
+                debugger
+                let run = record.run || {}
+                let current = run.current || {}
                 let runnable = current.runnable || {}
                 let remark = runnable.remark || ''
                 if (Utils.isBlank(remark)) {

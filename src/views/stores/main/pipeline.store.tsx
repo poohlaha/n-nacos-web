@@ -717,12 +717,16 @@ class PipelineStore extends BaseStore {
       info = this.detailInfo || {}
     }
 
+    if (Utils.isObjectNull(info)) {
+      info = this.selectItem || {}
+    }
+
     let runDialogProps = dialogProps || {}
     if (Utils.isObjectNull(runDialogProps)) {
       runDialogProps = this.runDialogProps || {}
     }
 
-    let tag = info.basic.tag || ''
+    let tag = info.basic?.tag || ''
     let variables = info.variables || []
 
     // h5
@@ -818,7 +822,7 @@ class PipelineStore extends BaseStore {
   @action
   async onRun(isReadonly: boolean = false, callback?: Function) {
     try {
-      let params = this.getStepProps(isReadonly ? this.selectItem || {} : this.detailInfo || {}, this.runDialogProps)
+      let params = this.getStepProps(this.selectItem || this.detailInfo || {}, this.runDialogProps)
       console.log('run pipeline params:', params)
       await info(`run pipeline param: ${JSON.stringify(params)}`)
       let result: { [K: string]: any } = (await invoke('pipeline_run', { props: params })) || {}
@@ -830,6 +834,7 @@ class PipelineStore extends BaseStore {
       }
 
       this.detailInfo = res || {}
+      TOAST.show({ message: '已在后台运行流水线', type: 1 })
       callback?.()
     } catch (e: any) {
       this.loading = false
