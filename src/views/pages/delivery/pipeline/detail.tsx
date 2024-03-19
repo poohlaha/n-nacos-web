@@ -93,7 +93,13 @@ const PipelineDetail = (): ReactElement => {
     await listen('pipeline_exec_step_log', async (event: any = {}) => {
       let data = event.payload || {}
       console.log('receive pipeline exec step log', data)
-      pipelineStore.loggerList.push(data)
+      let id = ADDRESS.getAddressQueryString('id') || ''
+      id = Utils.decrypt(decodeURIComponent(id))
+
+      if (data.id === id) {
+        pipelineStore.loggerList.push(data.msg)
+      }
+
     })
 
     // 监听流水线步骤结果事件
@@ -273,7 +279,19 @@ const PipelineDetail = (): ReactElement => {
                 )
               }}
             >
-              <Button danger>删除</Button>
+              <Button danger className="page-margin-right">删除</Button>
+            </Popconfirm>
+
+            <Popconfirm
+                title="温馨提示"
+                description="是否删除所有的运行历史记录?"
+                okText="确定"
+                cancelText="取消"
+                onConfirm={async () => {
+                  await pipelineStore.onClearRunHistory()
+                }}
+            >
+              <Button type="link">清除运行历史</Button>
             </Popconfirm>
           </div>
         </div>
@@ -670,7 +688,6 @@ const PipelineDetail = (): ReactElement => {
               needTooltip: false,
               width: '20%',
               render: (record: { [K: string]: any } = {}) => {
-                debugger
                 let run = record.run || {}
                 let current = run.current || {}
                 let runnable = current.runnable || {}
@@ -729,9 +746,10 @@ const PipelineDetail = (): ReactElement => {
   const render = () => {
     return (
       <Page
-        className="pipeline-detail-page page-white page-padding-left page-padding-right page-padding-bottom"
+        className="pipeline-detail-page page-white"
         needNavigation={false}
         pageBodyNeedPadding={false}
+        pageBodyClassName="page-padding-left page-padding-right page-padding-bottom"
         needBreadcrumb={true}
         breadCrumbItemList={getBreadcrumbItemList()}
       >
@@ -744,6 +762,10 @@ const PipelineDetail = (): ReactElement => {
               setRunTabIndex(activeKey)
             }}
           />
+
+          <div className="flex-align-center">
+            <Button type='link'>清除日志</Button>
+          </div>
         </div>
 
         <RunDialog

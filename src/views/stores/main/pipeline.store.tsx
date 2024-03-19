@@ -823,6 +823,7 @@ class PipelineStore extends BaseStore {
   async onRun(isReadonly: boolean = false, callback?: Function) {
     try {
       let params = this.getStepProps(this.selectItem || this.detailInfo || {}, this.runDialogProps)
+      this.loggerList = []
       console.log('run pipeline params:', params)
       await info(`run pipeline param: ${JSON.stringify(params)}`)
       let result: { [K: string]: any } = (await invoke('pipeline_run', { props: params })) || {}
@@ -982,6 +983,7 @@ class PipelineStore extends BaseStore {
   @action
   async queryOsCommand(callback?: Function) {
     try {
+      this.loading = true
       let result: { [K: string]: any } = (await invoke('query_os_commands', {})) || {}
       this.loading = false
       console.log('get query os command:', result)
@@ -991,6 +993,33 @@ class PipelineStore extends BaseStore {
       }
 
       this.osCommands = res || {}
+      callback?.()
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
+  /**
+   * 清空运行历史记录
+   */
+  async onClearRunHistory(callback?: Function) {
+    try {
+      this.loading = true
+      let params = {
+        id: this.detailInfo.id || '',
+        serverId: this.detailInfo.serverId || '',
+      }
+      console.log('clear run history param:', params)
+      let result: { [K: string]: any } = (await invoke('clear_run_history', { ...params })) || {}
+      console.log('get clear run history result:', result)
+      this.loading = false
+      let res = this.handleResult(result) || {}
+      if (Utils.isObjectNull(res)) {
+        return
+      }
+
+      this.detailInfo = res || {}
       callback?.()
     } catch (e: any) {
       this.loading = false
