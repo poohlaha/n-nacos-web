@@ -1019,6 +1019,7 @@ class PipelineStore extends BaseStore {
         return
       }
 
+      TOAST.show({ message: '删除流水线运行历史记录成功', type: 2 })
       this.detailInfo = res || {}
       callback?.()
     } catch (e: any) {
