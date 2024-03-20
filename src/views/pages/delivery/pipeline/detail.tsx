@@ -97,7 +97,9 @@ const PipelineDetail = (): ReactElement => {
       id = Utils.decrypt(decodeURIComponent(id))
 
       if (data.id === id) {
-        pipelineStore.loggerList.push(data.msg)
+        if (!pipelineStore.loggerList.includes(data.msg)) {
+          pipelineStore.loggerList.push(data.msg)
+        }
       }
 
     })
