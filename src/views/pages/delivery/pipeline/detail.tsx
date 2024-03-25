@@ -765,9 +765,11 @@ const PipelineDetail = (): ReactElement => {
             }}
           />
 
+          {/*
           <div className="flex-align-center">
             <Button type='link'>清除日志</Button>
           </div>
+          */}
         </div>
 
         <RunDialog
