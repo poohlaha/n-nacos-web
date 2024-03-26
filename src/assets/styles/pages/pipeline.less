@@ -224,8 +224,13 @@
     .result-build-process {
       background: @background_right;
 
+      .logger {
+        height: 22px;
+      }
+
       .pipeline-stage-view {
         overflow: auto;
+        height: calc(100% - 22px);
       }
     }
   }

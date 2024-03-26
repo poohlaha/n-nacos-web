@@ -188,7 +188,15 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                           )}
 
                           {component.type === 'textarea' && (
-                            <Input.TextArea placeholder="请输入" value={component.value || ''} />
+                            <Input.TextArea
+                                placeholder="请输入"
+                                value={component.value || ''}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                                    let comp = Utils.deepCopy(component) || {}
+                                    comp.value = e.target.value || ''
+                                    onUpdateStepForm(comp)
+                                }}
+                            />
                           )}
 
                           {component.type === 'select' && (
@@ -206,7 +214,9 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                             />
                           )}
 
-                          <div className="desc">{component.desc || ''}</div>
+                            {
+                                !Utils.isBlank(component.desc || '') && ( <div className="desc">{component.desc || ''}</div>)
+                            }
                         </div>
                       </div>
                     )

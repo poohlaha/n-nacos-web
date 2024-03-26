@@ -13,7 +13,7 @@ import { open } from '@tauri-apps/plugin-dialog'
 import PipelineProcess from '../process'
 import PipelineVariable from './variable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, updateMarket } from '../process/templates/h5'
+import {H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, H5_VARIABLE_LIST, updateMarket} from '../process/templates/h5'
 import Page from '@views/components/page'
 import { ADDRESS } from '@utils/base'
 import MarketTemplateData from '@pages/delivery/pipelineMarket/templates/template.json'
@@ -101,6 +101,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
 
   const getActiveProcess = () => {
     if (pipelineStore.isEditor) return
+
     // H5
     if (pipelineStore.addForm.basic.tag === pipelineStore.TAGS[7].value) {
       let isRemoteUrl = pipelineStore.isRemoteUrl(pipelineStore.addForm.basic.path || '')
@@ -110,10 +111,13 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
         pipelineStore.activeProcess = H5_LOCAL_TEMPLATE
       }
 
+      // 设置默认的 启动变量属性
+      pipelineStore.addVariableList = H5_VARIABLE_LIST
       return
     }
 
     pipelineStore.activeProcess = []
+    pipelineStore.addVariableList = []
   }
 
   // 基本信息

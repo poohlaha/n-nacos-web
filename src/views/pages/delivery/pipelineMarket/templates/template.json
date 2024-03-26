@@ -45,11 +45,76 @@
   },
   {
     "id": "4",
-    "key": "compress",
+    "key": "minimize",
     "label": "文件压缩",
     "type": "自定义插件",
     "step": "构建",
     "desc": "通用模板--文件压缩",
+    "date": "2024/03/11",
+    "command": "",
+    "module": "Minimize",
+    "components": [
+      {
+        "name": "dir",
+        "label": "文件目录",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "压缩文件目录, 默认使用 `deployDir` 属性"
+      },
+      {
+        "name": "excludes",
+        "label": "过滤文件",
+        "type": "textarea",
+        "value": "",
+        "default": "",
+        "desc": "过滤的文件, 可使用正则匹配，如: **/*.min.js"
+      },
+      {
+        "name": "validateJs",
+        "label": "JS校验",
+        "type": "select",
+        "value": "Yes",
+        "options": [
+          {
+            "label":"是",
+            "value":"Yes"
+          },
+          {
+            "label":"否",
+            "value":"No"
+          }
+        ],
+        "default": "",
+        "desc": "是否对JS进行校验"
+      },
+      {
+        "name": "optimizationCss",
+        "label": "CSS优化",
+        "type": "select",
+        "value": "Yes",
+        "options": [
+          {
+            "label":"是",
+            "value":"Yes"
+          },
+          {
+            "label":"否",
+            "value":"No"
+          }
+        ],
+        "default": "",
+        "desc": "是否对CSS进行优化"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "key": "compress",
+    "label": "图片压缩",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "通用模板--图片压缩",
     "date": "2024/03/11",
     "command": "",
     "module": "Compress",
@@ -60,15 +125,15 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": ""
+        "desc": "文件压缩源目录, 默认为 build 目录"
       },
       {
         "name": "dest",
-        "label": "目录目录",
+        "label": "目标目录",
         "type": "input",
         "value": "",
         "default": "",
-        "desc": ""
+        "desc": "文件压缩目标目录, 默认和源目录一致"
       },
       {
         "name": "quality",
@@ -97,7 +162,7 @@
     ]
   },
   {
-    "id": "5",
+    "id": "6",
     "key": "deploy",
     "label": "项目部署",
     "type": "自定义插件",
@@ -113,7 +178,7 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "默认为:build, 可以 `启动变量` 中配置"
+        "desc": "默认为 build, 可以 `启动变量` 中配置"
       },
       {
         "name": "serverDir",
@@ -126,7 +191,7 @@
     ]
   },
   {
-    "id": "6",
+    "id": "7",
     "key": "notice",
     "label": "发送通知",
     "type": "自定义插件",

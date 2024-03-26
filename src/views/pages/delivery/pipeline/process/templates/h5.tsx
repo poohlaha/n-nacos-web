@@ -37,7 +37,7 @@ const LOCAL_TEMPLATE: Array<Array<{ [K: string]: any }>> = [
   [
     {
       title: {
-        label: '项目部署',
+        label: '图片压缩',
       },
       marketId: '5',
       steps: [],
@@ -46,9 +46,18 @@ const LOCAL_TEMPLATE: Array<Array<{ [K: string]: any }>> = [
   [
     {
       title: {
-        label: '发送通知',
+        label: '项目部署',
       },
       marketId: '6',
+      steps: [],
+    },
+  ],
+  [
+    {
+      title: {
+        label: '发送通知',
+      },
+      marketId: '7',
       steps: [],
     },
   ],
@@ -80,6 +89,28 @@ const getSteps = (list: Array<Array<any>> = []) => {
     })
   })
 }
+
+// 启动变量
+const H5_VARIABLE_LIST: Array<{[K: string]: any}> = [
+  {
+    id: Utils.generateUUID(),
+    name: 'deployDir',
+    genre: 'select',
+    value: 'build\ndist',
+    disabled: 'no',
+    require: 'no',
+    desc: '项目部署目录'
+  },
+  {
+    id: Utils.generateUUID(),
+    name: 'needIncrement',
+    genre: 'select',
+    value: 'Yes\nNo',
+    disabled: 'no',
+    require: 'no',
+    desc: '是否增量发布'
+  }
+]
 
 const getH5InstalledSelect = (h5InstalledCommands: Array<string>) => {
   if (h5InstalledCommands.length === 0) return []
@@ -155,4 +186,4 @@ const updateMarket = (list: Array<Array<any>> = [], market: { [K: string]: any }
 const H5_LOCAL_TEMPLATE = getSteps(LOCAL_TEMPLATE)
 const H5_REMOTE_TEMPLATE = getSteps(REMOTE_TEMPLATE)
 
-export { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, replaceStepsComponentValue, updateMarket }
+export { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, H5_VARIABLE_LIST, replaceStepsComponentValue, updateMarket }
