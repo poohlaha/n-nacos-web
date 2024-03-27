@@ -1,7 +1,7 @@
 /**
  * 流水线
  */
-import React, { ReactElement, useState, useRef } from 'react'
+import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
 import Loading from '@views/components/loading/loading'
@@ -9,8 +9,7 @@ import Utils from '@utils/utils'
 import useMount from '@hooks/useMount'
 import { useNavigate } from 'react-router-dom'
 import RouterUrls from '@route/router.url.toml'
-import MBreadcrumb from '@views/modules/breadcrumb'
-import { Tag, Button, Select, Input, Tooltip, Table, Space, Popconfirm, Modal } from 'antd'
+import { Tag, Button, Select, Input, Tooltip, Table, Space, Popconfirm } from 'antd'
 import { PlusOutlined, PlayCircleOutlined, SearchOutlined, RedoOutlined } from '@ant-design/icons'
 import RunDialog from '@pages/delivery/pipeline/run'
 import PipelineBatchRunDialog from './batch'

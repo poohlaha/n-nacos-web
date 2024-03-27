@@ -114,7 +114,6 @@ class ProjectBuilder {
     const startTime = performance.now()
 
     WebpackDllCompiler(this._script, {
-      mode: 'development',
       entry: {
         vendor: ['react', 'react-dom', 'react-router-dom', 'mobx', 'mobx-react-lite'],
         other: ['axios', 'crypto-js']
@@ -143,7 +142,7 @@ class ProjectBuilder {
         settings: {
           openBrowser: false,
           jsLoaderInclude: [
-              path.resolve(this._copyDir, 'src/common'),
+            path.resolve(this._copyDir, 'src/common'),
             path.resolve(this._copyDir, 'src', this._copyDestDir),
             path.resolve(this._nodeModulesDir, '@bale-react-components/pipeline')
           ],
