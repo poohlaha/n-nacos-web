@@ -3,7 +3,7 @@
  * @date 2024-02-21
  * @author poohlaha
  */
-import React, {ReactElement, useEffect, useState} from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@views/stores'
@@ -18,7 +18,12 @@ import { listen } from '@tauri-apps/api/event'
 import Ansi from 'ansi-to-react'
 import MTable from '@views/modules/table'
 import RouterUrls from '@route/router.url.toml'
-import { IPipelineStepProps, IPipelineViewGroupProps, PipelineView, IPipelineStatus } from '../pipeline/pipeline/index'
+import {
+  IPipelineStepProps,
+  IPipelineViewGroupProps,
+  PipelineView,
+  IPipelineStatus,
+} from '@bale-react-components/pipeline'
 import Page from '@views/components/page'
 
 const PipelineDetail = (): ReactElement => {
@@ -29,7 +34,6 @@ const PipelineDetail = (): ReactElement => {
   const [runTabIndex, setRunTabIndex] = useState('0')
 
   useEffect(() => {
-
     return () => {
       // 卸载
       console.log('leave pipeline detail')
@@ -41,16 +45,14 @@ const PipelineDetail = (): ReactElement => {
     notification.open({
       message: '友情提示',
       description: (
-          <div className="notice-body flex-align-center">
-            <p>流水线</p>
-            <p className="theme-color pipeline-name">{name || ''}</p>
-            <p>发布成功 !</p>
-          </div>
+        <div className="notice-body flex-align-center">
+          <p>流水线</p>
+          <p className="theme-color pipeline-name">{name || ''}</p>
+          <p>发布成功 !</p>
+        </div>
       ),
-      onClick: () => {
-
-      },
-      placement: 'bottomRight'
+      onClick: () => {},
+      placement: 'bottomRight',
     })
   }
 
@@ -101,7 +103,6 @@ const PipelineDetail = (): ReactElement => {
           pipelineStore.loggerList.push(data.msg)
         }
       }
-
     })
 
     // 监听流水线步骤结果事件
@@ -281,17 +282,19 @@ const PipelineDetail = (): ReactElement => {
                 )
               }}
             >
-              <Button danger className="page-margin-right">删除</Button>
+              <Button danger className="page-margin-right">
+                删除
+              </Button>
             </Popconfirm>
 
             <Popconfirm
-                title="温馨提示"
-                description="是否删除所有的运行历史记录?"
-                okText="确定"
-                cancelText="取消"
-                onConfirm={async () => {
-                  await pipelineStore.onClearRunHistory()
-                }}
+              title="温馨提示"
+              description="是否删除所有的运行历史记录?"
+              okText="确定"
+              cancelText="取消"
+              onConfirm={async () => {
+                await pipelineStore.onClearRunHistory()
+              }}
             >
               <Button type="link">清除运行历史</Button>
             </Popconfirm>
@@ -358,7 +361,7 @@ const PipelineDetail = (): ReactElement => {
   }
 
   // 获取状态
-  const getViewStagesStatus = (stage: {[K: string]: any} = {}, stageI: number, groupI: number) => {
+  const getViewStagesStatus = (stage: { [K: string]: any } = {}, stageI: number, groupI: number) => {
     let status = stage.status
     let stageIndex = stage.index || 0
     let groupIndex = stage.groupIndex || 0
@@ -405,7 +408,7 @@ const PipelineDetail = (): ReactElement => {
     return IPipelineStatus.No
   }
 
-  const getViewGroups = (stepStage: {[K: string]: any} = {}, stages: Array<any> = []) => {
+  const getViewGroups = (stepStage: { [K: string]: any } = {}, stages: Array<any> = []) => {
     if (stages.length === 0) return []
 
     let groups: Array<Array<IPipelineViewGroupProps>> = []
@@ -430,7 +433,7 @@ const PipelineDetail = (): ReactElement => {
             footer: getViewFooterHtml(),
           },
           steps: newSteps || [],
-          status
+          status,
         })
       })
 
@@ -457,7 +460,7 @@ const PipelineDetail = (): ReactElement => {
         <PipelineView
           className="overflow-hidden"
           step={current.step || []}
-          groups={getViewGroups(current.stage || {},current.stages || []) || []}
+          groups={getViewGroups(current.stage || {}, current.stages || []) || []}
         />
       </div>
     )
@@ -606,10 +609,7 @@ const PipelineDetail = (): ReactElement => {
                         pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
                         pipelineStore.runDialogProps.value = '1'
                         pipelineStore.runDialogProps.remark = record.current?.runnable?.remark || ''
-                        pipelineStore.onSetRadioRunProps(
-                          pipelineStore.selectItem || {},
-                          pipelineStore.runDialogProps
-                        )
+                        pipelineStore.onSetRadioRunProps(pipelineStore.selectItem || {}, pipelineStore.runDialogProps)
                         setRunReadonly(true)
                       }}
                     >
@@ -646,8 +646,7 @@ const PipelineDetail = (): ReactElement => {
                 let runStatus = current.stage?.status || ''
                 let status =
                   pipelineStore.RUN_STATUS.find(
-                    (status: { [K: string]: any } = {}) =>
-                      status.value.toLowerCase() === runStatus.toLowerCase()
+                    (status: { [K: string]: any } = {}) => status.value.toLowerCase() === runStatus.toLowerCase()
                   ) || {}
                 if (!Utils.isObjectNull(status)) {
                   return <Tag color={status.color || ''}>{status.label || ''}</Tag>

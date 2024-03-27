@@ -91,7 +91,7 @@ const getSteps = (list: Array<Array<any>> = []) => {
 }
 
 // 启动变量
-const H5_VARIABLE_LIST: Array<{[K: string]: any}> = [
+const H5_VARIABLE_LIST: Array<{ [K: string]: any }> = [
   {
     id: Utils.generateUUID(),
     name: 'deployDir',
@@ -99,7 +99,7 @@ const H5_VARIABLE_LIST: Array<{[K: string]: any}> = [
     value: 'build\ndist',
     disabled: 'no',
     require: 'no',
-    desc: '项目部署目录'
+    desc: '项目部署目录',
   },
   {
     id: Utils.generateUUID(),
@@ -108,8 +108,8 @@ const H5_VARIABLE_LIST: Array<{[K: string]: any}> = [
     value: 'Yes\nNo',
     disabled: 'no',
     require: 'no',
-    desc: '是否增量发布'
-  }
+    desc: '是否增量发布',
+  },
 ]
 
 const getH5InstalledSelect = (h5InstalledCommands: Array<string>) => {

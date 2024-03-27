@@ -6,7 +6,7 @@
 import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Drawer, Button, Input, Select } from 'antd'
-import { IPipelineGroupProps, IPipelineStepProps, Pipeline } from '../pipeline'
+import { IPipelineGroupProps, IPipelineStepProps, Pipeline } from '@bale-react-components/pipeline'
 import Utils from '@utils/utils'
 
 interface IPipelineProcessProps {
@@ -189,13 +189,13 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
 
                           {component.type === 'textarea' && (
                             <Input.TextArea
-                                placeholder="请输入"
-                                value={component.value || ''}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-                                    let comp = Utils.deepCopy(component) || {}
-                                    comp.value = e.target.value || ''
-                                    onUpdateStepForm(comp)
-                                }}
+                              placeholder="请输入"
+                              value={component.value || ''}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                                let comp = Utils.deepCopy(component) || {}
+                                comp.value = e.target.value || ''
+                                onUpdateStepForm(comp)
+                              }}
                             />
                           )}
 
@@ -206,17 +206,15 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                               allowClear
                               value={component.value || undefined}
                               onChange={(value: string) => {
-                                  let comp = Utils.deepCopy(component) || {}
-                                  comp.value = value || ''
-                                  onUpdateStepForm(comp)
+                                let comp = Utils.deepCopy(component) || {}
+                                comp.value = value || ''
+                                onUpdateStepForm(comp)
                               }}
                               options={component.options || []}
                             />
                           )}
 
-                            {
-                                !Utils.isBlank(component.desc || '') && ( <div className="desc">{component.desc || ''}</div>)
-                            }
+                          {!Utils.isBlank(component.desc || '') && <div className="desc">{component.desc || ''}</div>}
                         </div>
                       </div>
                     )

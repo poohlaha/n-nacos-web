@@ -21,6 +21,7 @@ class ProjectBuilder {
   _projectUrl = ''
   _args = []
   _copyDestDir = ''
+  _nodeModulesDir = ''
 
   constructor() {
     this._args = process.argv.slice(2) || []
@@ -29,7 +30,8 @@ class ProjectBuilder {
     this._copyDestDir = 'pc'
     this._appRootDir = Paths.getAppRootDir() || ''
     this._dllDir = path.join(this._appRootDir, '.vendor')
-    this._copyDir = path.resolve(this._appRootDir, 'node_modules', '@bale-sprint/react')
+    this._nodeModulesDir = path.join(this._appRootDir, 'node_modules')
+    this._copyDir = path.resolve(this._nodeModulesDir, '@bale-sprint/react')
   }
 
   _getProjectUrl() {
@@ -140,14 +142,18 @@ class ProjectBuilder {
         entry: path.resolve(this._appRootDir, 'src/communal/index.tsx'),
         settings: {
           openBrowser: false,
-          jsLoaderInclude: [path.resolve(this._copyDir, 'src/common'), path.resolve(this._copyDir, 'src', this._copyDestDir)],
+          jsLoaderInclude: [
+              path.resolve(this._copyDir, 'src/common'),
+            path.resolve(this._copyDir, 'src', this._copyDestDir),
+            path.resolve(this._nodeModulesDir, '@bale-react-components/pipeline')
+          ],
           usePurgecssPlugin: false,
           usePwaPlugin: false,
           useMinimize: true,
           experiments: false,
           generateReport: false,
           providePlugin: {
-            $http: [Paths.resolve('src/communal/request/index.tsx'), 'default']
+
           },
           compress: {
             enable: false,

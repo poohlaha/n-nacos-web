@@ -55,6 +55,24 @@
     "module": "Minimize",
     "components": [
       {
+        "name": "isNeed",
+        "label": "是否启用",
+        "type": "select",
+        "value": "Yes",
+        "default": "",
+        "desc": "是否启用文件压缩",
+        "options": [
+          {
+            "label": "是",
+            "value": "Yes"
+          },
+          {
+            "label": "否",
+            "value": "No"
+          }
+        ]
+      },
+      {
         "name": "dir",
         "label": "文件目录",
         "type": "input",
@@ -77,12 +95,12 @@
         "value": "Yes",
         "options": [
           {
-            "label":"是",
-            "value":"Yes"
+            "label": "是",
+            "value": "Yes"
           },
           {
-            "label":"否",
-            "value":"No"
+            "label": "否",
+            "value": "No"
           }
         ],
         "default": "",
@@ -95,12 +113,12 @@
         "value": "Yes",
         "options": [
           {
-            "label":"是",
-            "value":"Yes"
+            "label": "是",
+            "value": "Yes"
           },
           {
-            "label":"否",
-            "value":"No"
+            "label": "否",
+            "value": "No"
           }
         ],
         "default": "",
@@ -119,6 +137,24 @@
     "command": "",
     "module": "Compress",
     "components": [
+      {
+        "name": "isNeed",
+        "label": "是否启用",
+        "type": "select",
+        "value": "Yes",
+        "default": "",
+        "desc": "是否启用图片压缩",
+        "options": [
+          {
+            "label": "是",
+            "value": "Yes"
+          },
+          {
+            "label": "否",
+            "value": "No"
+          }
+        ]
+      },
       {
         "name": "origin",
         "label": "源目录",
