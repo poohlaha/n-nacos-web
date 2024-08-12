@@ -12,62 +12,130 @@ import { invoke } from '@tauri-apps/api/core'
 import { info } from '@tauri-apps/plugin-log'
 
 class PipelineProcessConfig {
+  id: string
+  pipelineId: string
   stages: Array<PipelineStage>
-  constructor(stages: Array<PipelineStage>) {
+  createTime: string
+  updateTime: string
+
+  constructor(
+      stages: Array<PipelineStage>,
+      id: string = '',
+      pipelineId: string = '',
+      createTime: string = '',
+      updateTime: string = ''
+      ) {
+    this.id = id
+    this.pipelineId = pipelineId
     this.stages = stages
+    this.createTime = createTime
+    this.updateTime = updateTime
   }
 }
 
 class PipelineStage {
+  id: string
+  processId: string
   groups: Array<PipelineGroup>
+  createTime: string
+  updateTime: string
 
-  constructor(groups: Array<PipelineGroup>) {
+  constructor(
+      groups: Array<PipelineGroup>,
+      id: string = '',
+      processId: string = '',
+      createTime: string = '',
+      updateTime: string = ''
+      ) {
+    this.id = id
+    this.processId = processId
     this.groups = groups
+    this.createTime = createTime
+    this.updateTime = updateTime
   }
 }
 
 class PipelineGroup {
+  id: string
+  stageId: string
   title: string
   steps: Array<PipelineStep>
+  createTime: string
+  updateTime: string
 
-  constructor(title: string, steps: Array<PipelineStep>) {
+  constructor(
+      title: string,
+      steps: Array<PipelineStep>,
+      id: string = '',
+      stageId: string = '',
+      createTime: string = '',
+      updateTime: string = ''
+      ) {
+    this.id = id
+    this.stageId = stageId
     this.title = title
     this.steps = steps
+    this.createTime = createTime
+    this.updateTime = updateTime
   }
 }
 
 class PipelineStep {
   id: string
+  groupId: string
   module: string
   command: string
   label: string
   status: string
   components: Array<PipelineStepComponent>
+  createTime: string
+  updateTime: string
 
   constructor(
     id: string,
+    groupId: string,
     module: string,
     command: string,
     label: string,
     status: string,
-    components: Array<PipelineStepComponent>
+    components: Array<PipelineStepComponent>,
+    createTime: string = '',
+    updateTime: string = ''
   ) {
     this.id = id
+    this.groupId = groupId
     this.command = command
     this.label = label
     this.module = module
     this.status = status
     this.components = components
+    this.createTime = createTime
+    this.updateTime = updateTime
   }
 }
 
 class PipelineStepComponent {
+  id: string
+  stepId: string
   prop: string
   value: string
+  createTime: string
+  updateTime: string
 
-  constructor(prop: string, value: string) {
+  constructor(
+      prop: string,
+      value: string,
+      id: string = '',
+      stepId: string = '',
+      createTime: string = '',
+      updateTime: string = ''
+  ) {
     this.prop = prop
     this.value = value
+    this.id = id
+    this.stepId = stepId
+    this.createTime = createTime
+    this.updateTime = updateTime
   }
 }
 
@@ -399,12 +467,14 @@ class PipelineStore extends BaseStore {
   trimBasic(basic: { [K: string]: any } = {}) {
     if (Utils.isObjectNull(basic)) return {}
 
+    let id = (basic.id || '').trim()
     let name = (basic.name || '').trim()
     let tag = (basic.tag || '').trim()
     let path = (basic.path || '').trim()
     let desc = (basic.desc || '').trim()
 
     return {
+      id,
       name,
       tag,
       path,
@@ -434,6 +504,7 @@ class PipelineStore extends BaseStore {
           newSteps.push(
             new PipelineStep(
               step.id || '',
+                item.id || '',
               step.module || '',
               step.command || '',
               step.label || '',
@@ -481,6 +552,8 @@ class PipelineStore extends BaseStore {
       basic,
       status: this.RUN_STATUS[0].value,
       processConfig: {
+        id: '',
+        pipelineId: '',
         stages: this.getProcessConfig(),
       },
       variables: this.addVariableList || [],
