@@ -149,9 +149,8 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       key: 'step',
       width: '18%',
       render: (_: any, record: { [K: string]: any } = {}) => {
-        let run = record.run || {}
-        let current = run.current || {}
-        let stages = current.stages || []
+        let processConfig = record.processConfig || {}
+        let stages = processConfig.stages || []
 
         let arr: Array<React.ReactNode> = []
         for (let i = 0; i < stages.length; i++) {
@@ -160,7 +159,10 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
             return <div className="step-box" />
           }
 
-          let className = getStepClassName(current.stage, i)
+          let className = getStepClassName({
+            index: record.stage_run_index,
+            status: record.status,
+          }, i)
 
           let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.title).join(',')
           arr.push(
