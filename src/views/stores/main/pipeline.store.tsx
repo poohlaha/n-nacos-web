@@ -19,12 +19,12 @@ class PipelineProcessConfig {
   updateTime: string
 
   constructor(
-      stages: Array<PipelineStage>,
-      id: string = '',
-      pipelineId: string = '',
-      createTime: string = '',
-      updateTime: string = ''
-      ) {
+    stages: Array<PipelineStage>,
+    id: string = '',
+    pipelineId: string = '',
+    createTime: string = '',
+    updateTime: string = ''
+  ) {
     this.id = id
     this.pipelineId = pipelineId
     this.stages = stages
@@ -41,12 +41,12 @@ class PipelineStage {
   updateTime: string
 
   constructor(
-      groups: Array<PipelineGroup>,
-      id: string = '',
-      processId: string = '',
-      createTime: string = '',
-      updateTime: string = ''
-      ) {
+    groups: Array<PipelineGroup>,
+    id: string = '',
+    processId: string = '',
+    createTime: string = '',
+    updateTime: string = ''
+  ) {
     this.id = id
     this.processId = processId
     this.groups = groups
@@ -64,13 +64,13 @@ class PipelineGroup {
   updateTime: string
 
   constructor(
-      title: string,
-      steps: Array<PipelineStep>,
-      id: string = '',
-      stageId: string = '',
-      createTime: string = '',
-      updateTime: string = ''
-      ) {
+    title: string,
+    steps: Array<PipelineStep>,
+    id: string = '',
+    stageId: string = '',
+    createTime: string = '',
+    updateTime: string = ''
+  ) {
     this.id = id
     this.stageId = stageId
     this.title = title
@@ -123,12 +123,12 @@ class PipelineStepComponent {
   updateTime: string
 
   constructor(
-      prop: string,
-      value: string,
-      id: string = '',
-      stepId: string = '',
-      createTime: string = '',
-      updateTime: string = ''
+    prop: string,
+    value: string,
+    id: string = '',
+    stepId: string = '',
+    createTime: string = '',
+    updateTime: string = ''
   ) {
     this.prop = prop
     this.value = value
@@ -504,7 +504,7 @@ class PipelineStore extends BaseStore {
           newSteps.push(
             new PipelineStep(
               step.id || '',
-                item.id || '',
+              item.id || '',
               step.module || '',
               step.command || '',
               step.label || '',

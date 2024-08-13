@@ -159,10 +159,13 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
             return <div className="step-box" />
           }
 
-          let className = getStepClassName({
-            index: record.stage_run_index,
-            status: record.status,
-          }, i)
+          let className = getStepClassName(
+            {
+              index: record.stage_run_index,
+              status: record.status,
+            },
+            i
+          )
 
           let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.title).join(',')
           arr.push(
@@ -368,7 +371,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
 
           <div className="list">
             <Table
-                rowKey="id"
+              rowKey="id"
               columns={tableHeaders || []}
               dataSource={pipelineStore.list || []}
               rowSelection={{
