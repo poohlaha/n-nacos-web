@@ -77,6 +77,7 @@ const PipelineBatchRunDialog: React.FC<IPipelineBatchRunDialogProps> = (
 
   const getRunProps = (selectedItemList: Array<{ [K: string]: any }> = []) => {
     if (selectedItemList.length === 0) return []
+    console.log('selectedItemList:', selectedItemList)
 
     let list: Array<any> = []
     selectedItemList.forEach((selectItem, index) => {

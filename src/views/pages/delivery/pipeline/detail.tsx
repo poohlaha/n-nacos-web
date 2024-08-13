@@ -475,9 +475,9 @@ const PipelineDetail = (): ReactElement => {
     let variables = snapshot.variables || []
     let selectedVariables = snapshot.selectedVariables || []
     let basic = detailInfo.basic || {}
-    let extra = detailInfo.extra || {}
+    let runnableInfo = detailInfo.runnableInfo || {}
     let tag = basic.tag || ''
-    let tagExtra = extra[tag.toLowerCase()] || {}
+    let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let displayFields = tagExtra.displayFields || []
     if (Utils.isObjectNull(snapshot)) {
       return (

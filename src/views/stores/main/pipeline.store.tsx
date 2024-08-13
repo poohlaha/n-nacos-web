@@ -448,7 +448,6 @@ class PipelineStore extends BaseStore {
       this.loading = true
       let result: { [K: string]: any } = (await invoke('get_pipeline_list', { serverId, form })) || {}
       this.loading = false
-      console.log('get pipeline list result:', result)
       let data = this.handleResult(result) || []
       this.list = data.map((item: { [K: string]: any } = {}) => {
         return {
@@ -457,6 +456,7 @@ class PipelineStore extends BaseStore {
           ...(item.basic || {}),
         }
       })
+      console.log('get pipeline list result:', this.list)
     } catch (e: any) {
       this.loading = false
       throw new Error(e)
@@ -720,9 +720,9 @@ class PipelineStore extends BaseStore {
     let current = run.current || {}
     let runnable = current.runnable || {}
     let basic = detailInfo.basic || {}
-    let extra = detailInfo.extra || {}
+    let runnableInfo = detailInfo.runnableInfo || {}
     let tag = basic.tag || ''
-    let tagExtra = extra[tag.toLowerCase()] || {}
+    let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let displayFields = tagExtra.displayFields || []
 
     let hasEmpty = true
@@ -748,9 +748,9 @@ class PipelineStore extends BaseStore {
     let runnable = current.runnable || {}
 
     let basic = detailInfo.basic || {}
-    let extra = detailInfo.extra || {}
+    let runnableInfo = detailInfo.runnableInfo || {}
     let tag = (basic.tag || '').toLowerCase()
-    let tagExtra = extra[tag.toLowerCase()] || {}
+    let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let displayFields = tagExtra.displayFields || []
 
     runDialogProps[tag] = {}
@@ -843,11 +843,11 @@ class PipelineStore extends BaseStore {
 
   @action
   getStepProps(item: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
-    let extra = item.extra || {}
+    let runnableInfo = item.runnableInfo || {}
     let id = item.id || ''
     let serverId = item.serverId || ''
     let tag = item.basic.tag || ''
-    let extraH5 = extra.h5 || {}
+    let extraH5 = runnableInfo[tag.toLowerCase()] || {}
 
     let h5 = runDialogProps.h5 || {}
     let variable = runDialogProps.variable || {}
@@ -922,11 +922,11 @@ class PipelineStore extends BaseStore {
    */
   @action
   getDialogRunProps(item: { [K: string]: any } = {}) {
-    let extra = item.extra || {}
+    let runnableInfo = item.runnableInfo || {}
     let basic = item.basic || {}
     let tag = basic.tag || ''
-    let tagExtra = extra[tag.toLowerCase()] || {}
-    let branches = extra.branches || []
+    let tagExtra = runnableInfo[tag.toLowerCase()] || {}
+    let branches = runnableInfo.branches || []
     let displayFields = tagExtra.displayFields || []
 
     let list: Array<{ [K: string]: any }> = []
@@ -946,10 +946,10 @@ class PipelineStore extends BaseStore {
   @action
   getReadonlyDialogRunProps(item: { [K: string]: any } = {}) {
     let current = item.current || {}
-    let extra = item.extra || {}
+    let runnableInfo = item.runnableInfo || {}
     let basic = item.basic || {}
     let tag = basic.tag || ''
-    let tagExtra = extra[tag.toLowerCase()] || {}
+    let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let runnable = current.runnable || {}
     let displayFields = tagExtra.displayFields || []
 

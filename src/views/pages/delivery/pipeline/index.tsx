@@ -368,6 +368,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
 
           <div className="list">
             <Table
+                rowKey="id"
               columns={tableHeaders || []}
               dataSource={pipelineStore.list || []}
               rowSelection={{
