@@ -57,7 +57,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
         let newSteps: Array<any> = []
         steps.forEach(step => {
           let marketTemplate: { [K: string]: any } =
-            MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === step.id) || {}
+            MarketTemplateData.find((d: { [K: string]: any } = {}) => d.module === step.module) || {}
           marketTemplate = Utils.deepCopy(marketTemplate)
           let components: Array<any> = marketTemplate.components || []
           let newComponents: Array<any> = []
