@@ -35,20 +35,26 @@ class PipelineProcessConfig {
 
 class PipelineStage {
   id: string
+  order: number
   processId: string
+  historyId: string
   groups: Array<PipelineGroup>
   createTime: string
   updateTime: string
 
   constructor(
     groups: Array<PipelineGroup>,
+    order: number = 0,
     id: string = '',
     processId: string = '',
+    historyId: string = '',
     createTime: string = '',
     updateTime: string = ''
   ) {
     this.id = id
+    this.order = order
     this.processId = processId
+    this.historyId = historyId
     this.groups = groups
     this.createTime = createTime
     this.updateTime = updateTime
@@ -487,7 +493,7 @@ class PipelineStore extends BaseStore {
     if (this.activeProcess.length === 0) return { stages: [] }
 
     let stages: Array<PipelineStage> = []
-    this.activeProcess.forEach((items: Array<{ [K: string]: any }>) => {
+    this.activeProcess.forEach((items: Array<{ [K: string]: any }>, index: number) => {
       let groups: Array<PipelineGroup> = []
 
       items.forEach((item: { [K: string]: any }) => {
@@ -517,7 +523,7 @@ class PipelineStore extends BaseStore {
         groups.push(new PipelineGroup(item.title?.label || '', newSteps))
       })
 
-      stages.push(new PipelineStage(groups))
+      stages.push(new PipelineStage(groups, index + 1))
     })
 
     return stages
@@ -556,6 +562,7 @@ class PipelineStore extends BaseStore {
         pipelineId: '',
         stages: this.getProcessConfig(),
       },
+      duration: '',
       variables: this.addVariableList || [],
     }
 

@@ -43,6 +43,12 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
     if (stages.length === 0) return []
 
     let processes: Array<Array<any>> = []
+    // 排序
+    stages = stages.sort((stage1: {[K: string]: any} = {}, stage2: {[K: string]: any} = {}) => {
+      return stage1.order - stage2.order
+    })
+
+    console.log('detail stages:', stages)
     stages.forEach(stage => {
       let groups: Array<any> = stage.groups || []
       let newGroups: Array<any> = []
