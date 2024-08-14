@@ -55,6 +55,7 @@ const PipelineRunDialog: React.FC<IPipelineRunDialogProps> = (props: IPipelineRu
         }}
         afterOpenChange={(open: boolean) => {
           if (open) {
+            console.log('selectItem:', pipelineStore.selectItem)
             let list = pipelineStore.getDialogOpenProps(pipelineStore.selectItem || {}, isReadonly)
             setDatasource(list)
           } else {

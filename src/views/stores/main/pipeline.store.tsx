@@ -883,40 +883,45 @@ class PipelineStore extends BaseStore {
     let h5 = runDialogProps.h5 || {}
     let variable = runDialogProps.variable || {}
     h5.node = extraH5.node || ''
-    let params = {
-      id,
+    let params: {[K: string]: any} = {
+      pipelineId: id,
       serverId,
+      tag,
       stage: {
-        index: 0,
+        stageIndex: 0,
         groupIndex: 0,
         stepIndex: 0,
-        finishGroupCount: 0,
         finished: false,
       },
-      tag,
-      ...h5,
-      remark: runDialogProps.remark || '',
+      stages: [],
+      snapshot: {
+        ...h5,
+        remark: runDialogProps.remark || '',
+        runtimeId: '',
+        variables: [],
+      },
     }
 
-    let variables: Array<{ [K: string]: any }> = []
+    let runnableVariable: Array<{ [K: string]: any }> = []
     for (let key in variable) {
-      variables.push(variable[key])
+      runnableVariable.push(variable[key])
     }
 
     // 补充其他的值
     for (let variable of item.variables) {
-      let v = variables.find(v => v.id === variable.id) || {}
+      let v = runnableVariable.find(v => v.id === variable.id) || {}
       if (Utils.isObjectNull(v)) {
-        variables.push({
-          id: variable.id,
-          value: '',
+        runnableVariable.push({
           name: variable.name || '',
+          value: variable.value || '',
+          order: variable.order || 0,
+          desc: variable.desc || ''
         })
       }
     }
 
-    params.selectedVariables = variables
-    params.variables = item.variables || []
+    params.snapshot.runnableVariables = runnableVariable
+    // params.variables = item.variables || []
     return params
   }
 
@@ -1019,7 +1024,14 @@ class PipelineStore extends BaseStore {
       variables.map((item: { [K: string]: any } = {}) => {
         return { ...item, isVariable: true }
       }) || []
+    // 排序
+    variables = variables.sort(
+        (variable1: { [K: string]: any } = {}, variable2: { [K: string]: any } = {}) => {
+          return variable1.order - variable2.order
+        }
+    )
     list = list.concat(variables) || []
+    console.log('run variable list', list)
     return list
   }
 
