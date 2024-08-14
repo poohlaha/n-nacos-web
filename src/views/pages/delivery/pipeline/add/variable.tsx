@@ -64,8 +64,10 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
     return (
       <div className="pipeline-add-variable flex-direction-column wh100">
         <div className="form">
-          <div className="form-item flex-align-center">
-            <div className="label page-margin-right">启动变量</div>
+          <div className="form-item">
+            <div className="label page-margin-bottom flex-align-center">
+              <p className="font-bold">启动变量</p>
+            </div>
             <div className="table flex-1 flex-direction-column">
               <MTable
                 dataSource={pipelineStore.addVariableList || []}
@@ -73,7 +75,7 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
                 actions={[
                   {
                     render: (item: { [K: string]: any }) => {
-                      console.log('render action item:', item)
+                      // console.log('render action item:', item)
                       return (
                         <a
                           key="update"
@@ -95,7 +97,7 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
                   },
                   {
                     render: (item: { [K: string]: any }) => {
-                      console.log('render action item:', item)
+                      // console.log('render action item:', item)
                       return (
                         <Popconfirm
                           title="友情提醒"
@@ -113,7 +115,7 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
                 ]}
               />
               <p
-                className="add-row page-margin-top cursor-pointer"
+                className="add-row page-margin-top cursor-pointer page-margin-bottom"
                 onClick={() => {
                   setForm(Utils.deepCopy(pipelineStore.addVariableDefaultForm))
                   setShowAddDialog(true)

@@ -33,7 +33,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
       id = Utils.decrypt(decodeURIComponent(id))
       serverId = Utils.decrypt(decodeURIComponent(serverId))
       await pipelineStore.getDetailInfo(id, serverId)
-      pipelineStore.setAddForm(pipelineStore.detailInfo || {})
+      pipelineStore.onSetAddForm(pipelineStore.detailInfo || {})
       pipelineStore.activeProcess = getDetailActiveProcess(pipelineStore.detailInfo?.processConfig?.stages || [])
       pipelineStore.isEditor = true
     }

@@ -105,8 +105,10 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       title: '流水线名称',
       dataIndex: 'name',
       key: 'name',
-      width: '18%',
+      width: 200,
+      fixed: 'left',
       render: (_: any, record: { [K: string]: any } = {}) => {
+        let basic = record.basic || {}
         return (
           <div
             className="flex-align-center pipeline-table-name"
@@ -124,15 +126,28 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
                 fill="currentColor"
               ></path>
             </svg>
-            <p>{record.name || ''}</p>
+            <div>
+              <p>{basic.name || ''}</p>
+            </div>
           </div>
         )
+      },
+    },
+    {
+      title: '描述',
+      dataIndex: 'desc',
+      key: 'desc',
+      width: 200,
+      render: (_: any, record: { [K: string]: any } = {}) => {
+        let basic = record.basic || {}
+        return <p>{basic.desc || ''}</p>
       },
     },
     {
       title: '运行状态',
       dataIndex: 'status',
       key: 'status',
+      width: 200,
       render: (_: any, record: { [K: string]: any } = {}) => {
         let status =
           pipelineStore.RUN_STATUS.find(
@@ -147,7 +162,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       title: '运行阶段',
       dataIndex: 'step',
       key: 'step',
-      width: '18%',
+      width: 300,
       render: (_: any, record: { [K: string]: any } = {}) => {
         let processConfig = record.processConfig || {}
         let stages = processConfig.stages || []
@@ -184,6 +199,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       title: '标签',
       dataIndex: 'tag',
       key: 'tag',
+      width: 100,
       render: (_: any, record: { [K: string]: any } = {}) => {
         return getTagHtml(record.tag || '')
       },
@@ -192,6 +208,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       title: '上次运行时间',
       dataIndex: 'lastRunTime',
       key: 'lastRunTime',
+      width: 150,
       render: (_: any, record: { [K: string]: any } = {}) => {
         return <p>{record.lastRunTime || '-'}</p>
       },
@@ -200,6 +217,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       title: '耗时',
       dataIndex: 'runTime',
       key: 'runTime',
+      width: 150,
       render: (_: any, record: { [K: string]: any } = {}) => {
         return <p>{record.runTime || '-'}</p>
       },
@@ -208,7 +226,8 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       title: '操作',
       dataIndex: 'actions',
       key: 'actions',
-      width: '20%',
+      width: 200,
+      fixed: 'right',
       render: (_: any, record: { [K: string]: any } = {}) => {
         return (
           <Space size="middle">
@@ -374,6 +393,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
               rowKey="id"
               columns={tableHeaders || []}
               dataSource={pipelineStore.list || []}
+              scroll={{ x: 1500, y: 300 }}
               rowSelection={{
                 selectedRowKeys,
                 onChange: (newSelectedRowKeys: any[]) => {

@@ -224,9 +224,9 @@ const PipelineDetail = (): ReactElement => {
   const getLateRunHtml = () => {
     let detailInfo = pipelineStore.detailInfo || {}
     let basic = detailInfo.basic || {}
-    let run = detailInfo.run || {}
+    let run = detailInfo.runtime || {}
     let current = run.current || {}
-    let duration = current.duration || 0
+    let duration = parseInt(detailInfo.duration) || 0
     let durationStr = '-'
     if (duration > 0) {
       durationStr = `${duration}s`
@@ -447,8 +447,19 @@ const PipelineDetail = (): ReactElement => {
   // 构建过程
   const getBuildProcessHtml = () => {
     let detailInfo = pipelineStore.detailInfo || {}
-    let run = detailInfo.run || {}
-    let current = run.current || {}
+    let runtime = detailInfo.runtime || {}
+    let stages = []
+    let stage: { [K: string]: any } = []
+    let steps: Array<number> = []
+    if (Utils.isObjectNull(runtime)) {
+      // 没有运行过
+      let processConfig = detailInfo.processConfig || {}
+      stages = processConfig.stages || []
+    } else {
+      stages = runtime.stages || []
+      steps = runtime.steps || {}
+      stage = runtime.stage || {}
+    }
     return (
       <div className="result-build-process page-padding h100">
         <div className="logger flex-jsc-end">
@@ -459,8 +470,8 @@ const PipelineDetail = (): ReactElement => {
 
         <PipelineView
           className="overflow-hidden"
-          step={current.step || []}
-          groups={getViewGroups(current.stage || {}, current.stages || []) || []}
+          step={steps || []}
+          groups={getViewGroups(stage || {}, stages || []) || []}
         />
       </div>
     )

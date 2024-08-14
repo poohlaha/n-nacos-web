@@ -260,6 +260,7 @@ class PipelineStore extends BaseStore {
   // 添加页面启动变量表单
   @observable addVariableDefaultForm: { [K: string]: any } = {
     id: '',
+    order: 0,
     name: '',
     genre: this.VARIABLE_OPTIONS[0].value,
     str: '',
@@ -332,6 +333,7 @@ class PipelineStore extends BaseStore {
     let desc = (form.desc || '').trim()
     let value = ''
     let id = (form.id || '').trim()
+    let order = this.addVariableList.length + 1
 
     if (Utils.isBlank(name)) {
       TOAST.show({ message: '请输入变量名', type: 4 })
@@ -399,6 +401,7 @@ class PipelineStore extends BaseStore {
         variable.disabled = disabled
         variable.require = require
         variable.desc = desc
+        variable.order = order
         console.log('addVariableList:', this.addVariableList)
         this.addForm.variable = Utils.deepCopy(this.addVariableDefaultForm)
         return true
@@ -413,6 +416,7 @@ class PipelineStore extends BaseStore {
 
     this.addVariableList.push({
       id,
+      order,
       name,
       genre,
       value,
@@ -462,10 +466,10 @@ class PipelineStore extends BaseStore {
       this.loading = false
       let data = this.handleResult(result) || []
       this.list = data.map((item: { [K: string]: any } = {}) => {
+        let basic = item.basic || {}
         return {
           ...item,
           key: item.id || '',
-          ...(item.basic || {}),
         }
       })
       console.log('get pipeline list result:', this.list)
@@ -644,6 +648,7 @@ class PipelineStore extends BaseStore {
         dataIndex: 'genre',
         key: 'genre',
         width: '10%',
+        needTooltip: false,
         render: (record: { [K: string]: any } = {}) => {
           let genre = record.genre || ''
           if (genre === this.VARIABLE_OPTIONS[1].value) {
@@ -659,6 +664,7 @@ class PipelineStore extends BaseStore {
         dataIndex: 'value',
         multiLine: true,
         width: '25%',
+        needTooltip: false,
       },
       {
         title: '描述',
@@ -680,7 +686,7 @@ class PipelineStore extends BaseStore {
   }
 
   @action
-  setAddForm(record: { [K: string]: any } = {}) {
+  onSetAddForm(record: { [K: string]: any } = {}) {
     this.addForm = {
       id: record.id || '',
       serverId: record.serverId || '',
@@ -691,6 +697,11 @@ class PipelineStore extends BaseStore {
     }
 
     this.addVariableList = record.variables || []
+    this.addVariableList = this.addVariableList.sort(
+      (variable1: { [K: string]: any } = {}, variable2: { [K: string]: any } = {}) => {
+        return variable1.order - variable2.order
+      }
+    )
   }
 
   /**

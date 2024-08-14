@@ -112,7 +112,7 @@ const Page = (props: PropsWithChildren<IPageProps>): ReactElement => {
         {needNavigation && <Navigation />}
 
         <div
-          className={`page-content overflow ${pageBodyNeedPadding ? 'page-padding' : ''} flex-1 ${
+          className={`page-content position-relative overflow ${pageBodyNeedPadding ? 'page-padding' : ''} flex-1 ${
             props.pageBodyClassName || ''
           }`}
         >

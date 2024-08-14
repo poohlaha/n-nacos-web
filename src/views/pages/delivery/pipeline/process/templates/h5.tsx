@@ -94,6 +94,7 @@ const getSteps = (list: Array<Array<any>> = []) => {
 const H5_VARIABLE_LIST: Array<{ [K: string]: any }> = [
   {
     id: Utils.generateUUID(),
+    order: 1,
     name: 'deployDir',
     genre: 'select',
     value: 'build\ndist',
@@ -103,6 +104,7 @@ const H5_VARIABLE_LIST: Array<{ [K: string]: any }> = [
   },
   {
     id: Utils.generateUUID(),
+    order: 2,
     name: 'needIncrement',
     genre: 'select',
     value: 'Yes\nNo',
