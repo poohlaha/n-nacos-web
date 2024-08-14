@@ -108,7 +108,13 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
     return [nameColumn, genreColumn, valueColumn, descColumn]
   }
 
-  const setVariableValue = (name: string = '', value: string = '', id: string = '', order: number = 0, desc: string = '') => {
+  const setVariableValue = (
+    name: string = '',
+    value: string = '',
+    id: string = '',
+    order: number = 0,
+    desc: string = ''
+  ) => {
     let v: { [K: string]: any } = {}
     if (!Utils.isBlank(value)) {
       v = {
@@ -116,7 +122,7 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
         value: value || '',
         name,
         order,
-        desc
+        desc,
       }
     }
 

@@ -883,7 +883,7 @@ class PipelineStore extends BaseStore {
     let h5 = runDialogProps.h5 || {}
     let variable = runDialogProps.variable || {}
     h5.node = extraH5.node || ''
-    let params: {[K: string]: any} = {
+    let params: { [K: string]: any } = {
       pipelineId: id,
       serverId,
       tag,
@@ -900,6 +900,7 @@ class PipelineStore extends BaseStore {
         runtimeId: '',
         variables: [],
       },
+      status: this.RUN_STATUS[0].value,
     }
 
     let runnableVariable: Array<{ [K: string]: any }> = []
@@ -915,7 +916,7 @@ class PipelineStore extends BaseStore {
           name: variable.name || '',
           value: variable.value || '',
           order: variable.order || 0,
-          desc: variable.desc || ''
+          desc: variable.desc || '',
         })
       }
     }
@@ -1025,11 +1026,9 @@ class PipelineStore extends BaseStore {
         return { ...item, isVariable: true }
       }) || []
     // 排序
-    variables = variables.sort(
-        (variable1: { [K: string]: any } = {}, variable2: { [K: string]: any } = {}) => {
-          return variable1.order - variable2.order
-        }
-    )
+    variables = variables.sort((variable1: { [K: string]: any } = {}, variable2: { [K: string]: any } = {}) => {
+      return variable1.order - variable2.order
+    })
     list = list.concat(variables) || []
     console.log('run variable list', list)
     return list
