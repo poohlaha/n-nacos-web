@@ -124,20 +124,26 @@ class PipelineStepComponent {
   id: string
   stepId: string
   prop: string
+  label: string
   value: string
+  desc: string
   createTime: string
   updateTime: string
 
   constructor(
     prop: string,
+    label: string,
     value: string,
+    desc: string,
     id: string = '',
     stepId: string = '',
     createTime: string = '',
     updateTime: string = ''
   ) {
     this.prop = prop
+    this.label = label
     this.value = value
+    this.desc = desc
     this.id = id
     this.stepId = stepId
     this.createTime = createTime
@@ -504,7 +510,14 @@ class PipelineStore extends BaseStore {
           let newComponents: Array<PipelineStepComponent> = []
           let components = step.components || []
           components.forEach((component: { [K: string]: any }) => {
-            newComponents.push(new PipelineStepComponent(component.name || '', component.value || ''))
+            newComponents.push(
+              new PipelineStepComponent(
+                component.name || '',
+                component.label || '',
+                component.value || '',
+                component.desc || ''
+              )
+            )
           })
 
           newSteps.push(

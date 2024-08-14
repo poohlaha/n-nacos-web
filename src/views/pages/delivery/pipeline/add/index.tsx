@@ -44,7 +44,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
 
     let processes: Array<Array<any>> = []
     // 排序
-    stages = stages.sort((stage1: {[K: string]: any} = {}, stage2: {[K: string]: any} = {}) => {
+    stages = stages.sort((stage1: { [K: string]: any } = {}, stage2: { [K: string]: any } = {}) => {
       return stage1.order - stage2.order
     })
 
