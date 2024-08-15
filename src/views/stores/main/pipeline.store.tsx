@@ -780,11 +780,14 @@ class PipelineStore extends BaseStore {
   onSetRadioRunProps(
     selectedItem: { [K: string]: any } = {},
     runDialogProps: { [K: string]: any } = {},
+    snapshot: { [K: string]: any } = {},
     tagExtra: { [K: string]: any } = {}
   ) {
     let detailInfo = selectedItem || {}
     let runtime = detailInfo.runtime || {}
-    let snapshot = runtime.snapshot || {}
+    if (Utils.isObjectNull(tagExtra)) {
+      snapshot = runtime.snapshot || {}
+    }
 
     let basic = runtime.basic || {}
     let runnableInfo = detailInfo.runnableInfo || {}
@@ -815,6 +818,8 @@ class PipelineStore extends BaseStore {
         }
       })
     }
+
+    console.log('runDialogProps', runDialogProps)
   }
 
   /**
@@ -988,19 +993,18 @@ class PipelineStore extends BaseStore {
 
   @action
   getReadonlyDialogRunProps(item: { [K: string]: any } = {}) {
-    let current = item.current || {}
     let runnableInfo = item.runnableInfo || {}
+    let snapshot = item.snapshot || {}
     let basic = item.basic || {}
     let tag = basic.tag || ''
     let tagExtra = runnableInfo[tag.toLowerCase()] || {}
-    let runnable = current.runnable || {}
     let displayFields = tagExtra.displayFields || []
 
     let list: Array<{ [K: string]: any }> = []
     for (let field of displayFields) {
       list.push({
         name: field.label,
-        value: runnable[field.value || ''],
+        value: snapshot[field.value || ''],
         genre: this.VARIABLE_OPTIONS[0].value,
         desc: field.desc || '',
         tag,
@@ -1026,7 +1030,7 @@ class PipelineStore extends BaseStore {
       list.push(this.getAddDialogProps(item.name, item.value, item.genre || '', item.desc || '', item.tag || ''))
     })
 
-    let variables = isReadonly ? selectItem?.current?.runnable.selectedVariables || [] : selectItem.variables || []
+    let variables = isReadonly ? selectItem?.snapshot?.runnableVariables || [] : selectItem.variables || []
     variables =
       variables.map((item: { [K: string]: any } = {}) => {
         return { ...item, isVariable: true }

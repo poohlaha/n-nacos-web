@@ -658,18 +658,21 @@ const PipelineDetail = (): ReactElement => {
                         // if (pipelineStore.onDisabledRunButton(record.status)) return
                         pipelineStore.showRunDialog = true
                         pipelineStore.selectItem = record || {}
+                        pipelineStore.selectItem.runnableInfo = pipelineStore.detailInfo.runnableInfo || {}
                         pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
                         pipelineStore.runDialogProps.value = '1'
-                        pipelineStore.runDialogProps.remark = record.current?.runnable?.remark || ''
 
                         let tag = (record.tag || '').toLowerCase()
                         let runnableInfo = pipelineStore.detailInfo.runnableInfo || {}
                         pipelineStore.onSetRadioRunProps(
                           pipelineStore.selectItem || {},
                           pipelineStore.runDialogProps,
+                            record.snapshot || {},
                           runnableInfo[tag] || {}
                         )
+                        pipelineStore.runDialogProps.remark = record.remark || ''
                         setRunReadonly(true)
+                        console.log('runDialogProps', pipelineStore.runDialogProps)
                       }}
                     >
                       重试

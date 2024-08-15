@@ -130,6 +130,7 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
   }
 
   const render = () => {
+    console.log('dialogProps', props.dialogProps)
     let dialogProps = props.dialogProps || {}
     return (
       <div className="run-dialog-content">
