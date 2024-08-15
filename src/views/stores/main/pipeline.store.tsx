@@ -322,7 +322,7 @@ class PipelineStore extends BaseStore {
   @observable loggerList: Array<string> = []
 
   // 运行历史
-  @observable historyList: Array<{[K: string]: any}> = []
+  @observable historyList: Array<{ [K: string]: any }> = []
 
   // 添加启动变量
   @action
@@ -777,7 +777,11 @@ class PipelineStore extends BaseStore {
    * 设置复用上次运行记录
    */
   @action
-  onSetRadioRunProps(selectedItem: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}, tagExtra: {[K: string]: any} = {}) {
+  onSetRadioRunProps(
+    selectedItem: { [K: string]: any } = {},
+    runDialogProps: { [K: string]: any } = {},
+    tagExtra: { [K: string]: any } = {}
+  ) {
     let detailInfo = selectedItem || {}
     let runtime = detailInfo.runtime || {}
     let snapshot = runtime.snapshot || {}
@@ -1185,7 +1189,7 @@ class PipelineStore extends BaseStore {
   async getHistoryList(id: string, serverId: string, callback?: Function) {
     try {
       this.historyList = []
-      let params = {id, serverId}
+      let params = { id, serverId }
       console.log('get pipeline history list params:', params)
       await info(`get pipeline history list params: ${JSON.stringify(params)}`)
       let result: { [K: string]: any } = (await invoke('get_runtime_history', { ...params })) || {}

@@ -77,7 +77,6 @@ const PipelineDetail = (): ReactElement => {
       }),
     ])
 
-
     // 监听流水线运行事件
     await listen('pipeline_exec_response', async (event: any = {}) => {
       let data = event.payload || {}
@@ -665,7 +664,11 @@ const PipelineDetail = (): ReactElement => {
 
                         let tag = (record.tag || '').toLowerCase()
                         let runnableInfo = pipelineStore.detailInfo.runnableInfo || {}
-                        pipelineStore.onSetRadioRunProps(pipelineStore.selectItem || {}, pipelineStore.runDialogProps, runnableInfo[tag] || {})
+                        pipelineStore.onSetRadioRunProps(
+                          pipelineStore.selectItem || {},
+                          pipelineStore.runDialogProps,
+                          runnableInfo[tag] || {}
+                        )
                         setRunReadonly(true)
                       }}
                     >
@@ -719,7 +722,7 @@ const PipelineDetail = (): ReactElement => {
               dataIndex: 'tag',
               key: 'tag',
               width: '10%',
-              render: ( record: { [K: string]: any } = {}) => {
+              render: (record: { [K: string]: any } = {}) => {
                 return getTagHtml(record.tag || '')
               },
             },
