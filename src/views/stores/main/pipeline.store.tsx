@@ -801,7 +801,7 @@ class PipelineStore extends BaseStore {
         runDialogProps.variable[item.name] = {
           id: item.id || '',
           value: item.value || '',
-          name: item.name
+          name: item.name,
         }
       })
     }
@@ -1156,7 +1156,6 @@ class PipelineStore extends BaseStore {
     if (!this.onDisabledRunButton(status || '')) {
       callback?.()
     }
-
   }
 
   /**

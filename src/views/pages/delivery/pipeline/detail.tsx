@@ -260,10 +260,9 @@ const PipelineDetail = (): ReactElement => {
             >
               运行
             </Button>
-            <Button
-                disabled={disabledRunButton}
-                className={`${disabledRunButton ? 'disabled' : ''}`}
-            >错误阶段重试</Button>
+            <Button disabled={disabledRunButton} className={`${disabledRunButton ? 'disabled' : ''}`}>
+              错误阶段重试
+            </Button>
           </div>
 
           <div className="buttons-right">
@@ -280,52 +279,49 @@ const PipelineDetail = (): ReactElement => {
               编辑
             </Button>
 
-            {
-              disabledButton ? (
-                  <Button danger disabled className="page-margin-right disabled">
-                    删除
-                  </Button>
-                  ) : (
-                  <Popconfirm
-                      title="温馨提示"
-                      description="是否删除该条记录?"
-                      okText="确定"
-                      cancelText="取消"
-                      onConfirm={async () => {
-                        await pipelineStore.onDeletePipeline(
-                            pipelineStore.detailInfo?.id || '',
-                            pipelineStore.detailInfo?.serverId || '',
-                            () => {
-                              navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.URL}`)
-                            }
-                        )
-                      }}
-                  >
-                    <Button danger className="page-margin-right">
-                      删除
-                    </Button>
-                  </Popconfirm>
-              )
-            }
+            {disabledButton ? (
+              <Button danger disabled className="page-margin-right disabled">
+                删除
+              </Button>
+            ) : (
+              <Popconfirm
+                title="温馨提示"
+                description="是否删除该条记录?"
+                okText="确定"
+                cancelText="取消"
+                onConfirm={async () => {
+                  await pipelineStore.onDeletePipeline(
+                    pipelineStore.detailInfo?.id || '',
+                    pipelineStore.detailInfo?.serverId || '',
+                    () => {
+                      navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.URL}`)
+                    }
+                  )
+                }}
+              >
+                <Button danger className="page-margin-right">
+                  删除
+                </Button>
+              </Popconfirm>
+            )}
 
-            {
-              disabledButton ? (
-                  <Button type="link" disabled>清除运行历史</Button>
-                  ) : (
-                  <Popconfirm
-                      title="温馨提示"
-                      description="是否删除所有的运行历史记录?"
-                      okText="确定"
-                      cancelText="取消"
-                      onConfirm={async () => {
-                        await pipelineStore.onClearRunHistory()
-                      }}
-                  >
-                    <Button type="link">清除运行历史</Button>
-                  </Popconfirm>
-              )
-            }
-
+            {disabledButton ? (
+              <Button type="link" disabled>
+                清除运行历史
+              </Button>
+            ) : (
+              <Popconfirm
+                title="温馨提示"
+                description="是否删除所有的运行历史记录?"
+                okText="确定"
+                cancelText="取消"
+                onConfirm={async () => {
+                  await pipelineStore.onClearRunHistory()
+                }}
+              >
+                <Button type="link">清除运行历史</Button>
+              </Popconfirm>
+            )}
           </div>
         </div>
 

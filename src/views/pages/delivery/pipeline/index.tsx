@@ -255,26 +255,22 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
               修改
             </a>
 
-            {
-              buttonDisabled ? (
-                  <a className={`delete ${buttonDisabled ? 'disabled' : ''}`}>删除</a>
-              ) : (
-                  <Popconfirm
-                      title="温馨提示"
-                      description="是否删除该条记录?"
-                      okText="确定"
-                      cancelText="取消"
-                      onConfirm={async () => {
-                        if (pipelineStore.onDisabledRunButton(record.status || '')) return
-                        await pipelineStore.onDeletePipeline(record.id || '', record.serverId || '')
-                      }}
-                  >
-                    <a className="delete">删除</a>
-                  </Popconfirm>
-              )
-            }
-
-
+            {buttonDisabled ? (
+              <a className={`delete ${buttonDisabled ? 'disabled' : ''}`}>删除</a>
+            ) : (
+              <Popconfirm
+                title="温馨提示"
+                description="是否删除该条记录?"
+                okText="确定"
+                cancelText="取消"
+                onConfirm={async () => {
+                  if (pipelineStore.onDisabledRunButton(record.status || '')) return
+                  await pipelineStore.onDeletePipeline(record.id || '', record.serverId || '')
+                }}
+              >
+                <a className="delete">删除</a>
+              </Popconfirm>
+            )}
           </Space>
         )
       },
