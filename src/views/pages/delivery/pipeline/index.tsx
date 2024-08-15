@@ -237,6 +237,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
               onClick={async () => {
                 await pipelineStore.onRunDialog(record.id || '', record.serverId || '', () => {
                   pipelineStore.showRunDialog = true
+                  onRefresh()
                 })
               }}
             >

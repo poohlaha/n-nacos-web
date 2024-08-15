@@ -105,4 +105,41 @@ export default class BaseStore {
 
     return originData || {}
   }
+
+  /**
+   * 批量发送
+   */
+  @action
+  async batchSend(queue: Array<any> = []) {
+    if (queue.length === 0) {
+      console.log('batch send queue is empty!')
+      return []
+    }
+
+    let results = (await Promise.all(queue)) || []
+    if (results.length === 0) return []
+
+    let data: Array<any> = []
+    for (let result of results) {
+      if (result === null || result === undefined) {
+        result = {}
+      }
+      let code = result.code
+      let body = result.body || {}
+      let errorMsg = body.error || body.codeInfo || COMMON.getLanguageText('ERROR_MESSAGE')
+      if (code !== 200) {
+        TOAST.show({ message: errorMsg, type: 4 })
+        return []
+      }
+
+      let d = body.data
+      let extendData = body.extendData
+      data.push({
+        data: d,
+        extendData,
+      })
+    }
+
+    return data
+  }
 }

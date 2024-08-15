@@ -321,6 +321,9 @@ class PipelineStore extends BaseStore {
   // 日志
   @observable loggerList: Array<string> = []
 
+  // 运行历史
+  @observable historyList: Array<{[K: string]: any}> = []
+
   // 添加启动变量
   @action
   onAddVariable(form: { [K: string]: any } = {}) {
@@ -728,6 +731,7 @@ class PipelineStore extends BaseStore {
       }
 
       callback?.()
+      return result
     } catch (e: any) {
       this.loading = false
       throw new Error(e)
@@ -773,7 +777,7 @@ class PipelineStore extends BaseStore {
    * 设置复用上次运行记录
    */
   @action
-  onSetRadioRunProps(selectedItem: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
+  onSetRadioRunProps(selectedItem: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}, tagExtra: {[K: string]: any} = {}) {
     let detailInfo = selectedItem || {}
     let runtime = detailInfo.runtime || {}
     let snapshot = runtime.snapshot || {}
@@ -781,7 +785,9 @@ class PipelineStore extends BaseStore {
     let basic = runtime.basic || {}
     let runnableInfo = detailInfo.runnableInfo || {}
     let tag = (basic.tag || '').toLowerCase()
-    let tagExtra = runnableInfo[tag] || {}
+    if (Utils.isObjectNull(tagExtra)) {
+      tagExtra = runnableInfo[tag] || {}
+    }
     let displayFields = tagExtra.displayFields || []
 
     runDialogProps[tag] = {}
@@ -892,11 +898,11 @@ class PipelineStore extends BaseStore {
       stages: [],
       snapshot: {
         ...h5,
-        remark: runDialogProps.remark || '',
         runtimeId: '',
         variables: [],
       },
       status: this.RUN_STATUS[0].value,
+      remark: runDialogProps.remark || '',
     }
 
     let runnableVariable: Array<{ [K: string]: any }> = []
@@ -1170,6 +1176,33 @@ class PipelineStore extends BaseStore {
    */
   onDisabledRerunButton(status: string = '') {
     return status !== this.RUN_STATUS[4].value && status !== this.RUN_STATUS[5].value
+  }
+
+  /**
+   * 查看流水线运行历史
+   */
+  @action
+  async getHistoryList(id: string, serverId: string, callback?: Function) {
+    try {
+      this.historyList = []
+      let params = {id, serverId}
+      console.log('get pipeline history list params:', params)
+      await info(`get pipeline history list params: ${JSON.stringify(params)}`)
+      let result: { [K: string]: any } = (await invoke('get_runtime_history', { ...params })) || {}
+      this.loading = false
+      console.log('get pipeline history list result:', result)
+      let res = this.handleResult(result) || {}
+      if (Utils.isObjectNull(res)) {
+        return
+      }
+
+      this.historyList = res || []
+      callback?.()
+      return result
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
   }
 }
 

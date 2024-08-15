@@ -64,7 +64,19 @@ const PipelineDetail = (): ReactElement => {
     console.log(`id: ${id}, serverId: ${serverId}`)
 
     pipelineStore.loggerList = []
-    await pipelineStore.getDetailInfo(id, serverId)
+    await pipelineStore.batchSend([
+      // eslint-disable-next-line no-async-promise-executor
+      new Promise(async resolve => {
+        const res = pipelineStore.getDetailInfo(id, serverId)
+        resolve(res)
+      }),
+      // eslint-disable-next-line no-async-promise-executor
+      new Promise(async resolve => {
+        const res = pipelineStore.getHistoryList(id || '', serverId || '')
+        resolve(res)
+      }),
+    ])
+
 
     // 监听流水线运行事件
     await listen('pipeline_exec_response', async (event: any = {}) => {
@@ -623,10 +635,7 @@ const PipelineDetail = (): ReactElement => {
 
   // 获取运行历史
   const getRunHistoryHtml = () => {
-    let detailInfo = pipelineStore.detailInfo || {}
-    let run = detailInfo.run || {}
-    let historyList = (run.historyList || []).slice().reverse()
-    if (historyList.length === 0) {
+    if (pipelineStore.historyList.length === 0) {
       return (
         <div className="history-content h100">
           <div className="no-data-box">
@@ -639,7 +648,7 @@ const PipelineDetail = (): ReactElement => {
     return (
       <div className="history-content h100">
         <MTable
-          dataSource={historyList}
+          dataSource={pipelineStore.historyList || []}
           actions={[
             {
               render: (record: { [K: string]: any } = {}) => {
@@ -647,12 +656,16 @@ const PipelineDetail = (): ReactElement => {
                   <Space size="middle">
                     <a
                       onClick={() => {
+                        // if (pipelineStore.onDisabledRunButton(record.status)) return
                         pipelineStore.showRunDialog = true
                         pipelineStore.selectItem = record || {}
                         pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
                         pipelineStore.runDialogProps.value = '1'
                         pipelineStore.runDialogProps.remark = record.current?.runnable?.remark || ''
-                        pipelineStore.onSetRadioRunProps(pipelineStore.selectItem || {}, pipelineStore.runDialogProps)
+
+                        let tag = (record.tag || '').toLowerCase()
+                        let runnableInfo = pipelineStore.detailInfo.runnableInfo || {}
+                        pipelineStore.onSetRadioRunProps(pipelineStore.selectItem || {}, pipelineStore.runDialogProps, runnableInfo[tag] || {})
                         setRunReadonly(true)
                       }}
                     >
@@ -671,22 +684,17 @@ const PipelineDetail = (): ReactElement => {
               width: '10%',
               needTooltip: false,
               render: (record: { [K: string]: any } = {}) => {
-                let run = record.run || {}
-                let current = run.current || {}
-                let order = current.order || ''
-                return <span>#{order}</span>
+                return <span>#{record.order}</span>
               },
             },
             {
               title: '运行状态',
               dataIndex: 'status',
               key: 'status',
-              width: '10%',
+              width: '20%',
               needTooltip: false,
               render: (record: { [K: string]: any } = {}) => {
-                let run = record.run || {}
-                let current = run.current || {}
-                let runStatus = current.stage?.status || ''
+                let runStatus = record.status || pipelineStore.RUN_STATUS[0].value || ''
                 let status =
                   pipelineStore.RUN_STATUS.find(
                     (status: { [K: string]: any } = {}) => status.value.toLowerCase() === runStatus.toLowerCase()
@@ -701,11 +709,18 @@ const PipelineDetail = (): ReactElement => {
               key: 'startTime',
               needTooltip: false,
               dataIndex: 'startTime',
-              width: '20%',
+              width: '10%',
               render: (record: { [K: string]: any } = {}) => {
-                let run = record.run || {}
-                let current = run.current || {}
-                return <span>{current.startTime || '-'}</span>
+                return <span>{record.startTime || '-'}</span>
+              },
+            },
+            {
+              title: '标签',
+              dataIndex: 'tag',
+              key: 'tag',
+              width: '10%',
+              render: ( record: { [K: string]: any } = {}) => {
+                return getTagHtml(record.tag || '')
               },
             },
             {
@@ -713,11 +728,9 @@ const PipelineDetail = (): ReactElement => {
               dataIndex: 'duration',
               key: 'duration',
               needTooltip: false,
-              width: '20%',
+              width: '10%',
               render: (record: { [K: string]: any } = {}) => {
-                let run = record.run || {}
-                let current = run.current || {}
-                let duration = current.duration || 0
+                let duration = record.duration || 0
                 if (duration === 0) {
                   return <span>-</span>
                 }
@@ -732,10 +745,8 @@ const PipelineDetail = (): ReactElement => {
               needTooltip: false,
               width: '20%',
               render: (record: { [K: string]: any } = {}) => {
-                let run = record.run || {}
-                let current = run.current || {}
-                let runnable = current.runnable || {}
-                let remark = runnable.remark || ''
+                let snapshot = record.snapshot || {}
+                let remark = snapshot.remark || ''
                 if (Utils.isBlank(remark)) {
                   return <span>-</span>
                 }
