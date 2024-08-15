@@ -224,9 +224,22 @@ const PipelineDetail = (): ReactElement => {
   const getLateRunHtml = () => {
     let detailInfo = pipelineStore.detailInfo || {}
     let basic = detailInfo.basic || {}
-    let run = detailInfo.runtime || {}
-    let current = run.current || {}
-    let duration = parseInt(detailInfo.duration) || 0
+
+    let runtime = detailInfo.runtime || {}
+    let snapshot = runtime.snapshot || {}
+    let tag = basic.tag || ''
+    let name = basic.name || ''
+    let status = detailInfo.status || ''
+    if (!Utils.isObjectNull(runtime.basic)) {
+      tag = runtime.basic.tag || ''
+      name = runtime.name || ''
+    }
+
+    if (!Utils.isObjectNull(runtime)) {
+      status = runtime.status || ''
+    }
+
+    let duration = parseInt(runtime.duration) || 0
     let durationStr = '-'
     if (duration > 0) {
       durationStr = `${duration}s`
@@ -239,14 +252,18 @@ const PipelineDetail = (): ReactElement => {
             <Button
               type="primary"
               className="page-margin-right"
-              onClick={() => {
-                pipelineStore.showRunDialog = true
-                pipelineStore.selectItem = pipelineStore.detailInfo || {}
+              onClick={async () => {
+                await pipelineStore.onRuntimeDetail(
+                  pipelineStore.detailInfo.id || '',
+                  pipelineStore.detailInfo.serverId || ''
+                )
+                pipelineStore.selectItem = pipelineStore.runtimeInfo || {}
                 pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
                 console.log('runDialogProps:', pipelineStore.runDialogProps.h5)
                 pipelineStore.isNeedSelectedLastSelected(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
                 pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
                 setRunReadonly(false)
+                pipelineStore.showRunDialog = true
               }}
             >
               运行
@@ -304,13 +321,13 @@ const PipelineDetail = (): ReactElement => {
         {/* 运行状态 */}
         <div className="run-status page-margin-top border flex">
           <div className="status flex-direction-column status-step status-step-item  flex-align-center">
-            {getStatus(detailInfo.status || 'No')}
+            {getStatus(status || 'No')}
           </div>
 
           <div className="status-step flex-align-center">
             <div className="run-time status-step-item flex-direction-column flex-center">
               <div className="name">执行时间</div>
-              <div className="text">{current.startTime || '-'}</div>
+              <div className="text">{runtime.startTime || '-'}</div>
             </div>
 
             <div className="exec-time status-step-item flex-direction-column flex-center">
@@ -322,24 +339,24 @@ const PipelineDetail = (): ReactElement => {
           <div className="status-step flex-align-center">
             <div className="run-git status-step-item flex-direction-column flex-center">
               <div className="name">代码仓库</div>
-              <div className="text">{run.projectName || '-'}</div>
+              <div className="text">{runtime.projectName || '-'}</div>
             </div>
 
             <div className="run-branch status-step-item flex-direction-column flex-center">
               <div className="name">代码分支</div>
-              <div className="text">{run.branch || '-'}</div>
+              <div className="text">{snapshot.branch || '-'}</div>
             </div>
           </div>
 
           <div className="status-step flex-align-center">
             <div className="run-time status-step-item flex-direction-column flex-center">
               <div className="name">流水线名称</div>
-              <div className="text">{basic.name || '-'}</div>
+              <div className="text">{name || '-'}</div>
             </div>
 
             <div className="run-tag status-step-item flex-direction-column flex-center">
               <div className="name">标签</div>
-              <div className="text">{getTagHtml(basic.tag || '')}</div>
+              <div className="text">{getTagHtml(tag || '')}</div>
             </div>
           </div>
         </div>
@@ -460,6 +477,11 @@ const PipelineDetail = (): ReactElement => {
       steps = runtime.steps || {}
       stage = runtime.stage || {}
     }
+
+    stages = stages.sort((stage1: { [K: string]: any } = {}, stage2: { [K: string]: any } = {}) => {
+      return stage1.order - stage2.order
+    })
+
     return (
       <div className="result-build-process page-padding h100">
         <div className="logger flex-jsc-end">
@@ -480,13 +502,13 @@ const PipelineDetail = (): ReactElement => {
   // 构建快照
   const getBuildSnapshotHtml = () => {
     let detailInfo = pipelineStore.detailInfo || {}
-    let run = detailInfo.run || {}
-    let current = run.current || {}
-    let snapshot = current.runnable || {}
-    let variables = snapshot.variables || []
-    let selectedVariables = snapshot.selectedVariables || []
-    let basic = detailInfo.basic || {}
+    let runtime = detailInfo.runtime || {}
+    let snapshot = runtime.snapshot || {}
+    let runnableVariables = snapshot.runnableVariables || []
+
+    let basic = runtime.basic || {}
     let runnableInfo = detailInfo.runnableInfo || {}
+
     let tag = basic.tag || ''
     let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let displayFields = tagExtra.displayFields || []
@@ -509,7 +531,7 @@ const PipelineDetail = (): ReactElement => {
 
         <div className="build-item page-margin-top">
           <p className="font-bold title flex-align-center">启动变量</p>
-          <MTable dataSource={getRunVariables(variables, selectedVariables)} columns={getColumns()} />
+          <MTable dataSource={getRunVariables(detailInfo.variables, runnableVariables)} columns={getColumns()} />
         </div>
       </div>
     )
@@ -517,23 +539,26 @@ const PipelineDetail = (): ReactElement => {
 
   const getRunVariables = (
     variables: Array<{ [K: string]: any }> = [],
-    selectedVariables: Array<{ [K: string]: any }> = []
+    runnableVariables: Array<{ [K: string]: any }> = []
   ) => {
-    if (variables.length === 0 || selectedVariables.length === 0) {
+    if (variables.length === 0 || runnableVariables.length === 0) {
       return []
     }
 
     let list: Array<{ [K: string]: any }> = []
-    selectedVariables.forEach(item => {
+    runnableVariables.forEach(item => {
       let selectedItem = variables.find(s => s.id === item.id) || {}
-      if (!Utils.isObjectNull(selectedItem)) {
-        list.push({
-          name: selectedItem.name,
-          value: item.value || '',
-          genre: selectedItem.genre,
-          desc: selectedItem.desc || '',
-        })
-      }
+      list.push({
+        name: item.name,
+        value: item.value || '',
+        genre: selectedItem.genre || pipelineStore.VARIABLE_OPTIONS[0].value,
+        desc: item.desc || '',
+        order: item.order || 0,
+      })
+    })
+
+    list = list.sort((item1: { [K: string]: any } = {}, item2: { [K: string]: any } = {}) => {
+      return item1.order - item2.order
     })
 
     console.log('variables list:', list)

@@ -291,6 +291,7 @@ class PipelineStore extends BaseStore {
 
   @observable addForm: { [K: string]: any } = Utils.deepCopy(this.addDefaultForm)
   @observable detailInfo: { [K: string]: any } = {} // 详情
+  @observable runtimeInfo: { [K: string]: any } = {} // 详情
   @observable osCommands: { [K: string]: any } = {} // 系统命令
   @observable isEditor: boolean = false // 是否为编辑状态
 
@@ -640,14 +641,13 @@ class PipelineStore extends BaseStore {
         title: '变量名',
         dataIndex: 'name',
         key: 'name',
-        width: '10%',
-        fixed: 'left',
+        width: '30%',
       },
       {
         title: '类型',
         dataIndex: 'genre',
         key: 'genre',
-        width: '10%',
+        width: '20%',
         needTooltip: false,
         render: (record: { [K: string]: any } = {}) => {
           let genre = record.genre || ''
@@ -663,7 +663,7 @@ class PipelineStore extends BaseStore {
         key: 'value',
         dataIndex: 'value',
         multiLine: true,
-        width: '25%',
+        width: '20%',
         needTooltip: false,
       },
       {
@@ -950,6 +950,28 @@ class PipelineStore extends BaseStore {
     } catch (e: any) {
       this.loading = false
       TOAST.show({ message: `运行流水线失败: ${e}`, type: 4 })
+      throw new Error(e)
+    }
+  }
+
+  /**
+   * 查看流水线运行详情
+   */
+  @action
+  async onRuntimeDetail(id: string = '', serverId: string = '') {
+    try {
+      let params = { id, serverId }
+      await info(`get runtime detailInfo params: ${JSON.stringify(params)}`)
+      let result: { [K: string]: any } = (await invoke('get_runtime_detail', { ...params })) || {}
+      this.loading = false
+      console.log('get runtime detailInfo result:', result)
+      let res = this.handleResult(result) || {}
+      if (Utils.isObjectNull(res)) {
+        return
+      }
+      this.runtimeInfo = res || {}
+    } catch (e: any) {
+      this.loading = false
       throw new Error(e)
     }
   }
