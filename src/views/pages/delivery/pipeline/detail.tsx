@@ -235,40 +235,35 @@ const PipelineDetail = (): ReactElement => {
       name = runtime.name || ''
     }
 
-    if (!Utils.isObjectNull(runtime)) {
-      status = runtime.status || ''
-    }
-
     let duration = parseInt(runtime.duration) || 0
     let durationStr = '-'
     if (duration > 0) {
       durationStr = `${duration}s`
     }
 
+    let disabledButton = pipelineStore.onDisabledRunButton(status || '')
+    let disabledRunButton = pipelineStore.onDisabledRerunButton(status || '')
     return (
       <div className="late-content h100 flex-direction-column">
         <div className="buttons flex-jsc-between">
           <div className="buttons-left">
             <Button
               type="primary"
-              className="page-margin-right"
+              className={`page-margin-right ${disabledButton ? 'disabled' : ''}`}
+              disabled={disabledButton}
               onClick={async () => {
-                await pipelineStore.onRuntimeDetail(
-                  pipelineStore.detailInfo.id || '',
-                  pipelineStore.detailInfo.serverId || ''
-                )
-                pipelineStore.selectItem = pipelineStore.runtimeInfo || {}
-                pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
-                console.log('runDialogProps:', pipelineStore.runDialogProps.h5)
-                pipelineStore.isNeedSelectedLastSelected(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
-                pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
-                setRunReadonly(false)
-                pipelineStore.showRunDialog = true
+                await pipelineStore.onRunDialog('', '', () => {
+                  setRunReadonly(false)
+                  pipelineStore.showRunDialog = true
+                })
               }}
             >
               运行
             </Button>
-            <Button>错误阶段重试</Button>
+            <Button
+                disabled={disabledRunButton}
+                className={`${disabledRunButton ? 'disabled' : ''}`}
+            >错误阶段重试</Button>
           </div>
 
           <div className="buttons-right">
@@ -284,37 +279,53 @@ const PipelineDetail = (): ReactElement => {
             >
               编辑
             </Button>
-            <Popconfirm
-              title="温馨提示"
-              description="是否删除该条记录?"
-              okText="确定"
-              cancelText="取消"
-              onConfirm={async () => {
-                await pipelineStore.onDeletePipeline(
-                  pipelineStore.detailInfo?.id || '',
-                  pipelineStore.detailInfo?.serverId || '',
-                  () => {
-                    navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.URL}`)
-                  }
-                )
-              }}
-            >
-              <Button danger className="page-margin-right">
-                删除
-              </Button>
-            </Popconfirm>
 
-            <Popconfirm
-              title="温馨提示"
-              description="是否删除所有的运行历史记录?"
-              okText="确定"
-              cancelText="取消"
-              onConfirm={async () => {
-                await pipelineStore.onClearRunHistory()
-              }}
-            >
-              <Button type="link">清除运行历史</Button>
-            </Popconfirm>
+            {
+              disabledButton ? (
+                  <Button danger disabled className="page-margin-right disabled">
+                    删除
+                  </Button>
+                  ) : (
+                  <Popconfirm
+                      title="温馨提示"
+                      description="是否删除该条记录?"
+                      okText="确定"
+                      cancelText="取消"
+                      onConfirm={async () => {
+                        await pipelineStore.onDeletePipeline(
+                            pipelineStore.detailInfo?.id || '',
+                            pipelineStore.detailInfo?.serverId || '',
+                            () => {
+                              navigate(`${RouterUrls.HOME_URL}${RouterUrls.PIPELINE.URL}`)
+                            }
+                        )
+                      }}
+                  >
+                    <Button danger className="page-margin-right">
+                      删除
+                    </Button>
+                  </Popconfirm>
+              )
+            }
+
+            {
+              disabledButton ? (
+                  <Button type="link" disabled>清除运行历史</Button>
+                  ) : (
+                  <Popconfirm
+                      title="温馨提示"
+                      description="是否删除所有的运行历史记录?"
+                      okText="确定"
+                      cancelText="取消"
+                      onConfirm={async () => {
+                        await pipelineStore.onClearRunHistory()
+                      }}
+                  >
+                    <Button type="link">清除运行历史</Button>
+                  </Popconfirm>
+              )
+            }
+
           </div>
         </div>
 

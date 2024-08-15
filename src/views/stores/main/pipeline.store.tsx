@@ -291,7 +291,6 @@ class PipelineStore extends BaseStore {
 
   @observable addForm: { [K: string]: any } = Utils.deepCopy(this.addDefaultForm)
   @observable detailInfo: { [K: string]: any } = {} // 详情
-  @observable runtimeInfo: { [K: string]: any } = {} // 详情
   @observable osCommands: { [K: string]: any } = {} // 系统命令
   @observable isEditor: boolean = false // 是否为编辑状态
 
@@ -747,19 +746,21 @@ class PipelineStore extends BaseStore {
 
   @action
   hasRadioNeedChange(detailInfo: { [K: string]: any } = {}) {
-    let run = detailInfo.run || {}
-    let current = run.current || {}
-    let runnable = current.runnable || {}
+    let runtime = detailInfo.runtime || {}
     let basic = detailInfo.basic || {}
     let runnableInfo = detailInfo.runnableInfo || {}
+    let snapshot = runtime.snapshot || {}
     let tag = basic.tag || ''
+    if (!Utils.isObjectNull(runtime)) {
+      tag = runtime.tag || ''
+    }
     let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let displayFields = tagExtra.displayFields || []
 
     let hasEmpty = true
     for (let field of displayFields) {
-      if (Object.prototype.hasOwnProperty.call(runnable, field.value)) {
-        if (!Utils.isBlank(runnable[field.value] || '')) {
+      if (Object.prototype.hasOwnProperty.call(snapshot, field.value)) {
+        if (!Utils.isBlank(snapshot[field.value] || '')) {
           hasEmpty = false
         }
       }
@@ -774,38 +775,33 @@ class PipelineStore extends BaseStore {
   @action
   onSetRadioRunProps(selectedItem: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
     let detailInfo = selectedItem || {}
-    let run = detailInfo.run || {}
-    let current = run.current || {}
-    let runnable = current.runnable || {}
+    let runtime = detailInfo.runtime || {}
+    let snapshot = runtime.snapshot || {}
 
-    let basic = detailInfo.basic || {}
+    let basic = runtime.basic || {}
     let runnableInfo = detailInfo.runnableInfo || {}
     let tag = (basic.tag || '').toLowerCase()
-    let tagExtra = runnableInfo[tag.toLowerCase()] || {}
+    let tagExtra = runnableInfo[tag] || {}
     let displayFields = tagExtra.displayFields || []
 
     runDialogProps[tag] = {}
     for (let field of displayFields) {
-      if (Object.prototype.hasOwnProperty.call(runnable, field.value)) {
-        runDialogProps[tag][field.value] = runnable[field.value] || ''
+      if (Object.prototype.hasOwnProperty.call(snapshot, field.value)) {
+        runDialogProps[tag][field.value] = snapshot[field.value] || ''
       }
     }
 
-    runDialogProps.remark = runnable.remark || ''
+    runDialogProps.remark = snapshot.remark || ''
 
     // 设置 variable
     runDialogProps.variable = {}
-    let selectedVariables: Array<{ [K: string]: any }> = runnable.selectedVariables || []
-    let variables: Array<{ [K: string]: any }> = runnable.variables || []
-    if (selectedVariables.length > 0) {
-      selectedVariables.forEach(item => {
-        let selectedItem = variables.find(s => s.id === item.id) || {}
-        if (!Utils.isObjectNull(selectedItem)) {
-          runDialogProps.variable[selectedItem.name] = {
-            id: selectedItem.id || '',
-            value: item.value || '',
-            name: selectedItem.name,
-          }
+    let runnableVariables: Array<{ [K: string]: any }> = snapshot.runnableVariables || []
+    if (runnableVariables.length > 0) {
+      runnableVariables.forEach(item => {
+        runDialogProps.variable[item.name] = {
+          id: item.id || '',
+          value: item.value || '',
+          name: item.name
         }
       })
     }
@@ -950,28 +946,6 @@ class PipelineStore extends BaseStore {
     } catch (e: any) {
       this.loading = false
       TOAST.show({ message: `运行流水线失败: ${e}`, type: 4 })
-      throw new Error(e)
-    }
-  }
-
-  /**
-   * 查看流水线运行详情
-   */
-  @action
-  async onRuntimeDetail(id: string = '', serverId: string = '') {
-    try {
-      let params = { id, serverId }
-      await info(`get runtime detailInfo params: ${JSON.stringify(params)}`)
-      let result: { [K: string]: any } = (await invoke('get_runtime_detail', { ...params })) || {}
-      this.loading = false
-      console.log('get runtime detailInfo result:', result)
-      let res = this.handleResult(result) || {}
-      if (Utils.isObjectNull(res)) {
-        return
-      }
-      this.runtimeInfo = res || {}
-    } catch (e: any) {
-      this.loading = false
       throw new Error(e)
     }
   }
@@ -1163,6 +1137,40 @@ class PipelineStore extends BaseStore {
       this.loading = false
       throw new Error(e)
     }
+  }
+
+  /**
+   * 点击运行事件
+   */
+  async onRunDialog(id: string = '', serverId: string = '', callback?: Function) {
+    if (Utils.isObjectNull(this.detailInfo || {})) {
+      await this.getDetailInfo(id || '', serverId || '')
+    }
+
+    this.selectItem = this.detailInfo || {}
+    this.runDialogProps = Utils.deepCopy(this.runDialogDefaultProps)
+    this.isNeedSelectedLastSelected(this.detailInfo || {}, this.runDialogProps)
+    this.onSetRadioRunProps(this.detailInfo || {}, this.runDialogProps)
+    console.log('runDialogProps:', this.runDialogProps.h5)
+    let status = this.detailInfo?.status || ''
+    if (!this.onDisabledRunButton(status || '')) {
+      callback?.()
+    }
+
+  }
+
+  /**
+   * 禁用 运行按钮
+   */
+  onDisabledRunButton(status: string = '') {
+    return status === this.RUN_STATUS[1].value || status === this.RUN_STATUS[2].value
+  }
+
+  /**
+   * 禁用重试按钮
+   */
+  onDisabledRerunButton(status: string = '') {
+    return status !== this.RUN_STATUS[4].value && status !== this.RUN_STATUS[5].value
   }
 }
 

@@ -229,13 +229,15 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       width: 200,
       fixed: 'right',
       render: (_: any, record: { [K: string]: any } = {}) => {
+        let buttonDisabled = pipelineStore.onDisabledRunButton(record.status || '')
         return (
           <Space size="middle">
             <a
-              onClick={() => {
-                pipelineStore.showRunDialog = true
-                pipelineStore.selectItem = Utils.deepCopy(record)
-                pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
+              className={buttonDisabled ? 'disabled' : ''}
+              onClick={async () => {
+                await pipelineStore.onRunDialog(record.id || '', record.serverId || '', () => {
+                  pipelineStore.showRunDialog = true
+                })
               }}
             >
               运行
@@ -253,17 +255,26 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
               修改
             </a>
 
-            <Popconfirm
-              title="温馨提示"
-              description="是否删除该条记录?"
-              okText="确定"
-              cancelText="取消"
-              onConfirm={async () => {
-                await pipelineStore.onDeletePipeline(record.id || '', record.serverId || '')
-              }}
-            >
-              <a className="delete">删除</a>
-            </Popconfirm>
+            {
+              buttonDisabled ? (
+                  <a className={`delete ${buttonDisabled ? 'disabled' : ''}`}>删除</a>
+              ) : (
+                  <Popconfirm
+                      title="温馨提示"
+                      description="是否删除该条记录?"
+                      okText="确定"
+                      cancelText="取消"
+                      onConfirm={async () => {
+                        if (pipelineStore.onDisabledRunButton(record.status || '')) return
+                        await pipelineStore.onDeletePipeline(record.id || '', record.serverId || '')
+                      }}
+                  >
+                    <a className="delete">删除</a>
+                  </Popconfirm>
+              )
+            }
+
+
           </Space>
         )
       },
