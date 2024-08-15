@@ -667,7 +667,7 @@ const PipelineDetail = (): ReactElement => {
                         pipelineStore.onSetRadioRunProps(
                           pipelineStore.selectItem || {},
                           pipelineStore.runDialogProps,
-                            record.snapshot || {},
+                          record.snapshot || {},
                           runnableInfo[tag] || {}
                         )
                         pipelineStore.runDialogProps.remark = record.remark || ''
