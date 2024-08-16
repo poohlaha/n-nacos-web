@@ -122,11 +122,11 @@ const PipelineDetail = (): ReactElement => {
       console.log('receive pipeline exec step response', data)
       let body = data.body || {}
       if (Utils.isObjectNull(body)) {
-        pipelineStore.detailInfo.run.current.status = 'Failed'
+        pipelineStore.detailInfo.runtime.status = 'Failed'
         return
       }
 
-      pipelineStore.detailInfo = body
+      // pipelineStore.detailInfo = body
     })
   })
 
