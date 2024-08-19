@@ -162,7 +162,7 @@ const PipelineDetail = (): ReactElement => {
       )
     }
 
-    if (status === 'Process') {
+    if (status === IPipelineStatus.Process.toString()) {
       return (
         <div className="svg-box flex-center process flex-direction-column theme">
           <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -241,16 +241,12 @@ const PipelineDetail = (): ReactElement => {
     let tag = basic.tag || ''
     let name = basic.name || ''
     let status = detailInfo.status || ''
-    if (!Utils.isObjectNull(runtime.basic)) {
+    if (!Utils.isObjectNull(runtime.basic || {})) {
       tag = runtime.basic.tag || ''
-      name = runtime.name || ''
+      name = runtime.basic.name || ''
     }
 
-    let duration = parseInt(runtime.duration) || 0
-    let durationStr = '-'
-    if (duration > 0) {
-      durationStr = `${duration}s`
-    }
+    let duration = Utils.isBlank(runtime.duration) ? '-' : runtime.duration
 
     let disabledButton = pipelineStore.onDisabledRunButton(status || '')
     let disabledRunButton = pipelineStore.onDisabledRerunButton(status || '')
@@ -350,7 +346,7 @@ const PipelineDetail = (): ReactElement => {
 
             <div className="exec-time status-step-item flex-direction-column flex-center">
               <div className="name">运行时长</div>
-              <div className="text">{durationStr}</div>
+              <div className="text">{duration}</div>
             </div>
           </div>
 
@@ -396,9 +392,13 @@ const PipelineDetail = (): ReactElement => {
   }
 
   // 获取状态
-  const getViewStagesStatus = (stage: { [K: string]: any } = {}, stageI: number, groupI: number) => {
-    let status = stage.status
-    let stageIndex = stage.index || 0
+  const getViewStagesStatus = (
+    status: string = IPipelineStatus.No.toString(),
+    stage: { [K: string]: any } = {},
+    stageI: number,
+    groupI: number
+  ) => {
+    let stageIndex = stage.stageIndex || 0
     let groupIndex = stage.groupIndex || 0
 
     if (stage.finished) {
@@ -443,7 +443,11 @@ const PipelineDetail = (): ReactElement => {
     return IPipelineStatus.No
   }
 
-  const getViewGroups = (stepStage: { [K: string]: any } = {}, stages: Array<any> = []) => {
+  const getViewGroups = (
+    stepStage: { [K: string]: any } = {},
+    stages: Array<any> = [],
+    status: string = IPipelineStatus.No.toString()
+  ) => {
     if (stages.length === 0) return []
 
     let groups: Array<Array<IPipelineViewGroupProps>> = []
@@ -454,7 +458,7 @@ const PipelineDetail = (): ReactElement => {
       stageGroups.forEach((group: { [K: string]: any } = {}, j: number) => {
         let steps = group.steps || []
         let newSteps: Array<IPipelineStepProps> = []
-        let status = getViewStagesStatus(stepStage, i, j)
+        let stageStatus = getViewStagesStatus(status, stepStage, i, j)
         steps.forEach((step: { [K: string]: any } = {}, k: number) => {
           newSteps.push({
             label: step.label,
@@ -468,7 +472,7 @@ const PipelineDetail = (): ReactElement => {
             footer: getViewFooterHtml(),
           },
           steps: newSteps || [],
-          status,
+          status: stageStatus,
         })
       })
 
@@ -485,15 +489,15 @@ const PipelineDetail = (): ReactElement => {
     let runtime = detailInfo.runtime || {}
     let stages = []
     let stage: { [K: string]: any } = []
-    let steps: Array<number> = []
+    let status = IPipelineStatus.No.toString()
     if (Utils.isObjectNull(runtime)) {
       // 没有运行过
       let processConfig = detailInfo.processConfig || {}
       stages = processConfig.stages || []
     } else {
       stages = runtime.stages || []
-      steps = runtime.steps || {}
       stage = runtime.stage || {}
+      status = runtime.status
     }
 
     stages = stages.sort((stage1: { [K: string]: any } = {}, stage2: { [K: string]: any } = {}) => {
@@ -508,11 +512,7 @@ const PipelineDetail = (): ReactElement => {
           </p>
         </div>
 
-        <PipelineView
-          className="overflow-hidden"
-          step={steps || []}
-          groups={getViewGroups(stage || {}, stages || []) || []}
-        />
+        <PipelineView className="overflow-hidden" groups={getViewGroups(stage || {}, stages || [], status) || []} />
       </div>
     )
   }

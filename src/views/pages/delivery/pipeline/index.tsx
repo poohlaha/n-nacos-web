@@ -45,12 +45,8 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
     return <div className="tag"></div>
   }
 
-  const getStepClassName = (stage: { [K: string]: any } = {}, i: number) => {
-    if (Utils.isObjectNull(stage || {})) return ''
-
+  const getStepClassName = (index: number = 0, status: string = 'No', i: number) => {
     // index 从 1 开始
-    let index = stage.index || 0
-    let status = stage.status || 'No'
 
     if (index === 0) {
       return 'step-gray'
@@ -164,8 +160,23 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
       key: 'step',
       width: 300,
       render: (_: any, record: { [K: string]: any } = {}) => {
-        let processConfig = record.processConfig || {}
-        let stages = processConfig.stages || []
+        let runtime = record.runtime || {}
+        let stages = []
+        let stageIndex = 0
+        let status = record.status
+        if (Utils.isObjectNull(runtime)) {
+          let processConfig = record.processConfig || {}
+          stages = processConfig.stages || []
+        } else {
+          stages = runtime.stages || []
+          let stage = runtime.stage || {}
+          stageIndex = stage.stageIndex
+          status = runtime.status
+        }
+
+        stages = stages.sort((stage1: { [K: string]: any } = {}, stage2: { [K: string]: any } = {}) => {
+          return stage1.order - stage2.order
+        })
 
         let arr: Array<React.ReactNode> = []
         for (let i = 0; i < stages.length; i++) {
@@ -174,13 +185,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
             return <div className="step-box" />
           }
 
-          let className = getStepClassName(
-            {
-              index: record.stage_run_index,
-              status: record.status,
-            },
-            i
-          )
+          let className = getStepClassName(stageIndex, status, i)
 
           let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.title).join(',')
           arr.push(
@@ -215,11 +220,11 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
     },
     {
       title: '耗时',
-      dataIndex: 'runTime',
-      key: 'runTime',
+      dataIndex: 'duration',
+      key: 'duration',
       width: 150,
       render: (_: any, record: { [K: string]: any } = {}) => {
-        return <p>{record.runTime || '-'}</p>
+        return <p>{record.runtime?.duration || '-'}</p>
       },
     },
     {
