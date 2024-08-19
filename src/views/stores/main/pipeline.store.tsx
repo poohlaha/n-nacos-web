@@ -720,7 +720,7 @@ class PipelineStore extends BaseStore {
       this.detailInfo = this.handleResult(result) || {}
 
       // log list
-      let logger = this.detailInfo?.run?.current?.log || ''
+      let logger = this.detailInfo?.runtime?.log || ''
       this.loggerList = logger.split('\r\n') || []
 
       // 如果存在记录，默认选择上一条
