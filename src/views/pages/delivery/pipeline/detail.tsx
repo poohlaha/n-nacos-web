@@ -659,7 +659,7 @@ const PipelineDetail = (): ReactElement => {
                 return (
                   <Space size="middle">
                     <a
-                        className={`${disabledButton ? 'disabled' : ''}`}
+                      className={`${disabledButton ? 'disabled' : ''}`}
                       onClick={() => {
                         if (disabledButton) return
                         pipelineStore.selectItem = pipelineStore.detailInfo || {}

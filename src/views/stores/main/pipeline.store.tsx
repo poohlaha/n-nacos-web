@@ -886,7 +886,11 @@ class PipelineStore extends BaseStore {
   }
 
   @action
-  getStepProps(item: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}, isReadonly: boolean = false) {
+  getStepProps(
+    item: { [K: string]: any } = {},
+    runDialogProps: { [K: string]: any } = {},
+    isReadonly: boolean = false
+  ) {
     let runnableInfo = item.runnableInfo || {}
     let id = item.id || ''
     let serverId = item.serverId || ''
@@ -924,7 +928,7 @@ class PipelineStore extends BaseStore {
     // 补充其他的值
     if (!isReadonly) {
       for (let variable of item.variables) {
-        let v = runnableVariable.find(v => (v.id === variable.id || v.name === variable.name)) || {}
+        let v = runnableVariable.find(v => v.id === variable.id || v.name === variable.name) || {}
         if (Utils.isObjectNull(v)) {
           runnableVariable.push({
             name: variable.name || '',
