@@ -702,7 +702,7 @@ const PipelineDetail = (): ReactElement => {
               title: '运行状态',
               dataIndex: 'status',
               key: 'status',
-              width: '20%',
+              width: '10%',
               needTooltip: false,
               render: (record: { [K: string]: any } = {}) => {
                 let runStatus = record.status || pipelineStore.RUN_STATUS[0].value || ''
@@ -720,7 +720,7 @@ const PipelineDetail = (): ReactElement => {
               key: 'startTime',
               needTooltip: false,
               dataIndex: 'startTime',
-              width: '10%',
+              width: '20%',
               render: (record: { [K: string]: any } = {}) => {
                 return <span>{record.startTime || '-'}</span>
               },

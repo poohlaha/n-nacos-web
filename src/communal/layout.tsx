@@ -14,6 +14,8 @@ import Utils from '@utils/utils'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@views/stores'
 import { CONSTANT } from '@config/index'
+import zhCN from 'antd/locale/zh_CN'
+import { ConfigProvider } from 'antd'
 import '@assets/styles/theme/index.less'
 
 const { Suspense } = React
@@ -76,7 +78,7 @@ const Layout = (): ReactElement => {
   }, [commonStore.skin])
 
   const render = () => {
-    return RenderRoutes(routes)
+    return <ConfigProvider locale={zhCN}>{RenderRoutes(routes)}</ConfigProvider>
   }
 
   return render()
