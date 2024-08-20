@@ -769,7 +769,7 @@ const PipelineDetail = (): ReactElement => {
                   return <span>-</span>
                 }
 
-                return <span>{duration}秒</span>
+                return <span>{duration}</span>
               },
             },
             {

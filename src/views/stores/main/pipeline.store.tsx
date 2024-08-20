@@ -926,6 +926,10 @@ class PipelineStore extends BaseStore {
       remark: runDialogProps.remark || '',
     }
 
+    if (isRetry) {
+      params.id = runtime.id || ''
+    }
+
     let runnableVariable: Array<{ [K: string]: any }> = []
     for (let key in variable) {
       runnableVariable.push(variable[key])
