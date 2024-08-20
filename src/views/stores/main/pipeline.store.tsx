@@ -914,7 +914,7 @@ class PipelineStore extends BaseStore {
       serverId,
       tag,
       stage: {
-        ...stage
+        ...stage,
       },
       stages: [],
       snapshot: {

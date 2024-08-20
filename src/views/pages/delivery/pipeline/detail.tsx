@@ -25,7 +25,7 @@ import {
   IPipelineStatus,
 } from '@bale-react-components/pipeline'
 import Page from '@views/components/page'
-import PipelineStore from "@stores/main/pipeline.store";
+import PipelineStore from '@stores/main/pipeline.store'
 
 const PipelineDetail = (): ReactElement => {
   const navigate = useNavigate()
@@ -273,16 +273,16 @@ const PipelineDetail = (): ReactElement => {
               运行
             </Button>
             <Button
-                disabled={disabledRunButton}
-                className={`${disabledRunButton ? 'disabled' : ''}`}
-                onClick={async () => {
-                  if (disabledButton) return
-                  pipelineStore.selectItem = pipelineStore.detailInfo || {}
-                  pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
-                  pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
-                  console.log('runDialogProps:', pipelineStore.runDialogProps)
-                  await pipelineStore.onRun(false, undefined, true)
-                }}
+              disabled={disabledRunButton}
+              className={`${disabledRunButton ? 'disabled' : ''}`}
+              onClick={async () => {
+                if (disabledButton) return
+                pipelineStore.selectItem = pipelineStore.detailInfo || {}
+                pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
+                pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
+                console.log('runDialogProps:', pipelineStore.runDialogProps)
+                await pipelineStore.onRun(false, undefined, true)
+              }}
             >
               错误阶段重试
             </Button>
@@ -655,7 +655,7 @@ const PipelineDetail = (): ReactElement => {
   /**
    * 重试
    */
-  const onRerun = (record: {[K: string]: any} = {}) => {
+  const onRerun = (record: { [K: string]: any } = {}) => {
     pipelineStore.selectItem = pipelineStore.detailInfo || {}
     pipelineStore.selectItem.runtime = record || {}
     pipelineStore.selectItem.snapshot = record.snapshot || {}
@@ -663,10 +663,10 @@ const PipelineDetail = (): ReactElement => {
     pipelineStore.runDialogProps.value = '1'
 
     pipelineStore.onSetRadioRunProps(
-        pipelineStore.selectItem || {},
-        pipelineStore.runDialogProps,
-        record.snapshot || {},
-        {}
+      pipelineStore.selectItem || {},
+      pipelineStore.runDialogProps,
+      record.snapshot || {},
+      {}
     )
     pipelineStore.runDialogProps.remark = record.remark || ''
     setRunReadonly(true)
