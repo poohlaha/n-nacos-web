@@ -815,6 +815,8 @@ class PipelineStore extends BaseStore {
           id: item.id || '',
           value: item.value || '',
           name: item.name,
+          order: item.order || 0,
+          desc: item.desc || '',
         }
       })
     }
@@ -884,7 +886,7 @@ class PipelineStore extends BaseStore {
   }
 
   @action
-  getStepProps(item: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}) {
+  getStepProps(item: { [K: string]: any } = {}, runDialogProps: { [K: string]: any } = {}, isReadonly: boolean = false) {
     let runnableInfo = item.runnableInfo || {}
     let id = item.id || ''
     let serverId = item.serverId || ''
@@ -920,15 +922,17 @@ class PipelineStore extends BaseStore {
     }
 
     // 补充其他的值
-    for (let variable of item.variables) {
-      let v = runnableVariable.find(v => v.id === variable.id) || {}
-      if (Utils.isObjectNull(v)) {
-        runnableVariable.push({
-          name: variable.name || '',
-          value: variable.value || '',
-          order: variable.order || 0,
-          desc: variable.desc || '',
-        })
+    if (!isReadonly) {
+      for (let variable of item.variables) {
+        let v = runnableVariable.find(v => v.id === variable.id) || {}
+        if (Utils.isObjectNull(v)) {
+          runnableVariable.push({
+            name: variable.name || '',
+            value: variable.value || '',
+            order: variable.order || 0,
+            desc: variable.desc || '',
+          })
+        }
       }
     }
 
@@ -943,7 +947,7 @@ class PipelineStore extends BaseStore {
   @action
   async onRun(isReadonly: boolean = false, callback?: Function) {
     try {
-      let params = this.getStepProps(this.selectItem || this.detailInfo || {}, this.runDialogProps)
+      let params = this.getStepProps(this.selectItem || this.detailInfo || {}, this.runDialogProps, isReadonly)
       this.loggerList = []
       console.log('run pipeline params:', params)
       await info(`run pipeline param: ${JSON.stringify(params)}`)
@@ -1030,7 +1034,7 @@ class PipelineStore extends BaseStore {
       list.push(this.getAddDialogProps(item.name, item.value, item.genre || '', item.desc || '', item.tag || ''))
     })
 
-    let variables = isReadonly ? selectItem?.snapshot?.runnableVariables || [] : selectItem.variables || []
+    let variables = isReadonly ? selectItem?.runtime?.snapshot?.runnableVariables || [] : selectItem.variables || []
     variables =
       variables.map((item: { [K: string]: any } = {}) => {
         return { ...item, isVariable: true }

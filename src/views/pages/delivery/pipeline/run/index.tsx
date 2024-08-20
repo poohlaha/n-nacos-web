@@ -45,7 +45,7 @@ const PipelineRunDialog: React.FC<IPipelineRunDialogProps> = (props: IPipelineRu
           // pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogDefaultProps)
         }}
         onOk={async () => {
-          let flag = pipelineStore.onValidateRun()
+          let flag = pipelineStore.onValidateRun(isReadonly ? pipelineStore.selectItem || {} : {})
           if (!flag) {
             return
           }
