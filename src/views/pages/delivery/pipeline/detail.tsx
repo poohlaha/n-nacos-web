@@ -29,6 +29,8 @@ import Page from '@views/components/page'
 const PipelineDetail = (): ReactElement => {
   const navigate = useNavigate()
   const { pipelineStore, homeStore } = useStore()
+  const [id, setId] = useState('')
+  const [serverId, setServerId] = useState('')
   const [open, setOpen] = useState(false)
   const [runReadonly, setRunReadonly] = useState(false)
   const [runTabIndex, setRunTabIndex] = useState('0')
@@ -62,6 +64,8 @@ const PipelineDetail = (): ReactElement => {
     id = Utils.decrypt(decodeURIComponent(id))
     serverId = Utils.decrypt(decodeURIComponent(serverId))
     console.log(`id: ${id}, serverId: ${serverId}`)
+    setId(id)
+    setServerId(serverId)
 
     pipelineStore.loggerList = []
     await pipelineStore.batchSend([
@@ -126,12 +130,12 @@ const PipelineDetail = (): ReactElement => {
         return
       }
 
-      // pipelineStore.detailInfo = body
+      pipelineStore.detailInfo = body
     })
   })
 
   const getStatus = (status: string) => {
-    if (status === 'No') {
+    if (status === pipelineStore.RUN_STATUS[0].value) {
       return (
         <div className="svg-box flex-center no flex-direction-column">
           <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -146,7 +150,7 @@ const PipelineDetail = (): ReactElement => {
       )
     }
 
-    if (status === 'Success') {
+    if (status === pipelineStore.RUN_STATUS[3].value) {
       return (
         <div className="svg-box flex-center success flex-direction-column">
           <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -162,7 +166,7 @@ const PipelineDetail = (): ReactElement => {
       )
     }
 
-    if (status === IPipelineStatus.Process.toString()) {
+    if (status === pipelineStore.RUN_STATUS[2].value) {
       return (
         <div className="svg-box flex-center process flex-direction-column theme">
           <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -177,7 +181,7 @@ const PipelineDetail = (): ReactElement => {
       )
     }
 
-    if (status === 'Queue') {
+    if (status === pipelineStore.RUN_STATUS[1].value) {
       return (
         <div className="svg-box flex-center process flex-direction-column theme">
           <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -192,7 +196,7 @@ const PipelineDetail = (): ReactElement => {
       )
     }
 
-    if (status === 'Failed') {
+    if (status === pipelineStore.RUN_STATUS[4].value) {
       return (
         <div className="svg-box flex-center failed flex-direction-column">
           <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -206,7 +210,7 @@ const PipelineDetail = (): ReactElement => {
       )
     }
 
-    if (status === 'Stop') {
+    if (status === pipelineStore.RUN_STATUS[5].value) {
       return (
         <div className="svg-box flex-center stop flex-direction-column">
           <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -651,13 +655,16 @@ const PipelineDetail = (): ReactElement => {
           actions={[
             {
               render: (record: { [K: string]: any } = {}) => {
+                let disabledButton = pipelineStore.onDisabledRunButton(record.status)
                 return (
                   <Space size="middle">
                     <a
+                        className={`${disabledButton ? 'disabled' : ''}`}
                       onClick={() => {
-                        // if (pipelineStore.onDisabledRunButton(record.status)) return
+                        if (disabledButton) return
                         pipelineStore.selectItem = pipelineStore.detailInfo || {}
                         pipelineStore.selectItem.runtime = record || {}
+                        pipelineStore.selectItem.snapshot = record.snapshot || {}
                         pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
                         pipelineStore.runDialogProps.value = '1'
 
@@ -817,8 +824,11 @@ const PipelineDetail = (): ReactElement => {
             defaultActiveKey="0"
             items={RUN_TABS}
             activeKey={runTabIndex}
-            onChange={(activeKey: string = '') => {
+            onChange={async (activeKey: string = '') => {
               setRunTabIndex(activeKey)
+              if (activeKey === '1') {
+                await pipelineStore.getHistoryList(id || '', serverId || '')
+              }
             }}
           />
 

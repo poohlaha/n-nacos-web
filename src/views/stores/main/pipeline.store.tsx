@@ -804,7 +804,7 @@ class PipelineStore extends BaseStore {
       }
     }
 
-    runDialogProps.remark = snapshot.remark || ''
+    runDialogProps.remark = runtime.remark || ''
 
     // 设置 variable
     runDialogProps.variable = {}
@@ -924,7 +924,7 @@ class PipelineStore extends BaseStore {
     // 补充其他的值
     if (!isReadonly) {
       for (let variable of item.variables) {
-        let v = runnableVariable.find(v => v.id === variable.id) || {}
+        let v = runnableVariable.find(v => (v.id === variable.id || v.name === variable.name)) || {}
         if (Utils.isObjectNull(v)) {
           runnableVariable.push({
             name: variable.name || '',
@@ -1169,7 +1169,7 @@ class PipelineStore extends BaseStore {
     this.runDialogProps = Utils.deepCopy(this.runDialogDefaultProps)
     this.isNeedSelectedLastSelected(this.detailInfo || {}, this.runDialogProps)
     this.onSetRadioRunProps(this.detailInfo || {}, this.runDialogProps)
-    console.log('runDialogProps:', this.runDialogProps.h5)
+    console.log('runDialogProps:', this.runDialogProps)
     let status = this.detailInfo?.status || ''
     if (!this.onDisabledRunButton(status || '')) {
       callback?.()
@@ -1207,6 +1207,10 @@ class PipelineStore extends BaseStore {
       if (Utils.isObjectNull(res)) {
         return
       }
+
+      res = res.sort((h1: { [K: string]: any } = {}, h2: { [K: string]: any } = {}) => {
+        return h2.order - h1.order
+      })
 
       this.historyList = res || []
       callback?.()
