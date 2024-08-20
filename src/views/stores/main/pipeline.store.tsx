@@ -889,13 +889,22 @@ class PipelineStore extends BaseStore {
   getStepProps(
     item: { [K: string]: any } = {},
     runDialogProps: { [K: string]: any } = {},
-    isReadonly: boolean = false
+    isReadonly: boolean = false,
+    isRetry: boolean = false
   ) {
     let runnableInfo = item.runnableInfo || {}
     let id = item.id || ''
     let serverId = item.serverId || ''
     let tag = item.basic.tag || ''
     let extraH5 = runnableInfo[tag.toLowerCase()] || {}
+    let runtime = item.runtime || {}
+    let stage = runtime.stage || {}
+    if (!isRetry) {
+      stage.stageIndex = 0
+      stage.groupIndex = 0
+      stage.stepIndex = 0
+      stage.finished = false
+    }
 
     let h5 = runDialogProps.h5 || {}
     let variable = runDialogProps.variable || {}
@@ -905,10 +914,7 @@ class PipelineStore extends BaseStore {
       serverId,
       tag,
       stage: {
-        stageIndex: 0,
-        groupIndex: 0,
-        stepIndex: 0,
-        finished: false,
+        ...stage
       },
       stages: [],
       snapshot: {
@@ -949,9 +955,9 @@ class PipelineStore extends BaseStore {
    * 运行流水线
    */
   @action
-  async onRun(isReadonly: boolean = false, callback?: Function) {
+  async onRun(isReadonly: boolean = false, callback?: Function, isRetry: boolean = false) {
     try {
-      let params = this.getStepProps(this.selectItem || this.detailInfo || {}, this.runDialogProps, isReadonly)
+      let params = this.getStepProps(this.selectItem || this.detailInfo || {}, this.runDialogProps, isReadonly, isRetry)
       this.loggerList = []
       console.log('run pipeline params:', params)
       await info(`run pipeline param: ${JSON.stringify(params)}`)

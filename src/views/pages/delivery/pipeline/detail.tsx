@@ -25,6 +25,7 @@ import {
   IPipelineStatus,
 } from '@bale-react-components/pipeline'
 import Page from '@views/components/page'
+import PipelineStore from "@stores/main/pipeline.store";
 
 const PipelineDetail = (): ReactElement => {
   const navigate = useNavigate()
@@ -271,7 +272,18 @@ const PipelineDetail = (): ReactElement => {
             >
               运行
             </Button>
-            <Button disabled={disabledRunButton} className={`${disabledRunButton ? 'disabled' : ''}`}>
+            <Button
+                disabled={disabledRunButton}
+                className={`${disabledRunButton ? 'disabled' : ''}`}
+                onClick={async () => {
+                  if (disabledButton) return
+                  pipelineStore.selectItem = pipelineStore.detailInfo || {}
+                  pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
+                  pipelineStore.onSetRadioRunProps(pipelineStore.detailInfo || {}, pipelineStore.runDialogProps)
+                  console.log('runDialogProps:', pipelineStore.runDialogProps)
+                  await pipelineStore.onRun(false, undefined, true)
+                }}
+            >
               错误阶段重试
             </Button>
           </div>
@@ -493,7 +505,7 @@ const PipelineDetail = (): ReactElement => {
     let runtime = detailInfo.runtime || {}
     let stages = []
     let stage: { [K: string]: any } = []
-    let status = IPipelineStatus.No.toString()
+    let status = PipelineStore.RUN_STATUS[0].value || ''
     if (Utils.isObjectNull(runtime)) {
       // 没有运行过
       let processConfig = detailInfo.processConfig || {}
@@ -507,6 +519,10 @@ const PipelineDetail = (): ReactElement => {
     stages = stages.sort((stage1: { [K: string]: any } = {}, stage2: { [K: string]: any } = {}) => {
       return stage1.order - stage2.order
     })
+
+    if (status === PipelineStore.RUN_STATUS[0].value || status === PipelineStore.RUN_STATUS[1].value) {
+      stage = {}
+    }
 
     return (
       <div className="result-build-process page-padding h100">
@@ -636,6 +652,28 @@ const PipelineDetail = (): ReactElement => {
     },
   ]
 
+  /**
+   * 重试
+   */
+  const onRerun = (record: {[K: string]: any} = {}) => {
+    pipelineStore.selectItem = pipelineStore.detailInfo || {}
+    pipelineStore.selectItem.runtime = record || {}
+    pipelineStore.selectItem.snapshot = record.snapshot || {}
+    pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
+    pipelineStore.runDialogProps.value = '1'
+
+    pipelineStore.onSetRadioRunProps(
+        pipelineStore.selectItem || {},
+        pipelineStore.runDialogProps,
+        record.snapshot || {},
+        {}
+    )
+    pipelineStore.runDialogProps.remark = record.remark || ''
+    setRunReadonly(true)
+    pipelineStore.showRunDialog = true
+    console.log('runDialogProps', pipelineStore.runDialogProps)
+  }
+
   // 获取运行历史
   const getRunHistoryHtml = () => {
     if (pipelineStore.historyList.length === 0) {
@@ -662,22 +700,7 @@ const PipelineDetail = (): ReactElement => {
                       className={`${disabledButton ? 'disabled' : ''}`}
                       onClick={() => {
                         if (disabledButton) return
-                        pipelineStore.selectItem = pipelineStore.detailInfo || {}
-                        pipelineStore.selectItem.runtime = record || {}
-                        pipelineStore.selectItem.snapshot = record.snapshot || {}
-                        pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
-                        pipelineStore.runDialogProps.value = '1'
-
-                        pipelineStore.onSetRadioRunProps(
-                          pipelineStore.selectItem || {},
-                          pipelineStore.runDialogProps,
-                          record.snapshot || {},
-                          {}
-                        )
-                        pipelineStore.runDialogProps.remark = record.remark || ''
-                        setRunReadonly(true)
-                        pipelineStore.showRunDialog = true
-                        console.log('runDialogProps', pipelineStore.runDialogProps)
+                        onRerun(record || {})
                       }}
                     >
                       重试
