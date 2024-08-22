@@ -73,18 +73,20 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
           if (components.length > 0) {
             components.forEach(com => {
               let marketTemplate: { [K: string]: any } =
-                  MarketTemplateData.find((d: { [K: string]: any } = {}) => d.module === step.module) || {}
+                MarketTemplateData.find((d: { [K: string]: any } = {}) => d.module === step.module) || {}
               let cops = Utils.deepCopy(marketTemplate.components || [])
-              let cop = cops.find((comp: {[K: string]: any} = {}) => comp.name === com.prop) || {}
+              let cop = cops.find((comp: { [K: string]: any } = {}) => comp.name === com.prop) || {}
               newComponents.push({
                 ...cop,
                 ...com,
               })
             })
 
-            newComponents = newComponents.sort((newComponent1: { [K: string]: any } = {}, newComponent2: { [K: string]: any } = {}) => {
-              return newComponent1.order - newComponent2.order
-            })
+            newComponents = newComponents.sort(
+              (newComponent1: { [K: string]: any } = {}, newComponent2: { [K: string]: any } = {}) => {
+                return newComponent1.order - newComponent2.order
+              }
+            )
           }
 
           newSteps.push({ ...step, components: newComponents, comps })

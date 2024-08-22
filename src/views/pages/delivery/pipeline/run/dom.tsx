@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { Input, Radio, Select } from 'antd'
 import MTable from '@views/modules/table'
 import Utils from '@utils/utils'
-import {useStore} from '@views/stores'
+import { useStore } from '@views/stores'
 
 interface IPipelineRunDialogProps {
   isReadonly?: boolean // 是否只读
@@ -22,7 +22,6 @@ interface IPipelineRunDialogProps {
 }
 
 const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDialogProps): ReactElement => {
-
   const { pipelineStore } = useStore()
 
   const getColumns = () => {
@@ -91,22 +90,22 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
           }
 
           return (
-              <Select
-                  style={{ width: '100%' }}
-                  placeholder="请选择"
-                  allowClear
-                  value={selectValue}
-                  disabled={record.disabled === 'yes'}
-                  onChange={(value: string) => {
-                    if (isVariableMulti) {
-                      setVariableValue(name, value, record.id || '', record.order || 0, record.desc || '')
-                    } else {
-                      // eslint-disable-next-line react/prop-types
-                      props.onSetProps?.(name, value, record.tag)
-                    }
-                  }}
-                  options={value || []}
-              />
+            <Select
+              style={{ width: '100%' }}
+              placeholder="请选择"
+              allowClear
+              value={selectValue}
+              disabled={record.disabled === 'yes'}
+              onChange={(value: string) => {
+                if (isVariableMulti) {
+                  setVariableValue(name, value, record.id || '', record.order || 0, record.desc || '')
+                } else {
+                  // eslint-disable-next-line react/prop-types
+                  props.onSetProps?.(name, value, record.tag)
+                }
+              }}
+              options={value || []}
+            />
           )
         }
       }
@@ -114,17 +113,17 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
       // input
       if (genre === pipelineStore.VARIABLE_OPTIONS[2].value) {
         let selectValue = record.value || ''
-          return (
-              <Input
-                  style={{ width: '100%' }}
-                  placeholder="请输入"
-                  value={selectValue}
-                  allowClear={true}
-                  onChange={e => {
-                    props.onSetProps?.(name, e.target.value, record.tag)
-                  }}
-              />
-          )
+        return (
+          <Input
+            style={{ width: '100%' }}
+            placeholder="请输入"
+            value={selectValue}
+            allowClear={true}
+            onChange={e => {
+              props.onSetProps?.(name, e.target.value, record.tag)
+            }}
+          />
+        )
       }
 
       return <p></p>

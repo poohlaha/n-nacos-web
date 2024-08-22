@@ -544,8 +544,8 @@ class PipelineStore extends BaseStore {
                 component.label || '',
                 component.value || '',
                 component.desc || '',
-                  component.order || 1,
-                  component.type || ''
+                component.order || 1,
+                component.type || ''
               )
             )
           })

@@ -190,9 +190,9 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
               <div className="str form-item flex-align-center page-margin-top">
                 <div className="label page-margin-right flex-align-center">
                   <p>值</p>
-                  <span className="flex-center">{
-                      form.genre === pipelineStore.VARIABLE_OPTIONS[0].value ? '*' : ''
-                  }</span>
+                  <span className="flex-center">
+                    {form.genre === pipelineStore.VARIABLE_OPTIONS[0].value ? '*' : ''}
+                  </span>
                 </div>
 
                 <Input
@@ -203,11 +203,11 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const { value } = e.target
                     let f = Utils.deepCopy(form || {})
-                      if (form.genre === pipelineStore.VARIABLE_OPTIONS[2].value) {
-                          f.input = value || ''
-                      } else {
-                          f.str = value || ''
-                      }
+                    if (form.genre === pipelineStore.VARIABLE_OPTIONS[2].value) {
+                      f.input = value || ''
+                    } else {
+                      f.str = value || ''
+                    }
 
                     setForm(f)
                   }}
