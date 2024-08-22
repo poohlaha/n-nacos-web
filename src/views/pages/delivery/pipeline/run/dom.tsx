@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite'
 import { Input, Radio, Select } from 'antd'
 import MTable from '@views/modules/table'
 import Utils from '@utils/utils'
+import {useStore} from '@views/stores'
 
 interface IPipelineRunDialogProps {
   isReadonly?: boolean // 是否只读
@@ -21,6 +22,9 @@ interface IPipelineRunDialogProps {
 }
 
 const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDialogProps): ReactElement => {
+
+  const { pipelineStore } = useStore()
+
   const getColumns = () => {
     let columns: { [K: string]: any } = props.columns || []
     let nameColumn: { [K: string]: any } = columns[0] || {}
@@ -48,58 +52,79 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
     valueColumn.multiLine = false
     valueColumn.render = (record: { [K: string]: any } = {}) => {
       let value = record.value
-      let isVariableMulti = false
-      let isVariable = record.isVariable
-      if (value && value.indexOf('\n') !== -1) {
-        isVariableMulti = true
-        let values = value.split('\n') || []
-        // 组装 value
-        value = values.map((v: string = '') => {
-          return { label: v, value: v }
-        })
-      }
-
+      let genre = record.genre || ''
       let name = record.name || ''
-      // 数组
-      if (Array.isArray(value)) {
-        let h5: { [K: string]: any } = {}
-        let variable = dialogProps.variable || {}
-        if (tagList.length > 0) {
-          let h5Tag = tagList[tagList.length - 1].value
-          if (h5Tag === record.tag) {
-            h5 = dialogProps.h5 || {}
-          }
-        }
 
-        let selectValue = ''
-        if (isVariableMulti) {
-          selectValue = variable[name] || ''
-        } else if (!Utils.isObjectNull(h5)) {
-          selectValue = h5[name] || ''
-        }
-
-        return (
-          <Select
-            style={{ width: '100%' }}
-            placeholder="请选择"
-            allowClear
-            value={selectValue}
-            disabled={record.disabled === 'yes'}
-            onChange={(value: string) => {
-              if (isVariableMulti) {
-                setVariableValue(name, value, record.id || '', record.order || 0, record.desc || '')
-              } else {
-                // eslint-disable-next-line react/prop-types
-                props.onSetProps?.(name, value, record.tag)
-              }
-            }}
-            options={value || []}
-          />
-        )
+      // str
+      if (genre === pipelineStore.VARIABLE_OPTIONS[0].value) {
+        return <p>{value || ''}</p>
       }
 
-      if (typeof value === 'string') {
-        return <p>{value || ''}</p>
+      // select
+      if (genre === pipelineStore.VARIABLE_OPTIONS[1].value) {
+        let isVariableMulti = false
+        if (value && value.indexOf('\n') !== -1) {
+          isVariableMulti = true
+          let values = value.split('\n') || []
+          // 组装 value
+          value = values.map((v: string = '') => {
+            return { label: v, value: v }
+          })
+        }
+
+        // 数组
+        if (Array.isArray(value)) {
+          let h5: { [K: string]: any } = {}
+          let variable = dialogProps.variable || {}
+          if (tagList.length > 0) {
+            let h5Tag = tagList[tagList.length - 1].value
+            if (h5Tag === record.tag) {
+              h5 = dialogProps.h5 || {}
+            }
+          }
+
+          let selectValue = null
+          if (isVariableMulti) {
+            selectValue = variable[name] || null
+          } else if (!Utils.isObjectNull(h5)) {
+            selectValue = h5[name] || null
+          }
+
+          return (
+              <Select
+                  style={{ width: '100%' }}
+                  placeholder="请选择"
+                  allowClear
+                  value={selectValue}
+                  disabled={record.disabled === 'yes'}
+                  onChange={(value: string) => {
+                    if (isVariableMulti) {
+                      setVariableValue(name, value, record.id || '', record.order || 0, record.desc || '')
+                    } else {
+                      // eslint-disable-next-line react/prop-types
+                      props.onSetProps?.(name, value, record.tag)
+                    }
+                  }}
+                  options={value || []}
+              />
+          )
+        }
+      }
+
+      // input
+      if (genre === pipelineStore.VARIABLE_OPTIONS[2].value) {
+        let selectValue = record.value || ''
+          return (
+              <Input
+                  style={{ width: '100%' }}
+                  placeholder="请输入"
+                  value={selectValue}
+                  allowClear={true}
+                  onChange={e => {
+                    props.onSetProps?.(name, e.target.value, record.tag)
+                  }}
+              />
+          )
       }
 
       return <p></p>

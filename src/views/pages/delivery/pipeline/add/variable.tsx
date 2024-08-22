@@ -83,6 +83,8 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
                             let f = Utils.deepCopy(item || {})
                             if (item.genre === pipelineStore.VARIABLE_OPTIONS[1].value) {
                               f.select = item.value || ''
+                            } else if (item.genre === pipelineStore.VARIABLE_OPTIONS[2].value) {
+                              f.input = item.value || ''
                             } else {
                               f.str = item.value || ''
                             }
@@ -183,22 +185,30 @@ const PipelineVariable: React.FC<IRouterProps> = (props: IRouterProps): ReactEle
               />
             </div>
 
-            {form.genre === pipelineStore.VARIABLE_OPTIONS[0].value && (
+            {(form.genre === pipelineStore.VARIABLE_OPTIONS[0].value ||
+              form.genre === pipelineStore.VARIABLE_OPTIONS[2].value) && (
               <div className="str form-item flex-align-center page-margin-top">
                 <div className="label page-margin-right flex-align-center">
                   <p>值</p>
-                  <span className="flex-center">*</span>
+                  <span className="flex-center">{
+                      form.genre === pipelineStore.VARIABLE_OPTIONS[0].value ? '*' : ''
+                  }</span>
                 </div>
 
                 <Input
                   placeholder="请输入"
                   maxLength={20}
-                  value={form.str}
+                  value={form.genre === pipelineStore.VARIABLE_OPTIONS[2].value ? form.input : form.str}
                   allowClear
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const { value } = e.target
                     let f = Utils.deepCopy(form || {})
-                    f.str = value || ''
+                      if (form.genre === pipelineStore.VARIABLE_OPTIONS[2].value) {
+                          f.input = value || ''
+                      } else {
+                          f.str = value || ''
+                      }
+
                     setForm(f)
                   }}
                 />

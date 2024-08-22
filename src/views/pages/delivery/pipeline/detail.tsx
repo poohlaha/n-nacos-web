@@ -484,7 +484,7 @@ const PipelineDetail = (): ReactElement => {
 
         g.push({
           title: {
-            label: group.title || '',
+            label: group.label || '',
             footer: getViewFooterHtml(),
           },
           steps: newSteps || [],

@@ -1,0 +1,69 @@
+{
+  "remote": [
+    [
+      {
+        "title": {
+          "label": "代码拉取"
+        },
+        "marketId": "1",
+        "steps": []
+      }
+    ]
+  ],
+  "common": [
+    [
+      {
+        "title": {
+          "label": "依赖安装"
+        },
+        "marketId": "2",
+        "steps": []
+      }
+    ],
+    [
+      {
+        "title": {
+          "label": "项目打包"
+        },
+        "marketId": "3",
+        "steps": []
+      }
+    ],
+    [
+      {
+        "title": {
+          "label": "文件压缩"
+        },
+        "marketId": "4",
+        "steps": []
+      }
+    ],
+    [
+      {
+        "title": {
+          "label": "图片压缩"
+        },
+        "marketId": "5",
+        "steps": []
+      }
+    ],
+    [
+      {
+        "title": {
+          "label": "项目部署"
+        },
+        "marketId": "6",
+        "steps": []
+      }
+    ],
+    [
+      {
+        "title": {
+          "label": "发送通知"
+        },
+        "marketId": "7",
+        "steps": []
+      }
+    ]
+  ]
+}

@@ -187,7 +187,7 @@ const Pipeline: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => 
 
           let className = getStepClassName(stageIndex, status, i)
 
-          let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.title).join(',')
+          let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.label).join(',')
           arr.push(
             <Tooltip key={i} className="tooltip-question" placement="top" title={label || ''}>
               <div className="step-box">

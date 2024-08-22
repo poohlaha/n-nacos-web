@@ -37,7 +37,6 @@ class PipelineStage {
   id: string
   order: number
   processId: string
-  historyId: string
   groups: Array<PipelineGroup>
   createTime: string
   updateTime: string
@@ -47,14 +46,12 @@ class PipelineStage {
     order: number = 0,
     id: string = '',
     processId: string = '',
-    historyId: string = '',
     createTime: string = '',
     updateTime: string = ''
   ) {
     this.id = id
     this.order = order
     this.processId = processId
-    this.historyId = historyId
     this.groups = groups
     this.createTime = createTime
     this.updateTime = updateTime
@@ -64,14 +61,16 @@ class PipelineStage {
 class PipelineGroup {
   id: string
   stageId: string
-  title: string
+  order: number
+  label: string
   steps: Array<PipelineStep>
   createTime: string
   updateTime: string
 
   constructor(
-    title: string,
+    label: string,
     steps: Array<PipelineStep>,
+    order: number,
     id: string = '',
     stageId: string = '',
     createTime: string = '',
@@ -79,7 +78,8 @@ class PipelineGroup {
   ) {
     this.id = id
     this.stageId = stageId
-    this.title = title
+    this.order = order
+    this.label = label
     this.steps = steps
     this.createTime = createTime
     this.updateTime = updateTime
@@ -89,6 +89,7 @@ class PipelineGroup {
 class PipelineStep {
   id: string
   groupId: string
+  order: number
   module: string
   command: string
   label: string
@@ -100,6 +101,7 @@ class PipelineStep {
   constructor(
     id: string,
     groupId: string,
+    order: number,
     module: string,
     command: string,
     label: string,
@@ -110,6 +112,7 @@ class PipelineStep {
   ) {
     this.id = id
     this.groupId = groupId
+    this.order = order
     this.command = command
     this.label = label
     this.module = module
@@ -123,9 +126,11 @@ class PipelineStep {
 class PipelineStepComponent {
   id: string
   stepId: string
+  order: number
   prop: string
   label: string
   value: string
+  type: string
   desc: string
   createTime: string
   updateTime: string
@@ -135,6 +140,8 @@ class PipelineStepComponent {
     label: string,
     value: string,
     desc: string,
+    order: number,
+    type: string = '',
     id: string = '',
     stepId: string = '',
     createTime: string = '',
@@ -146,6 +153,8 @@ class PipelineStepComponent {
     this.desc = desc
     this.id = id
     this.stepId = stepId
+    this.order = order
+    this.type = type
     this.createTime = createTime
     this.updateTime = updateTime
   }
@@ -193,6 +202,11 @@ class PipelineStore extends BaseStore {
       label: 'H5',
       value: 'H5',
       color: 'success',
+    },
+    {
+      label: 'Docker-H5',
+      value: 'DockerH5',
+      color: 'magenta',
     },
   ]
 
@@ -249,6 +263,10 @@ class PipelineStore extends BaseStore {
     {
       label: '下拉框',
       value: 'select',
+    },
+    {
+      label: '输入框',
+      value: 'input',
     },
   ]
 
@@ -331,6 +349,7 @@ class PipelineStore extends BaseStore {
     let genre = form.genre || ''
     let str = (form.str || '').trim()
     let select = (form.select || '').trim()
+    let input = (form.input || '').trim()
     let disabled = (form.disabled || '').trim()
     let require = (form.require || '').trim()
     let desc = (form.desc || '').trim()
@@ -372,6 +391,8 @@ class PipelineStore extends BaseStore {
 
     if (genre === this.VARIABLE_OPTIONS[1].value) {
       value = select
+    } else if (genre === this.VARIABLE_OPTIONS[2].value) {
+      value = input
     } else {
       value = str
     }
@@ -522,7 +543,9 @@ class PipelineStore extends BaseStore {
                 component.name || '',
                 component.label || '',
                 component.value || '',
-                component.desc || ''
+                component.desc || '',
+                  component.order || 1,
+                  component.type || ''
               )
             )
           })
@@ -531,6 +554,7 @@ class PipelineStore extends BaseStore {
             new PipelineStep(
               step.id || '',
               item.id || '',
+              step.order || 1,
               step.module || '',
               step.command || '',
               step.label || '',
@@ -540,7 +564,7 @@ class PipelineStore extends BaseStore {
           )
         })
 
-        groups.push(new PipelineGroup(item.title?.label || '', newSteps))
+        groups.push(new PipelineGroup(item.title?.label || '', newSteps, item.order || 1))
       })
 
       stages.push(new PipelineStage(groups, index + 1))
@@ -655,6 +679,10 @@ class PipelineStore extends BaseStore {
           let genre = record.genre || ''
           if (genre === this.VARIABLE_OPTIONS[1].value) {
             return <span>{this.VARIABLE_OPTIONS[1].label || ''}</span>
+          }
+
+          if (genre === this.VARIABLE_OPTIONS[2].value) {
+            return <span>{this.VARIABLE_OPTIONS[2].label || ''}</span>
           }
 
           return <span>{this.VARIABLE_OPTIONS[0].label || ''}</span>
@@ -847,7 +875,7 @@ class PipelineStore extends BaseStore {
     let variables = info.variables || []
 
     // h5
-    if (tag === this.TAGS[7].value) {
+    if (tag === this.TAGS[7].value || tag === this.TAGS[8].value) {
       let h5 = runDialogProps.h5 || {}
       if (Utils.isObjectNull(h5.branch || '')) {
         TOAST.show({ message: `请选择${tip || ''} branch`, type: 4 })
@@ -983,6 +1011,12 @@ class PipelineStore extends BaseStore {
     }
   }
 
+  @action
+  getTag(tag: string = '') {
+    if (!tag.endsWith(this.TAGS[7].value || '')) return tag || ''
+    return this.TAGS[7].value || ''
+  }
+
   /**
    * 获取运行对话框属性
    */
@@ -990,7 +1024,7 @@ class PipelineStore extends BaseStore {
   getDialogRunProps(item: { [K: string]: any } = {}) {
     let runnableInfo = item.runnableInfo || {}
     let basic = item.basic || {}
-    let tag = basic.tag || ''
+    let tag = this.getTag(basic.tag || '')
     let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let branches = runnableInfo.branches || []
     let displayFields = tagExtra.displayFields || []
@@ -1014,7 +1048,7 @@ class PipelineStore extends BaseStore {
     let runnableInfo = item.runnableInfo || {}
     let snapshot = item.snapshot || {}
     let basic = item.basic || {}
-    let tag = basic.tag || ''
+    let tag = this.getTag(basic.tag || '')
     let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let displayFields = tagExtra.displayFields || []
 
@@ -1053,6 +1087,7 @@ class PipelineStore extends BaseStore {
       variables.map((item: { [K: string]: any } = {}) => {
         return { ...item, isVariable: true }
       }) || []
+
     // 排序
     variables = variables.sort((variable1: { [K: string]: any } = {}, variable2: { [K: string]: any } = {}) => {
       return variable1.order - variable2.order

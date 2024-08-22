@@ -13,10 +13,16 @@ import { open } from '@tauri-apps/plugin-dialog'
 import PipelineProcess from '../process'
 import PipelineVariable from './variable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, H5_VARIABLE_LIST, updateMarket } from '../process/templates/h5'
+import { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, H5_VARIABLE_LIST } from '../process/templates/h5'
 import Page from '@views/components/page'
 import { ADDRESS } from '@utils/base'
 import MarketTemplateData from '@pages/delivery/pipelineMarket/templates/template.json'
+import { updateMarket } from '@pages/delivery/pipeline/process/templates/common'
+import {
+  DOCKER_H5_LOCAL_TEMPLATE,
+  DOCKER_H5_REMOTE_TEMPLATE,
+  DOCKER_VARIABLE_LIST,
+} from '@pages/delivery/pipeline/process/templates/docker'
 
 // eslint-disable-next-line no-undef
 const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
@@ -34,7 +40,12 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
       serverId = Utils.decrypt(decodeURIComponent(serverId))
       await pipelineStore.getDetailInfo(id, serverId)
       pipelineStore.onSetAddForm(pipelineStore.detailInfo || {})
-      pipelineStore.activeProcess = getDetailActiveProcess(pipelineStore.detailInfo?.processConfig?.stages || [])
+      // pipelineStore.activeProcess = getDetailActiveProcess(pipelineStore.detailInfo?.processConfig?.stages || [])
+      let stages = pipelineStore.detailInfo?.runtime?.stages || []
+      if (stages.length === 0) {
+        stages = pipelineStore.detailInfo?.processConfig?.stages || []
+      }
+      pipelineStore.activeProcess = getDetailActiveProcess(stages)
       pipelineStore.isEditor = true
     }
   })
@@ -56,32 +67,44 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
         let steps: Array<any> = group.steps || []
         let newSteps: Array<any> = []
         steps.forEach(step => {
-          let marketTemplate: { [K: string]: any } =
-            MarketTemplateData.find((d: { [K: string]: any } = {}) => d.module === step.module) || {}
-          marketTemplate = Utils.deepCopy(marketTemplate)
-          let components: Array<any> = marketTemplate.components || []
+          let components: Array<any> = step.components || []
           let newComponents: Array<any> = []
           let comps: Array<any> = step.components || []
           if (components.length > 0) {
             components.forEach(com => {
-              let component = comps.find((d: { [K: string]: any } = {}) => d.prop === com.name) || {}
-              if (!Utils.isObjectNull(component)) {
-                com.value = component.value || ''
-                newComponents.push(com)
-              } else {
-                newComponents.push(com)
-              }
+              let marketTemplate: { [K: string]: any } =
+                  MarketTemplateData.find((d: { [K: string]: any } = {}) => d.module === step.module) || {}
+              let cops = Utils.deepCopy(marketTemplate.components || [])
+              let cop = cops.find((comp: {[K: string]: any} = {}) => comp.name === com.prop) || {}
+              newComponents.push({
+                ...cop,
+                ...com,
+              })
+            })
+
+            newComponents = newComponents.sort((newComponent1: { [K: string]: any } = {}, newComponent2: { [K: string]: any } = {}) => {
+              return newComponent1.order - newComponent2.order
             })
           }
 
           newSteps.push({ ...step, components: newComponents, comps })
         })
 
+        // 排序
+        newSteps = newSteps.sort((newStep1: { [K: string]: any } = {}, newStep2: { [K: string]: any } = {}) => {
+          return newStep1.order - newStep2.order
+        })
+
         newGroups.push({
+          ...group,
           title: {
-            label: group.title || '',
+            label: group.label || '',
           },
           steps: newSteps || [],
+        })
+
+        newGroups = newGroups.sort((newGroup1: { [K: string]: any } = {}, newGroup2: { [K: string]: any } = {}) => {
+          return newGroup1.order - newGroup2.order
         })
       })
 
@@ -105,12 +128,13 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
     )
   }
 
-  const getActiveProcess = () => {
-    if (pipelineStore.isEditor) return
+  const getActiveProcess = (isChange: boolean = false) => {
+    if (pipelineStore.isEditor || (pipelineStore.activeProcess.length > 0 && !isChange)) return
+
+    let isRemoteUrl = pipelineStore.isRemoteUrl(pipelineStore.addForm.basic.path || '')
 
     // H5
     if (pipelineStore.addForm.basic.tag === pipelineStore.TAGS[7].value) {
-      let isRemoteUrl = pipelineStore.isRemoteUrl(pipelineStore.addForm.basic.path || '')
       if (isRemoteUrl) {
         pipelineStore.activeProcess = H5_REMOTE_TEMPLATE
       } else {
@@ -119,6 +143,19 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
 
       // 设置默认的 启动变量属性
       pipelineStore.addVariableList = H5_VARIABLE_LIST
+      return
+    }
+
+    // Docker-H5
+    if (pipelineStore.addForm.basic.tag === pipelineStore.TAGS[8].value) {
+      if (isRemoteUrl) {
+        pipelineStore.activeProcess = DOCKER_H5_REMOTE_TEMPLATE
+      } else {
+        pipelineStore.activeProcess = DOCKER_H5_LOCAL_TEMPLATE
+      }
+
+      // 设置默认的 启动变量属性
+      pipelineStore.addVariableList = DOCKER_VARIABLE_LIST
       return
     }
 
@@ -137,7 +174,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
       },
       onChange: (value: string) => {
         pipelineStore.addForm.basic.tag = value || ''
-        getActiveProcess()
+        getActiveProcess(true)
       },
       options: pipelineStore.TAGS || [],
     }
@@ -193,7 +230,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
               value={pipelineStore.addForm.basic.path || ''}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 pipelineStore.addForm.basic.path = e.target.value || ''
-                getActiveProcess()
+                // getActiveProcess()
               }}
             />
 
@@ -239,7 +276,7 @@ const PipelineAdd: React.FC<IRouterProps> = (props: IRouterProps): ReactElement 
     return (
       <div className="process-content wh100">
         <PipelineProcess
-          data={pipelineStore.activeProcess}
+          data={pipelineStore.activeProcess || []}
           isRun={false}
           onUpdateData={(market: { [K: string]: any }) => {
             pipelineStore.activeProcess = updateMarket(pipelineStore.activeProcess, market)

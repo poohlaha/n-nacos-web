@@ -67,6 +67,7 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
           type="primary"
           className="page-margin-left"
           onClick={() => {
+            console.log('stepForm', stepForm)
             props.onUpdateData?.(stepForm)
             onResetForm()
             setOpen(false)
@@ -80,6 +81,9 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
 
   const render = () => {
     let components = stepForm.components || []
+    components = components.sort((component1: { [K: string]: any } = {}, component2: { [K: string]: any } = {}) => {
+      return component1.order - component2.order
+    })
     return (
       <div className="pipeline-process-page wh100">
         {!props.isRun && (
@@ -169,6 +173,7 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
 
                 {components.length > 0 &&
                   components.map((component: { [K: string]: any }, index: number) => {
+                    let rows = component.rows || 3
                     return (
                       <div className="item-content page-margin-top flex" key={index}>
                         <p>{component.label || ''}:</p>
@@ -187,10 +192,25 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
                             />
                           )}
 
+                          {component.type === 'password' && (
+                            <Input.Password
+                              placeholder="请输入"
+                              allowClear
+                              value={component.value || ''}
+                              onChange={(e: any) => {
+                                let comp = Utils.deepCopy(component) || {}
+                                comp.value = e.target.value || ''
+                                onUpdateStepForm(comp)
+                                // props.onUpdateData?.(stepForm.id, stepIndex, comp)
+                              }}
+                            />
+                          )}
+
                           {component.type === 'textarea' && (
                             <Input.TextArea
                               placeholder="请输入"
                               value={component.value || ''}
+                              rows={rows}
                               onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                                 let comp = Utils.deepCopy(component) || {}
                                 comp.value = e.target.value || ''

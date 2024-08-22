@@ -80,7 +80,7 @@ const Left: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
                     {/* group list */}
                     {children.map((child: { [K: string]: any }, i: number) => {
                       let childUrl = child.url || ''
-                      let childActive = childUrl === url || url.startsWith(childUrl)
+                      let childActive = childUrl === url
 
                       return (
                         <ul key={i}>

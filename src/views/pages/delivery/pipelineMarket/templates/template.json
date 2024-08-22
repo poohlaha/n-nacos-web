@@ -27,7 +27,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "以下规则只要满足一条就必须填写:\n1. 当工作空间下有多个项目\n2. 当只有一个项目时, 且安装依赖目录不为根目录"
+        "desc": "以下规则只要满足一条就必须填写:\n1. 当工作空间下有多个项目\n2. 当只有一个项目时, 且安装依赖目录不为根目录",
+        "order": 1
       }
     ]
   },
@@ -61,6 +62,7 @@
         "value": "No",
         "default": "",
         "desc": "是否启用文件压缩",
+        "order": 1,
         "options": [
           {
             "label": "是",
@@ -78,7 +80,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "压缩文件目录, 默认使用 `deployDir` 属性"
+        "desc": "压缩文件目录, 默认使用 `deployDir` 属性",
+        "order": 2
       },
       {
         "name": "excludes",
@@ -86,7 +89,8 @@
         "type": "textarea",
         "value": "",
         "default": "",
-        "desc": "过滤的文件, 可使用正则匹配，如: **/*.min.js"
+        "desc": "过滤的文件, 可使用正则匹配，如: **/*.min.js",
+        "order": 3
       },
       {
         "name": "validateJs",
@@ -104,7 +108,8 @@
           }
         ],
         "default": "",
-        "desc": "是否对JS进行校验"
+        "desc": "是否对JS进行校验",
+        "order": 4
       },
       {
         "name": "optimizationCss",
@@ -122,7 +127,8 @@
           }
         ],
         "default": "",
-        "desc": "是否对CSS进行优化"
+        "desc": "是否对CSS进行优化",
+        "order": 5
       }
     ]
   },
@@ -144,6 +150,7 @@
         "value": "No",
         "default": "",
         "desc": "是否启用图片压缩",
+        "order": 1,
         "options": [
           {
             "label": "是",
@@ -161,7 +168,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "文件压缩源目录, 默认为 build 目录"
+        "desc": "文件压缩源目录, 默认为 build 目录",
+        "order": 2
       },
       {
         "name": "dest",
@@ -169,7 +177,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "文件压缩目标目录, 默认和源目录一致"
+        "desc": "文件压缩目标目录, 默认和源目录一致",
+        "order": 3
       },
       {
         "name": "quality",
@@ -177,7 +186,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": ""
+        "desc": "",
+        "order": 4
       },
       {
         "name": "sizeRatio",
@@ -185,7 +195,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": ""
+        "desc": "",
+        "order": 5
       },
       {
         "name": "imageSize",
@@ -193,7 +204,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": ""
+        "desc": "",
+        "order": 6
       }
     ]
   },
@@ -214,7 +226,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "默认为 build, 可以 `启动变量` 中配置"
+        "desc": "默认为 build, 可以 `启动变量` 中配置",
+        "order": 1
       },
       {
         "name": "serverDir",
@@ -222,7 +235,8 @@
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "发布到服务器目录"
+        "desc": "发布到服务器目录",
+        "order": 2
       }
     ]
   },
@@ -236,5 +250,107 @@
     "date": "2024/03/11",
     "command": "",
     "module": "Notice"
+  },
+  {
+    "id": "8",
+    "key": "docker",
+    "label": "Docker镜像",
+    "type": "自定义插件",
+    "step": "构建",
+    "desc": "通用模板--Docker镜像",
+    "date": "2024/08/22",
+    "command": "",
+    "module": "Docker",
+    "components": [
+      {
+        "name": "docker.harbor.address",
+        "label": "Address",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile harbor address",
+        "order": 1
+      },
+      {
+        "name": "docker.harbor.namespace",
+        "label": "Namespace",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile harbor namespace",
+        "order": 2
+      },
+      {
+        "name": "docker.harbor.image",
+        "label": "Image",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile harbor image, 可以 `启动变量` 中配置",
+        "order": 3
+      },
+      {
+        "name": "docker.harbor.version",
+        "label": "Version",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile harbor version, 可以 `启动变量` 中配置",
+        "order": 4
+      },
+      {
+        "name": "docker.harbor.user",
+        "label": "User",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile harbor user",
+        "order": 5
+      },
+      {
+        "name": "docker.harbor.password",
+        "label": "Password",
+        "type": "password",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile harbor password",
+        "order": 6
+      },
+      {
+        "name": "dockerfile",
+        "label": "Dockerfile",
+        "type": "textarea",
+        "value": "",
+        "default": "",
+        "rows": 8,
+        "desc": "Dockerfile 文件",
+        "order": 7
+      },
+      {
+        "name": "nginx.conf",
+        "label": "Nginx Conf",
+        "type": "textarea",
+        "value": "",
+        "default": "",
+        "rows": 8,
+        "desc": "Dockerfile 中的 nginx 配置文件",
+        "order": 8
+      },
+      {
+        "name": "platform",
+        "label": "platform",
+        "type": "select",
+        "value": "linux/arm64",
+        "default": "",
+        "desc": "Docker platform",
+        "order": 9,
+        "options": [
+          {
+            "label": "linux/arm64",
+            "value": "linux/arm64"
+          }
+        ]
+      }
+    ]
   }
 ]

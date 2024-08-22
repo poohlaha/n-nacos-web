@@ -4,91 +4,13 @@
  * @author poohlaha
  */
 import MarketTemplateData from '../../../pipelineMarket/templates/template.json'
+import H5Data from '../../../pipelineMarket/pipeline/h5.json'
 import Utils from '@utils/utils'
+import { getSteps } from '@pages/delivery/pipeline/process/templates/common'
 
-const LOCAL_TEMPLATE: Array<Array<{ [K: string]: any }>> = [
-  [
-    {
-      title: {
-        label: '依赖安装',
-      },
-      marketId: '2',
-      steps: [],
-    },
-  ],
-  [
-    {
-      title: {
-        label: '项目打包',
-      },
-      marketId: '3',
-      steps: [],
-    },
-  ],
-  [
-    {
-      title: {
-        label: '文件压缩',
-      },
-      marketId: '4',
-      steps: [],
-    },
-  ],
-  [
-    {
-      title: {
-        label: '图片压缩',
-      },
-      marketId: '5',
-      steps: [],
-    },
-  ],
-  [
-    {
-      title: {
-        label: '项目部署',
-      },
-      marketId: '6',
-      steps: [],
-    },
-  ],
-  [
-    {
-      title: {
-        label: '发送通知',
-      },
-      marketId: '7',
-      steps: [],
-    },
-  ],
-]
+const LOCAL_TEMPLATE: Array<Array<{ [K: string]: any }>> = H5Data.common || []
 
-const REMOTE_TEMPLATE: Array<Array<{ [K: string]: any }>> = [
-  [
-    {
-      title: {
-        label: '代码拉取',
-      },
-      marketId: '1',
-      steps: [],
-    },
-  ],
-  ...LOCAL_TEMPLATE,
-]
-
-const getSteps = (list: Array<Array<any>> = []) => {
-  return list.map((items: Array<{ [K: string]: any }> = []) => {
-    return items.map(item => {
-      let marketId = item.marketId || ''
-      let marketTemplate: { [K: string]: any } =
-        MarketTemplateData.find((d: { [K: string]: any } = {}) => d.id === marketId) || {}
-      if (!Utils.isObjectNull(marketTemplate)) {
-        item.steps = [marketTemplate]
-      }
-      return item
-    })
-  })
-}
+const REMOTE_TEMPLATE: Array<Array<{ [K: string]: any }>> = [...H5Data.remote, ...LOCAL_TEMPLATE]
 
 // 启动变量
 const H5_VARIABLE_LIST: Array<{ [K: string]: any }> = [
@@ -166,26 +88,14 @@ const replaceStepsComponentValue = (list: Array<Array<any>> = [], os: { [K: stri
   })
 }
 
-const updateMarket = (list: Array<Array<any>> = [], market: { [K: string]: any } = {}) => {
-  if (Utils.isObjectNull(market)) return list
-  if (list.length === 0) return []
-
-  return list.map((items: Array<{ [K: string]: any }> = []) => {
-    return items.map(item => {
-      let steps = item.steps || []
-      item.steps = steps.map((step: { [K: string]: any } = {}) => {
-        if (step.id === market.id) {
-          return market
-        }
-
-        return step
-      })
-      return item
-    })
-  })
-}
-
 const H5_LOCAL_TEMPLATE = getSteps(LOCAL_TEMPLATE)
 const H5_REMOTE_TEMPLATE = getSteps(REMOTE_TEMPLATE)
 
-export { H5_LOCAL_TEMPLATE, H5_REMOTE_TEMPLATE, H5_VARIABLE_LIST, replaceStepsComponentValue, updateMarket }
+export {
+  LOCAL_TEMPLATE,
+  REMOTE_TEMPLATE,
+  H5_LOCAL_TEMPLATE,
+  H5_REMOTE_TEMPLATE,
+  H5_VARIABLE_LIST,
+  replaceStepsComponentValue,
+}
