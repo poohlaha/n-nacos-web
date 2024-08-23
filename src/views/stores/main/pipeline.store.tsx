@@ -965,7 +965,7 @@ class PipelineStore extends BaseStore {
     for (let key in variable) {
       runnableVariable.push({
         ...variable[key],
-        genre: this.VARIABLE_OPTIONS[0].value || ''
+        genre: this.VARIABLE_OPTIONS[0].value || '',
       })
     }
 
