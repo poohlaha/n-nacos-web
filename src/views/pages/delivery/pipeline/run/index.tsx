@@ -71,8 +71,8 @@ const PipelineRunDialog: React.FC<IPipelineRunDialogProps> = (props: IPipelineRu
           tagList={pipelineStore.TAGS || []}
           hasNeedRadioChange={pipelineStore.hasRadioNeedChange(pipelineStore.detailInfo || {})}
           onSetProps={(name: string, value: string, tag: string) => {
-            // H5
-            if (tag === pipelineStore.TAGS[pipelineStore.TAGS.length - 1].value) {
+            // H5 | Docker-H5
+            if (tag === pipelineStore.TAGS[pipelineStore.TAGS.length - 1].value || tag === pipelineStore.TAGS[pipelineStore.TAGS.length - 2].value) {
               pipelineStore.runDialogProps.h5[name] = value || ''
             }
           }}

@@ -7,35 +7,11 @@
       "marketId": "",
       "steps": [
         {
-          "label": "设置 Dockerfile 配置",
+          "label": "Dockerfile 配置",
           "module": "Docker",
           "docker": "DockerConfig",
           "marketId": "8",
           "order": 1
-        },
-        {
-          "key": "dockerPullNginx",
-          "label": "拉取 Docker Nginx 镜像",
-          "type": "自定义插件",
-          "step": "构建",
-          "desc": "拉取 Docker Nginx 镜像",
-          "date": "2024/08/22",
-          "command": "",
-          "module": "Docker",
-          "docker": "DockerPullNginx",
-          "order": 2
-        },
-        {
-          "key": "dockerPush",
-          "label": "推送 Docker 镜像",
-          "type": "自定义插件",
-          "step": "构建",
-          "desc": "推送 Docker 镜像",
-          "date": "2024/08/22",
-          "command": "",
-          "module": "Docker",
-          "docker": "DockerPush",
-          "order": 3
         }
       ]
     }

@@ -819,7 +819,7 @@ class PipelineStore extends BaseStore {
 
     let basic = runtime.basic || {}
     let runnableInfo = detailInfo.runnableInfo || {}
-    let tag = (basic.tag || '').toLowerCase()
+    let tag = this.getTag(basic.tag || '').toLowerCase()
     if (Utils.isObjectNull(tagExtra)) {
       tagExtra = runnableInfo[tag] || {}
     }
@@ -833,6 +833,9 @@ class PipelineStore extends BaseStore {
     }
 
     runDialogProps.remark = runtime.remark || ''
+    if (tag === this.TAGS[7].value.toLowerCase()) {
+      runDialogProps.h5.node = runnableInfo.h5?.node || ''
+    }
 
     // 设置 variable
     runDialogProps.variable = {}
@@ -874,7 +877,7 @@ class PipelineStore extends BaseStore {
     let tag = info.basic?.tag || ''
     let variables = info.variables || []
 
-    // h5
+    // h5 ｜ docker-h5
     if (tag === this.TAGS[7].value || tag === this.TAGS[8].value) {
       let h5 = runDialogProps.h5 || {}
       if (Utils.isObjectNull(h5.branch || '')) {
@@ -923,7 +926,7 @@ class PipelineStore extends BaseStore {
     let runnableInfo = item.runnableInfo || {}
     let id = item.id || ''
     let serverId = item.serverId || ''
-    let tag = item.basic.tag || ''
+    let tag = this.getTag(item.basic.tag || '')
     let extraH5 = runnableInfo[tag.toLowerCase()] || {}
     let runtime = item.runtime || {}
     let stage = runtime.stage || {}
@@ -960,7 +963,10 @@ class PipelineStore extends BaseStore {
 
     let runnableVariable: Array<{ [K: string]: any }> = []
     for (let key in variable) {
-      runnableVariable.push(variable[key])
+      runnableVariable.push({
+        ...variable[key],
+        genre: this.VARIABLE_OPTIONS[0].value || ''
+      })
     }
 
     // 补充其他的值
@@ -972,6 +978,7 @@ class PipelineStore extends BaseStore {
             name: variable.name || '',
             value: variable.value || '',
             order: variable.order || 0,
+            genre: variable.genre || '',
             desc: variable.desc || '',
           })
         }

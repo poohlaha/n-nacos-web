@@ -76,8 +76,7 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
           let h5: { [K: string]: any } = {}
           let variable = dialogProps.variable || {}
           if (tagList.length > 0) {
-            let h5Tag = tagList[tagList.length - 1].value
-            if (h5Tag === record.tag) {
+            if (tagList[tagList.length - 1].value === record.tag || tagList[tagList.length - 2].value === record.tag) {
               h5 = dialogProps.h5 || {}
             }
           }
@@ -94,7 +93,8 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
               style={{ width: '100%' }}
               placeholder="请选择"
               allowClear
-              value={selectValue}
+              showSearch
+              defaultValue={selectValue}
               disabled={record.disabled === 'yes'}
               onChange={(value: string) => {
                 if (isVariableMulti) {
@@ -117,10 +117,10 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
           <Input
             style={{ width: '100%' }}
             placeholder="请输入"
-            value={selectValue}
+            defaultValue={selectValue}
             allowClear={true}
             onChange={e => {
-              props.onSetProps?.(name, e.target.value, record.tag)
+              setVariableValue(name, e.target.value || '', record.id || '', record.order || 0, record.desc || '')
             }}
           />
         )

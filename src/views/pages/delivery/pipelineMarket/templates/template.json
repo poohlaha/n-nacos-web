@@ -263,93 +263,121 @@
     "module": "Docker",
     "components": [
       {
-        "name": "docker.harbor.address",
-        "label": "Address",
-        "type": "input",
-        "value": "",
-        "default": "",
-        "desc": "Dockerfile harbor address",
-        "order": 1
-      },
-      {
-        "name": "docker.harbor.namespace",
-        "label": "Namespace",
-        "type": "input",
-        "value": "",
-        "default": "",
-        "desc": "Dockerfile harbor namespace",
-        "order": 2
-      },
-      {
-        "name": "docker.harbor.image",
+        "name": "docker.image",
         "label": "Image",
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "Dockerfile harbor image, 可以 `启动变量` 中配置",
-        "order": 3
+        "desc": "Dockerfile image, 可以 `启动变量` 中配置",
+        "order": 1
       },
       {
-        "name": "docker.harbor.version",
+        "name": "docker.version",
         "label": "Version",
         "type": "input",
         "value": "",
         "default": "",
-        "desc": "Dockerfile harbor version, 可以 `启动变量` 中配置",
-        "order": 4
+        "desc": "Dockerfile version, 可以 `启动变量` 中配置",
+        "order": 2
       },
       {
-        "name": "docker.harbor.user",
-        "label": "User",
-        "type": "input",
-        "value": "",
-        "default": "",
-        "desc": "Dockerfile harbor user",
-        "order": 5
-      },
-      {
-        "name": "docker.harbor.password",
-        "label": "Password",
-        "type": "password",
-        "value": "",
-        "default": "",
-        "desc": "Dockerfile harbor password",
-        "order": 6
-      },
-      {
-        "name": "dockerfile",
-        "label": "Dockerfile",
-        "type": "textarea",
-        "value": "",
-        "default": "",
-        "rows": 8,
-        "desc": "Dockerfile 文件",
-        "order": 7
-      },
-      {
-        "name": "nginx.conf",
-        "label": "Nginx Conf",
-        "type": "textarea",
-        "value": "",
-        "default": "",
-        "rows": 8,
-        "desc": "Dockerfile 中的 nginx 配置文件",
-        "order": 8
-      },
-      {
-        "name": "platform",
+        "name": "docker.platform",
         "label": "platform",
         "type": "select",
         "value": "linux/arm64",
         "default": "",
         "desc": "Docker platform",
-        "order": 9,
+        "order": 3,
         "options": [
           {
             "label": "linux/arm64",
             "value": "linux/arm64"
           }
         ]
+      },
+      {
+        "name": "docker.dockerfile",
+        "label": "Dockerfile",
+        "type": "textarea",
+        "value": "",
+        "default": "",
+        "rows": 8,
+        "desc": "Dockerfile 文件",
+        "order": 4
+      },
+      {
+        "name": "docker.nginx.conf",
+        "label": "Nginx Conf",
+        "type": "textarea",
+        "value": "",
+        "default": "",
+        "rows": 8,
+        "desc": "Docker 中的 nginx 配置文件",
+        "order": 5
+      },
+      {
+        "name": "docker.nginx.path",
+        "label": "Nginx Path",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Docker 中 nginx 的地址",
+        "order": 6
+      },
+      {
+        "name": "docker.needPush",
+        "label": "是否推送",
+        "type": "select",
+        "value": "Yes",
+        "default": "",
+        "desc": "是否推送到远程仓库, 如果需要推送则填写 `Address`, `User`, `Password`, `Namespace`",
+        "order": 7,
+        "options": [
+          {
+            "label": "是",
+            "value": "Yes"
+          },
+          {
+            "label": "否",
+            "value": "No"
+          }
+        ]
+      },
+      {
+        "name": "docker.address",
+        "label": "Address",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile address",
+        "order": 8
+      },
+      {
+        "name": "docker.namespace",
+        "label": "Namespace",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile namespace",
+        "order": 9
+      },
+      {
+        "name": "docker.user",
+        "label": "User",
+        "type": "input",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile user",
+        "order": 10
+      },
+      {
+        "name": "docker.password",
+        "label": "Password",
+        "type": "password",
+        "value": "",
+        "default": "",
+        "desc": "Dockerfile password",
+        "order": 11
       }
     ]
   }
