@@ -490,7 +490,6 @@ class PipelineStore extends BaseStore {
       this.loading = false
       let data = this.handleResult(result) || []
       this.list = data.map((item: { [K: string]: any } = {}) => {
-        let basic = item.basic || {}
         return {
           ...item,
           key: item.id || '',
@@ -727,11 +726,11 @@ class PipelineStore extends BaseStore {
     }
 
     this.addVariableList = record.variables || []
-    this.addVariableList = this.addVariableList.sort(
-      (variable1: { [K: string]: any } = {}, variable2: { [K: string]: any } = {}) => {
+    this.addVariableList = this.addVariableList
+      .slice()
+      .sort((variable1: { [K: string]: any } = {}, variable2: { [K: string]: any } = {}) => {
         return variable1.order - variable2.order
-      }
-    )
+      })
   }
 
   /**
@@ -848,6 +847,9 @@ class PipelineStore extends BaseStore {
           name: item.name,
           order: item.order || 0,
           desc: item.desc || '',
+          genre: item.genre || this.VARIABLE_OPTIONS[0].value,
+          require: item.require || '',
+          disabled: item.disabled || '',
         }
       })
     }
@@ -979,6 +981,8 @@ class PipelineStore extends BaseStore {
             value: variable.value || '',
             order: variable.order || 0,
             genre: variable.genre || '',
+            require: variable.require || '',
+            disabled: variable.disabled || '',
             desc: variable.desc || '',
           })
         }
@@ -1222,6 +1226,20 @@ class PipelineStore extends BaseStore {
     }
 
     this.selectItem = this.detailInfo || {}
+    let variables = this.detailInfo?.runtime?.snapshot?.runnableVariables || []
+    if (variables.length > 0) {
+      this.detailInfo.variables = this.detailInfo.variables.map((v: { [K: string]: any } = {}) => {
+        if (v.genre === this.VARIABLE_OPTIONS[0].value || v.genre === this.VARIABLE_OPTIONS[2].value) {
+          let value = variables.find((k: { [K: string]: any } = {}) => k.name === v.name) || {}
+          if (!Utils.isObjectNull(value)) {
+            return { ...v, value: value.value || '' }
+          }
+        }
+
+        return v
+      })
+    }
+
     this.runDialogProps = Utils.deepCopy(this.runDialogDefaultProps)
     this.isNeedSelectedLastSelected(this.detailInfo || {}, this.runDialogProps)
     this.onSetRadioRunProps(this.detailInfo || {}, this.runDialogProps)
@@ -1264,7 +1282,7 @@ class PipelineStore extends BaseStore {
         return
       }
 
-      res = res.sort((h1: { [K: string]: any } = {}, h2: { [K: string]: any } = {}) => {
+      res = res.slice().sort((h1: { [K: string]: any } = {}, h2: { [K: string]: any } = {}) => {
         return h2.order - h1.order
       })
 

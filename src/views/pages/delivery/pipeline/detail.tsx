@@ -592,6 +592,8 @@ const PipelineDetail = (): ReactElement => {
         genre: selectedItem.genre || pipelineStore.VARIABLE_OPTIONS[0].value,
         desc: item.desc || '',
         order: item.order || 0,
+        require: selectedItem.require || '',
+        disabled: selectedItem.disabled || '',
       })
     })
 
@@ -631,6 +633,8 @@ const PipelineDetail = (): ReactElement => {
           name: field.label,
           value: value,
           genre: field.type,
+          require: field.require || '',
+          disabled: field.disabled || '',
           desc: field.desc || '',
         })
       }

@@ -54,6 +54,10 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
       let genre = record.genre || ''
       let name = record.name || ''
 
+      if (props.isReadonly) {
+        return <p>{value || ''}</p>
+      }
+
       // str
       if (genre === pipelineStore.VARIABLE_OPTIONS[0].value) {
         return <p>{value || ''}</p>
@@ -98,7 +102,15 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
               disabled={record.disabled === 'yes'}
               onChange={(value: string) => {
                 if (isVariableMulti) {
-                  setVariableValue(name, value, record.id || '', record.order || 0, record.desc || '')
+                  setVariableValue(
+                    name,
+                    value,
+                    record.id || '',
+                    record.order || 0,
+                    record.desc || '',
+                    record.require,
+                    record.disabled
+                  )
                 } else {
                   // eslint-disable-next-line react/prop-types
                   props.onSetProps?.(name, value, record.tag)
@@ -137,7 +149,9 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
     value: string = '',
     id: string = '',
     order: number = 0,
-    desc: string = ''
+    desc: string = '',
+    require: string = '',
+    disabled: string = ''
   ) => {
     let v: { [K: string]: any } = {}
     if (!Utils.isBlank(value)) {
@@ -147,6 +161,8 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
         name,
         order,
         desc,
+        require,
+        disabled,
       }
     }
 
