@@ -547,7 +547,7 @@ const PipelineDetail = (): ReactElement => {
     let basic = runtime.basic || {}
     let runnableInfo = detailInfo.runnableInfo || {}
 
-    let tag = basic.tag || ''
+    let tag = pipelineStore.getTag(basic.tag || '')
     let tagExtra = runnableInfo[tag.toLowerCase()] || {}
     let displayFields = tagExtra.displayFields || []
     if (Utils.isObjectNull(snapshot)) {
