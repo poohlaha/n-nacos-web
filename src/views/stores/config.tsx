@@ -13,6 +13,7 @@ import mainStore from './main/main.store'
 import pipelineStore from './main/pipeline.store'
 import serverStore from './modules/server.store'
 import pipelineMarketStore from './main/pipeline.market.store'
+import writingStore from '@stores/writing/writing.store'
 
 export function createStore() {
   return {
@@ -26,6 +27,7 @@ export function createStore() {
     pipelineStore,
     serverStore,
     pipelineMarketStore,
+    writingStore,
   }
 }
 

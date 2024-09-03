@@ -30,4 +30,18 @@ export const routes: RouteInterface[] = [
     auth: false,
     title: '首页',
   },
+  {
+    path: RouterUrls.WRITING_URL,
+    exact: false,
+    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/writing/index')),
+    auth: false,
+    title: '写作',
+  },
+  {
+    path: RouterUrls.WRITING_EDIT_URL,
+    exact: false,
+    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/writing/edit')),
+    auth: false,
+    title: '写作',
+  },
 ]

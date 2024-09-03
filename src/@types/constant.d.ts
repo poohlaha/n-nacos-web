@@ -13,7 +13,7 @@ declare module '*.jpeg'
 declare module '*.mp4'
 declare module '*.jpg'
 declare module '*.gif'
-declare const $http: any // http
+declare module 'markdown-it'
 
 declare global {
   interface Window {
