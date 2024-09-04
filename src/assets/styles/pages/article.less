@@ -70,6 +70,23 @@
           transition: all 0.2s ease-in-out;
           font-size: 16px;
         }
+
+        .item-desc {
+          color: @color_gray;
+          margin-top: 10px;
+
+          &:last-child {
+            margin-bottom: 10px;
+          }
+
+          .desc {
+            margin-left: 8px;
+
+            p:first-child {
+              margin-right: 8px;
+            }
+          }
+        }
       }
     }
   }
@@ -86,7 +103,7 @@
     .list-item {
       padding: 20px;
       background: #ffffff;
-      height: 400px;
+      min-height: 100px;
       border-radius: 8px;
       box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.06);
       transition: box-shadow 0.3s;
@@ -116,6 +133,28 @@
 
           .item {
             line-height: 20px;
+          }
+
+          .content-list-item {
+            line-height: 30px;
+            padding: 5px 10px;
+
+            &:hover {
+              background: @color_menu_active;
+              border-radius: 4px;
+            }
+
+            .archive-item {
+              p:first-child {
+                margin-right: 10px;
+              }
+            }
+          }
+
+          .tag-list-item {
+            .ant-tag {
+              margin-bottom: 8px;
+            }
           }
         }
       }

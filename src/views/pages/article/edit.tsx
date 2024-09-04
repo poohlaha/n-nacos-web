@@ -14,21 +14,7 @@ import Utils from '@utils/utils'
 import useMount from '@hooks/useMount'
 import { useNavigate } from 'react-router-dom'
 import RouterUrls from '@route/router.url.toml'
-
-const SyntaxHighlightedCode = (props: any) => {
-  const ref = React.useRef<any>()
-
-  React.useEffect(() => {
-    if (ref.current && props.className?.includes('lang-') && hljs) {
-      hljs.highlightElement(ref.current)
-
-      // hljs won't reprocess the element unless this attribute is removed
-      ref.current.removeAttribute('data-highlighted')
-    }
-  }, [props.className, props.children])
-
-  return <code {...props} ref={ref} />
-}
+import { SyntaxHighlightedCode } from '@views/components/page/type'
 
 const ArticleEdit = (): ReactElement => {
   const navigate = useNavigate()

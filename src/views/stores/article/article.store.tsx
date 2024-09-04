@@ -11,7 +11,18 @@ import { invoke } from '@tauri-apps/api/core'
 import { TOAST } from '@utils/base'
 
 class ArticleStore extends BaseStore {
-  @observable list: Array<{ [K: string]: any }> = []
+  readonly articlePageSize: number = 5
+  @observable defaultInfo: { [K: string]: any } = {
+    archiveList: [],
+    list: [],
+    listCount: 0,
+    tagClassifyList: [],
+    tagList: [],
+  }
+
+  @observable info: { [K: string]: any } = Utils.deepCopy(this.defaultInfo)
+  @observable new: { [K: string]: any } = {}
+  @observable newList: Array<{ [K: string]: any }> = []
   @observable detail: { [K: string]: any } = {}
   @observable tagList: Array<{ [K: string]: any }> = []
   @observable defaultForm: { [K: string]: any } = {
@@ -24,15 +35,34 @@ class ArticleStore extends BaseStore {
   @action
   async getList(callback?: Function) {
     try {
-      this.tagList = []
+      if (this.currentPage === 1) {
+        this.info = Utils.deepCopy(this.defaultInfo)
+        this.new = {}
+        this.newList = []
+      }
+
       this.loading = true
-      let result: { [K: string]: any } = (await invoke('get_article_tag_list', {})) || {}
+      let result: { [K: string]: any } =
+        (await invoke('get_article_list', {
+          query: {
+            currentPage: this.currentPage,
+            pageSize: this.articlePageSize,
+            onlyQueryList: this.currentPage !== 1,
+          },
+        })) || {}
       this.loading = false
-      let data = this.handleResult(result) || []
-      console.log('get tag list result:', data)
-      this.tagList = data.map((d: string = '') => {
-        return { label: d || '', value: d || '' }
-      })
+      let info = this.handleResult(result) || {}
+      console.log('get article list info result:', info)
+      if (this.currentPage === 1) {
+        this.info = info
+        let list = Utils.deepCopy(info.list || [])
+        if (list.length > 0) {
+          this.new = list[0] || {}
+          this.newList = list.slice(0, 7)
+        }
+      } else {
+        this.info.list = info.list || []
+      }
       callback?.()
     } catch (e: any) {
       this.loading = false
@@ -48,7 +78,7 @@ class ArticleStore extends BaseStore {
       let result: { [K: string]: any } = (await invoke('get_article_tag_list', {})) || {}
       this.loading = false
       let data = this.handleResult(result) || []
-      console.log('get tag list result:', data)
+      console.log('get article tag list result:', data)
       this.tagList = data.map((d: { [K: string]: any } = {}) => {
         return { label: d.name || '', value: d.name || '' }
       })
@@ -85,13 +115,13 @@ class ArticleStore extends BaseStore {
         return t.value || ''
       })
 
-      console.log('on save params:', params)
-      await info(`on save params: ${JSON.stringify(params)}`)
+      console.log('on save article params:', params)
+      await info(`on save article params: ${JSON.stringify(params)}`)
       this.loading = true
       let result: { [K: string]: any } = (await invoke('save_article', { article: params })) || {}
       this.loading = false
       let flag = this.handleResult(result)
-      console.log('on save result:', flag)
+      console.log('on save article result:', flag)
       if (flag) {
         TOAST.show({ message: '保存文章成功', type: 2 })
         callback?.()
