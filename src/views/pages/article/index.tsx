@@ -92,12 +92,15 @@ const ArticleList = (): ReactElement => {
                     return (
                       <div className={`content-item ${index !== 0 ? 'page-margin-top' : ''}`} key={item.id || index}>
                         <div className="content-info flex-direction-column">
-                          <p className="item-title font-bold over-two-ellipsis cursor-pointer"
-                             onClick={() => {
-                               articleStore.selectedItem = item || {}
-                               navigate(RouterUrls.ARTICLE_DETAIL_URL)
+                          <p
+                            className="item-title font-bold over-two-ellipsis cursor-pointer"
+                            onClick={() => {
+                              articleStore.selectedItem = item || {}
+                              navigate(RouterUrls.ARTICLE_DETAIL_URL)
                             }}
-                          >{item.title || ''}</p>
+                          >
+                            {item.title || ''}
+                          </p>
 
                           <div className="item-desc flex-align-center">
                             <svg

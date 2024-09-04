@@ -31,7 +31,7 @@ class ArticleStore extends BaseStore {
     content: '',
   }
   @observable form: { [K: string]: any } = Utils.deepCopy(this.defaultForm)
-  @observable selectedItem: {[K: string]: any} = {}
+  @observable selectedItem: { [K: string]: any } = {}
 
   @action
   async getList(callback?: Function) {
