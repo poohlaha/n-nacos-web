@@ -31,6 +31,7 @@ class ArticleStore extends BaseStore {
     content: '',
   }
   @observable form: { [K: string]: any } = Utils.deepCopy(this.defaultForm)
+  @observable selectedItem: {[K: string]: any} = {}
 
   @action
   async getList(callback?: Function) {
@@ -58,7 +59,7 @@ class ArticleStore extends BaseStore {
         let list = Utils.deepCopy(info.list || [])
         if (list.length > 0) {
           this.new = list[0] || {}
-          this.newList = list.slice(0, 7)
+          this.newList = list.slice(0, 5)
         }
       } else {
         this.info.list = info.list || []

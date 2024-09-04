@@ -44,4 +44,11 @@ export const routes: RouteInterface[] = [
     auth: false,
     title: '写作',
   },
+  {
+    path: RouterUrls.ARTICLE_DETAIL_URL,
+    exact: false,
+    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/detail')),
+    auth: false,
+    title: '写作',
+  },
 ]
