@@ -11,6 +11,9 @@ import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js'
 import { useStore } from '@views/stores'
 import Utils from '@utils/utils'
+import useMount from '@hooks/useMount'
+import { useNavigate } from 'react-router-dom'
+import RouterUrls from '@route/router.url.toml'
 
 const SyntaxHighlightedCode = (props: any) => {
   const ref = React.useRef<any>()
@@ -28,11 +31,15 @@ const SyntaxHighlightedCode = (props: any) => {
 }
 
 const ArticleEdit = (): ReactElement => {
+  const navigate = useNavigate()
   const { articleStore } = useStore()
 
   const [content, setContent] = useState('')
   const [open, setOpen] = useState(false)
 
+  useMount(async () => {
+    await articleStore.getTagList()
+  })
   const getNavigationLeftNode = () => {
     return (
       <Tooltip title="保存">
@@ -64,17 +71,21 @@ const ArticleEdit = (): ReactElement => {
           leftNode={getNavigationLeftNode()}
           onBack={() => {
             if (
-              articleStore.form.content !== articleStore.detail.content ||
+              articleStore.form.content !== (articleStore.detail.content || '') ||
               (articleStore.form.tags || []).join(',') !== (articleStore.detail.tags || []).join(',') ||
-              articleStore.form.title !== articleStore.detail.title
+              articleStore.form.title !== (articleStore.detail.title || '')
             ) {
               Modal.confirm({
                 title: '写作',
                 content: '当前内容未保存, 是否退出?',
                 onOk: () => {
                   articleStore.form = Utils.deepCopy(articleStore.defaultForm)
+                  navigate(RouterUrls.ARTICLE_URL)
                 },
               })
+            } else {
+              articleStore.form = Utils.deepCopy(articleStore.defaultForm)
+              navigate(RouterUrls.ARTICLE_URL)
             }
           }}
         />
@@ -84,6 +95,7 @@ const ArticleEdit = (): ReactElement => {
             <div className="article-content-left flex-1">
               <Input.TextArea
                 placeholder="请输入"
+                value={articleStore.form.content}
                 onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                   setContent(e.target.value || '')
                   articleStore.form.content = e.target.value || ''
@@ -112,6 +124,7 @@ const ArticleEdit = (): ReactElement => {
             await articleStore.onSave(async () => {
               articleStore.form = Utils.deepCopy(articleStore.defaultForm)
               setOpen(false)
+              setContent('')
               await articleStore.getTagList()
             })
           }}
@@ -150,6 +163,7 @@ const ArticleEdit = (): ReactElement => {
                   style={{ width: '100%' }}
                   maxCount={10}
                   placeholder="请选择标签"
+                  value={articleStore.form.tags || []}
                   onChange={(values: Array<string> = []) => {
                     articleStore.form.tags = values.map((v: string = '') => {
                       return { label: v || '', value: v || '' }

@@ -41,7 +41,23 @@ class ArticleStore extends BaseStore {
   }
 
   @action
-  async getTagList() {}
+  async getTagList(callback?: Function) {
+    try {
+      this.tagList = []
+      this.loading = true
+      let result: { [K: string]: any } = (await invoke('get_article_tag_list', {})) || {}
+      this.loading = false
+      let data = this.handleResult(result) || []
+      console.log('get tag list result:', data)
+      this.tagList = data.map((d: { [K: string]: any } = {}) => {
+        return { label: d.name || '', value: d.name || '' }
+      })
+      callback?.()
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
 
   @action
   async onSave(callback?: Function) {
