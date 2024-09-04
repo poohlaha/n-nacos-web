@@ -6,14 +6,7 @@ import { observer } from 'mobx-react-lite'
 import AvatarImg from '@assets/images/navigation/avatar.jpeg'
 import { useNavigate } from 'react-router-dom'
 import RouterUrls from '@route/router.url.toml'
-
-interface INavigationProps {
-  rightNode?: React.ReactNode
-  leftNode?: React.ReactNode
-  needLogo?: boolean
-  needBack?: boolean
-  onBack?: () => void
-}
+import { INavigationProps } from '@views/components/page/type'
 
 const Navigation: React.FC<INavigationProps> = (props: INavigationProps): ReactElement => {
   const navigate = useNavigate()

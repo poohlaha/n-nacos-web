@@ -27,8 +27,8 @@ const SyntaxHighlightedCode = (props: any) => {
   return <code {...props} ref={ref} />
 }
 
-const Edit = (): ReactElement => {
-  const { writingStore } = useStore()
+const ArticleEdit = (): ReactElement => {
+  const { articleStore } = useStore()
 
   const [content, setContent] = useState('')
   const [open, setOpen] = useState(false)
@@ -57,22 +57,22 @@ const Edit = (): ReactElement => {
 
   const render = () => {
     return (
-      <div className="writing-edit-page wh100">
+      <div className="article-edit-page wh100">
         <Navigation
           needLogo={false}
           needBack={true}
           leftNode={getNavigationLeftNode()}
           onBack={() => {
             if (
-              writingStore.form.content !== writingStore.form.detail.content ||
-              (writingStore.form.tags || []).join(',') !== (writingStore.form.detail.tags || []).join(',') ||
-              writingStore.form.title !== writingStore.form.detail.title
+              articleStore.form.content !== articleStore.detail.content ||
+              (articleStore.form.tags || []).join(',') !== (articleStore.detail.tags || []).join(',') ||
+              articleStore.form.title !== articleStore.detail.title
             ) {
               Modal.confirm({
                 title: '写作',
                 content: '当前内容未保存, 是否退出?',
                 onOk: () => {
-                  writingStore.form = Utils.deepCopy(writingStore.defaultForm)
+                  articleStore.form = Utils.deepCopy(articleStore.defaultForm)
                 },
               })
             }
@@ -80,17 +80,17 @@ const Edit = (): ReactElement => {
         />
 
         <div className="content-box flex-direction-column w100">
-          <div className="writing-content flex wh100">
-            <div className="writing-content-left flex-1">
+          <div className="article-content flex wh100">
+            <div className="article-content-left flex-1">
               <Input.TextArea
                 placeholder="请输入"
                 onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                   setContent(e.target.value || '')
-                  writingStore.form.content = e.target.value || ''
+                  articleStore.form.content = e.target.value || ''
                 }}
               />
             </div>
-            <div className="writing-content-right flex-1 cursor-pointer overflow">
+            <div className="article-content-right flex-1 cursor-pointer overflow">
               <div className="markdown-body">
                 <Markdown
                   children={content}
@@ -109,7 +109,11 @@ const Edit = (): ReactElement => {
           title="添加进程"
           open={open}
           onOk={async () => {
-            await writingStore.onSave(() => {})
+            await articleStore.onSave(async () => {
+              articleStore.form = Utils.deepCopy(articleStore.defaultForm)
+              setOpen(false)
+              await articleStore.getTagList()
+            })
           }}
           onCancel={() => setOpen(false)}
           closable={false}
@@ -126,10 +130,10 @@ const Edit = (): ReactElement => {
 
                 <Input
                   placeholder="请输入"
-                  value={writingStore.form.title || ''}
+                  value={articleStore.form.title || ''}
                   allowClear
                   onChange={e => {
-                    writingStore.form.title = e.target.value || ''
+                    articleStore.form.title = e.target.value || ''
                   }}
                 />
               </div>
@@ -147,11 +151,11 @@ const Edit = (): ReactElement => {
                   maxCount={10}
                   placeholder="请选择标签"
                   onChange={(values: Array<string> = []) => {
-                    writingStore.form.tags = values.map((v: string = '') => {
+                    articleStore.form.tags = values.map((v: string = '') => {
                       return { label: v || '', value: v || '' }
                     })
                   }}
-                  options={writingStore.form.tags || []}
+                  options={articleStore.tagList || []}
                 />
               </div>
             </div>
@@ -164,4 +168,4 @@ const Edit = (): ReactElement => {
   return render()
 }
 
-export default observer(Edit)
+export default observer(ArticleEdit)

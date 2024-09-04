@@ -9,12 +9,14 @@ import MBreadcrumb from '@views/modules/breadcrumb'
 import Utils from '@utils/utils'
 import RouterUrls from '@route/router.url.toml'
 import { useStore } from '@views/stores'
+import { INavigationProps } from '@views/components/page/type'
 
 interface IPageProps {
   className?: string // 样式名称
   pageBodyClassName?: string // page-content 样式
   pageBodyNeedPadding?: boolean // page-content 是否需要 padding
   needNavigation?: boolean // 是否需要导航
+  navigationProps?: INavigationProps
   needBreadcrumb?: boolean // 是否面包屑
   breadCrumbItemList?: Array<{ [K: string]: any }> // 面包屑列表
 }
@@ -109,7 +111,7 @@ const Page = (props: PropsWithChildren<IPageProps>): ReactElement => {
     return (
       <div className={`page flex-direction-column wh100 ${props.className || ''}`}>
         {/* 导航栏 */}
-        {needNavigation && <Navigation />}
+        {needNavigation && <Navigation {...props.navigationProps} />}
 
         <div
           className={`page-content position-relative overflow ${pageBodyNeedPadding ? 'page-padding' : ''} flex-1 ${

@@ -9,16 +9,18 @@ import Navigation from '@pages/home/navigation'
 import { Tooltip } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import RouterUrls from '@route/router.url.toml'
+import { useStore } from '@views/stores'
 
-const WritingList = (): ReactElement => {
+const ArticleList = (): ReactElement => {
+  const { articleStore } = useStore()
   const navigate = useNavigate()
 
   const getNavigationRightNode = () => {
     return (
       <Tooltip title="写作">
         <div
-          className="page-margin-right writing-button flex-align-center cursor-pointer"
-          onClick={() => navigate(RouterUrls.WRITING_EDIT_URL)}
+          className="page-margin-right article-button flex-align-center cursor-pointer"
+          onClick={() => navigate(RouterUrls.ARTICLE_EDIT_URL)}
         >
           <div className="svg-box">
             <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -35,10 +37,10 @@ const WritingList = (): ReactElement => {
 
   const render = () => {
     return (
-      <div className="writing-list-page flex-direction-column wh100">
+      <div className="article-list-page flex-direction-column wh100">
         <Navigation rightNode={getNavigationRightNode()} />
 
-        <div className="writing-box flex wh100">
+        <div className="article-box flex wh100">
           <div className="box-wrapper flex overflow-y-auto w100">
             <div className="box-left flex-1">
               <div className="content-item">
@@ -172,4 +174,4 @@ const WritingList = (): ReactElement => {
   return render()
 }
 
-export default observer(WritingList)
+export default observer(ArticleList)

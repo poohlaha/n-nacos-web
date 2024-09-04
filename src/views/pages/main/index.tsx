@@ -37,25 +37,37 @@ const Main: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     navigate(`${RouterUrls.HOME_URL}${RouterUrls.DASHBOARD_URL}`)
   }
 
+  const getNavigationRightNode = () => {
+    return (
+      <Tooltip title="文章">
+        <div
+          className="svg-box article page-margin-right"
+          onClick={() => {
+            navigate(RouterUrls.ARTICLE_URL)
+          }}
+        >
+          <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M903.104 0a120.224 120.224 0 0 1 119.872 119.936v783.2a120.224 120.224 0 0 1-119.84 119.872H119.872A120.224 120.224 0 0 1 0 903.168V119.968A120.192 120.192 0 0 1 119.84 0.032h0.032z m-18.656 85.248H138.528a52.8 52.8 0 0 0-37.504 15.68c-9.696 9.6-15.744 22.88-15.776 37.6v745.92c0 14.08 5.632 27.52 15.68 37.6 9.6 9.664 22.88 15.68 37.6 15.68h745.92a52.8 52.8 0 0 0 37.504-15.68 52.8 52.8 0 0 0 15.776-37.504V138.624v-0.032c0-14.72-5.984-28.032-15.68-37.632a52.8 52.8 0 0 0-37.6-15.68zM312.864 255.744l184.896 311.328c7.744 17.056 13.888 30.848 18.336 41.344l26.016-56.608 12.032-25.408 171.168-270.656h127.2v511.488h-91.2V339.104l-207.488 342.88h-85.408l-206.72-350.112v435.36H170.56V255.744h142.368z"
+              fill="currentColor"
+            ></path>
+          </svg>
+        </div>
+      </Tooltip>
+    )
+  }
+
   const render = () => {
     return (
-      <Page className="main-page">
+      <Page
+        className="main-page"
+        navigationProps={{
+          rightNode: getNavigationRightNode(),
+        }}
+      >
         {/* 服务器列表 */}
         <div className="server-box flex flex-direction-column">
-          <div className="status-bar flex-jsc-between flex-align-center">
-            <div
-              className="svg-box writing"
-              onClick={() => {
-                navigate(RouterUrls.WRITING_URL)
-              }}
-            >
-              <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M903.104 0a120.224 120.224 0 0 1 119.872 119.936v783.2a120.224 120.224 0 0 1-119.84 119.872H119.872A120.224 120.224 0 0 1 0 903.168V119.968A120.192 120.192 0 0 1 119.84 0.032h0.032z m-18.656 85.248H138.528a52.8 52.8 0 0 0-37.504 15.68c-9.696 9.6-15.744 22.88-15.776 37.6v745.92c0 14.08 5.632 27.52 15.68 37.6 9.6 9.664 22.88 15.68 37.6 15.68h745.92a52.8 52.8 0 0 0 37.504-15.68 52.8 52.8 0 0 0 15.776-37.504V138.624v-0.032c0-14.72-5.984-28.032-15.68-37.632a52.8 52.8 0 0 0-37.6-15.68zM312.864 255.744l184.896 311.328c7.744 17.056 13.888 30.848 18.336 41.344l26.016-56.608 12.032-25.408 171.168-270.656h127.2v511.488h-91.2V339.104l-207.488 342.88h-85.408l-206.72-350.112v435.36H170.56V255.744h142.368z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-            </div>
+          <div className="status-bar flex-jsc-end flex-align-center">
             <Button
               className="add"
               type="text"

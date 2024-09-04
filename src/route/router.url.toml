@@ -1,7 +1,7 @@
 # 前端路由, 需要按模块分
 HOME_URL = '/home'
-WRITING_URL = '/writing'
-WRITING_EDIT_URL = '/writingEdit'
+ARTICLE_URL = '/article'
+ARTICLE_EDIT_URL = '/articleEdit'
 MAIN_URL = '/main'
 DASHBOARD_URL = '/dashboard'
 PROCESS_URL = '/process'
