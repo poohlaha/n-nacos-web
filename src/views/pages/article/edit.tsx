@@ -103,7 +103,7 @@ const ArticleEdit = (): ReactElement => {
         </div>
 
         <Modal
-          title="添加进程"
+          title="添加/修改文章"
           open={open}
           onOk={async () => {
             await articleStore.onSaveOrUpdate(async () => {

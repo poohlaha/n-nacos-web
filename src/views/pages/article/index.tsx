@@ -312,7 +312,17 @@ const ArticleList = (): ReactElement => {
                     <div className="item-content">
                       {tagClassifyList.map((item: { [K: string]: any } = {}, index: number) => {
                         return (
-                          <div className="content-list-item flex-jsc-between" key={item.id || index}>
+                          <div
+                            className="content-list-item flex-jsc-between"
+                            key={item.id || index}
+                            onClick={() => {
+                              navigate(
+                                `${RouterUrls.ARTICLE_TAG_DETAIL_URL}?id=${Utils.encrypt(
+                                  encodeURIComponent(item.id || '')
+                                )}&name=${Utils.encrypt(encodeURIComponent(item.tagName || ''))}`
+                              )
+                            }}
+                          >
                             <p>{item.tagName || ''}</p>
                             <p>{item.articleCount || 0}</p>
                           </div>
@@ -349,7 +359,17 @@ const ArticleList = (): ReactElement => {
                       {tagList.map((item: { [K: string]: any } = {}, index: number) => {
                         const tagIndex = Math.floor(Math.random() * tagColorList.length)
                         return (
-                          <div className="tag-list-item" key={item.id || index}>
+                          <div
+                            className="tag-list-item cursor-pointer"
+                            key={item.id || index}
+                            onClick={() => {
+                              navigate(
+                                `${RouterUrls.ARTICLE_TAG_DETAIL_URL}?id=${Utils.encrypt(
+                                  encodeURIComponent(item.id || '')
+                                )}&name=${Utils.encrypt(encodeURIComponent(item.name || ''))}`
+                              )
+                            }}
+                          >
                             <Tag color={tagColorList[tagIndex]}>{item.name || ''}</Tag>
                           </div>
                         )

@@ -103,7 +103,7 @@ const ArticleDetail = (): ReactElement => {
           leftNode: getNavigationLeftNode(),
         }}
       >
-        <div className="article-content flex w100 center overflow-y-auto flex-direction-column">
+        <div className="article-content flex wh100 center overflow-y-auto flex-direction-column">
           <p className="article-title font-bold text-l">{articleStore.detail?.title || ''}</p>
           <div className="article-desc flex-align-center">
             <div className="create flex-align-center">

@@ -24,6 +24,8 @@ class ArticleStore extends BaseStore {
   @observable new: { [K: string]: any } = {}
   @observable newList: Array<{ [K: string]: any }> = []
   @observable detail: { [K: string]: any } = {}
+  @observable tagClassify: { [K: string]: any } = {}
+  @observable tagArticleList: Array<{ [K: string]: any }> = []
   @observable tagList: Array<{ [K: string]: any }> = []
   @observable defaultForm: { [K: string]: any } = {
     title: '',
@@ -104,6 +106,46 @@ class ArticleStore extends BaseStore {
       this.tagList = data.map((d: { [K: string]: any } = {}) => {
         return { label: d.name || '', value: d.name || '' }
       })
+      callback?.()
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
+  /**
+   * 获取文章分类
+   */
+  @action
+  async getTagClassify(callback?: Function) {
+    try {
+      this.tagClassify = {}
+      this.loading = true
+      let result: { [K: string]: any } = (await invoke('get_article_tag_classify', {})) || {}
+      this.loading = false
+      let data = this.handleResult(result) || {}
+      console.log('get article tag classify result:', data)
+      this.tagClassify = data || {}
+      callback?.()
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
+  /**
+   * 获取分类下的文件
+   */
+  @action
+  async getTagArticleList(id: string = '', callback?: Function) {
+    try {
+      this.tagArticleList = []
+      this.loading = true
+      let result: { [K: string]: any } = (await invoke('get_tag_article_list', { id })) || {}
+      this.loading = false
+      let data = this.handleResult(result) || {}
+      console.log('get tag article list result:', data)
+      this.tagArticleList = data || []
       callback?.()
     } catch (e: any) {
       this.loading = false
