@@ -257,7 +257,17 @@ const ArticleList = (): ReactElement => {
                     {articleStore.newList.length > 0 &&
                       articleStore.newList.map((item: { [K: string]: any } = {}, index: number) => {
                         return (
-                          <div className="content-list-item over-two-ellipsis" key={item.id || index}>
+                          <div
+                            className="content-list-item over-two-ellipsis"
+                            key={item.id || index}
+                            onClick={() => {
+                              navigate(
+                                `${RouterUrls.ARTICLE_DETAIL_URL}?id=${Utils.encrypt(
+                                  encodeURIComponent(item.id || '')
+                                )}`
+                              )
+                            }}
+                          >
                             {item.title || ''}
                           </div>
                         )
@@ -319,7 +329,9 @@ const ArticleList = (): ReactElement => {
                               navigate(
                                 `${RouterUrls.ARTICLE_TAG_DETAIL_URL}?id=${Utils.encrypt(
                                   encodeURIComponent(item.id || '')
-                                )}&name=${Utils.encrypt(encodeURIComponent(item.tagName || ''))}`
+                                )}&name=${Utils.encrypt(encodeURIComponent(item.tagName || ''))}&title=${Utils.encrypt(
+                                  encodeURIComponent('分类')
+                                )}`
                               )
                             }}
                           >
@@ -366,7 +378,9 @@ const ArticleList = (): ReactElement => {
                               navigate(
                                 `${RouterUrls.ARTICLE_TAG_DETAIL_URL}?id=${Utils.encrypt(
                                   encodeURIComponent(item.id || '')
-                                )}&name=${Utils.encrypt(encodeURIComponent(item.name || ''))}`
+                                )}&name=${Utils.encrypt(encodeURIComponent(item.name || ''))}&title=${Utils.encrypt(
+                                  encodeURIComponent('标签')
+                                )}`
                               )
                             }}
                           >
@@ -408,7 +422,19 @@ const ArticleList = (): ReactElement => {
                     <div className="item-content">
                       {archiveList.map((item: { [K: string]: any } = {}, index: number) => {
                         return (
-                          <div className="content-list-item flex-jsc-between" key={item.id || index}>
+                          <div
+                            className="content-list-item flex-jsc-between"
+                            key={item.id || index}
+                            onClick={() => {
+                              navigate(
+                                `${RouterUrls.ARTICLE_TAG_DETAIL_URL}?monthName=${Utils.encrypt(
+                                  encodeURIComponent(item.monthName || '')
+                                )}&yearName=${Utils.encrypt(
+                                  encodeURIComponent(item.yearName || '')
+                                )}&title=${Utils.encrypt(encodeURIComponent('文章总览'))}`
+                              )
+                            }}
+                          >
                             <div className="archive-item flex-align-center">
                               <p>{item.monthName || ''}</p>
                               <p>{item.yearName || ''}</p>

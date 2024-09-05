@@ -17,32 +17,50 @@ import RouterUrls from '@route/router.url.toml'
 const TagDetail = (): ReactElement => {
   const navigate = useNavigate()
   const { articleStore } = useStore()
-  const [id, setId] = useState('')
-  const [name, setName] = useState('')
 
   useMount(async () => {
+    let { id, yearName, monthName } = getParams()
+    if (!Utils.isBlank(yearName || '') || !Utils.isBlank(monthName || '')) {
+      await articleStore.getArchiveArticleList(yearName || '', monthName || '')
+    } else {
+      await articleStore.getTagArticleList(id)
+    }
+  })
+
+  const getParams = () => {
     let id = ADDRESS.getAddressQueryString('id') || ''
     id = Utils.decrypt(decodeURIComponent(id))
 
     let name = ADDRESS.getAddressQueryString('name') || ''
     name = Utils.decrypt(decodeURIComponent(name))
-    console.log('id:', id, ', name:', name)
-    setId(id)
-    setId(name)
-    await articleStore.getTagArticleList(id)
-  })
 
-  const getContent = (name: string = '') => {
-    if (Utils.isBlank(name || '')) {
-      name = ADDRESS.getAddressQueryString('name') || ''
-      name = Utils.decrypt(decodeURIComponent(name))
+    let title = ADDRESS.getAddressQueryString('title') || ''
+    title = Utils.decrypt(decodeURIComponent(title))
+    title = decodeURIComponent(title)
+
+    let yearName = ADDRESS.getAddressQueryString('yearName') || ''
+    yearName = Utils.decrypt(decodeURIComponent(yearName))
+    yearName = decodeURIComponent(yearName)
+
+    let monthName = ADDRESS.getAddressQueryString('monthName') || ''
+    monthName = Utils.decrypt(decodeURIComponent(monthName))
+    monthName = decodeURIComponent(monthName)
+    console.log('id:', id, ', name:', name, ', title:', title, 'yearName:', yearName, 'monthName:', monthName)
+
+    if (!Utils.isBlank(yearName || '') || !Utils.isBlank(monthName || '')) {
+      name = `${yearName} ${monthName}`
     }
+    return { id, name, title, yearName, monthName }
+  }
+
+  const getContent = () => {
+    let { name, title } = getParams()
 
     let arr = []
     arr.push({
       children: (
         <div className="timeline-title flex-align-center">
-          <p>分类</p>
+          <p>{title}</p>
           <p className="spec">-</p>
           <p>{name || ''}</p>
         </div>
@@ -50,7 +68,8 @@ const TagDetail = (): ReactElement => {
     })
 
     let map: Map<String, Array<{ [K: string]: any }>> = new Map()
-    articleStore.tagArticleList.forEach((l: { [K: string]: any } = {}) => {
+    let list = articleStore.tagArticleList || []
+    list.forEach((l: { [K: string]: any } = {}) => {
       let values = map.get(l.articleYear) || []
       if (values.length === 0) {
         map.set(l.articleYear, [l])
@@ -116,8 +135,8 @@ const TagDetail = (): ReactElement => {
           needBack: true,
         }}
       >
-        <div className="article-content h100 center overflow-y-auto flex-direction-column">
-          <Timeline className="article-tag-timeline" items={getContent(name)} />
+        <div className="article-content min-h100 center flex-direction-column">
+          <Timeline className="article-tag-timeline" items={getContent()} />
         </div>
       </Page>
     )

@@ -134,7 +134,7 @@ class ArticleStore extends BaseStore {
   }
 
   /**
-   * 获取分类下的文件
+   * 获取分类下的文章
    */
   @action
   async getTagArticleList(id: string = '', callback?: Function) {
@@ -145,6 +145,26 @@ class ArticleStore extends BaseStore {
       this.loading = false
       let data = this.handleResult(result) || {}
       console.log('get tag article list result:', data)
+      this.tagArticleList = data || []
+      callback?.()
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
+  /**
+   * 获取归档下的文章
+   */
+  @action
+  async getArchiveArticleList(yearName: string = '', monthName: string = '', callback?: Function) {
+    try {
+      this.tagArticleList = []
+      this.loading = true
+      let result: { [K: string]: any } = (await invoke('get_archive_article_list', { yearName, monthName })) || {}
+      this.loading = false
+      let data = this.handleResult(result) || {}
+      console.log('get archive article list result:', data)
       this.tagArticleList = data || []
       callback?.()
     } catch (e: any) {

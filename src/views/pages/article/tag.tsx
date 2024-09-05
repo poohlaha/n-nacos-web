@@ -30,7 +30,7 @@ const Tag = (): ReactElement => {
           needBack: true,
         }}
       >
-        <div className="article-content h100 center overflow-y-auto flex-direction-column">
+        <div className="article-content min-h100 center flex-direction-column">
           <p className="page-title">分类</p>
 
           <div className="article-tag-content page-margin-top">
