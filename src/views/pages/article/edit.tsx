@@ -13,6 +13,7 @@ import useMount from '@hooks/useMount'
 import { useNavigate } from 'react-router-dom'
 import Markdown from 'markdown-to-jsx'
 import { SyntaxHighlightedCode } from '@views/components/page/type'
+import Loading from '@views/components/loading/loading'
 
 const ArticleEdit = (): ReactElement => {
   const navigate = useNavigate()
@@ -59,7 +60,7 @@ const ArticleEdit = (): ReactElement => {
               articleStore.form.title !== (articleStore.detail.title || '')
             ) {
               Modal.confirm({
-                title: '写作',
+                title: '友情提醒',
                 content: '当前内容未保存, 是否退出?',
                 onOk: () => {
                   articleStore.form = Utils.deepCopy(articleStore.defaultForm)
@@ -160,6 +161,8 @@ const ArticleEdit = (): ReactElement => {
             </div>
           </div>
         </Modal>
+
+        <Loading show={articleStore.loading} />
       </div>
     )
   }

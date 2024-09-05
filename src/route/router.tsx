@@ -35,20 +35,20 @@ export const routes: RouteInterface[] = [
     exact: false,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/index')),
     auth: false,
-    title: '写作',
+    title: '文章',
   },
   {
     path: RouterUrls.ARTICLE_EDIT_URL,
     exact: false,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/edit')),
     auth: false,
-    title: '写作',
+    title: '文章',
   },
   {
     path: RouterUrls.ARTICLE_DETAIL_URL,
     exact: false,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/detail')),
     auth: false,
-    title: '写作',
+    title: '文章',
   },
 ]

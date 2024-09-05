@@ -70,6 +70,28 @@ class ArticleStore extends BaseStore {
     }
   }
 
+  /**
+   * 删除文章
+   */
+  @action
+  async onDelete(id: string = '', callback?: Function) {
+    try {
+      this.tagList = []
+      this.loading = true
+      let result: { [K: string]: any } = (await invoke('delete_article', { id })) || {}
+      this.loading = false
+      let flag = this.handleResult(result)
+      console.log('delete article result:', flag)
+      if (flag) {
+        TOAST.show({ message: '删除文章成功', type: 2 })
+        callback?.()
+      }
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
   @action
   async getTagList(callback?: Function) {
     try {
