@@ -51,4 +51,11 @@ export const routes: RouteInterface[] = [
     auth: false,
     title: '文章',
   },
+  {
+    path: RouterUrls.ARTICLE_TAG_URL,
+    exact: false,
+    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/tag')),
+    auth: false,
+    title: '文章标签',
+  },
 ]

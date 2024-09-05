@@ -16,6 +16,7 @@ import Utils from '@utils/utils'
 import useMount from '@hooks/useMount'
 import { ADDRESS } from '@utils/base'
 import Loading from '@views/components/loading/loading'
+import Page from '@views/components/page'
 
 const ArticleDetail = (): ReactElement => {
   const navigate = useNavigate()
@@ -94,54 +95,57 @@ const ArticleDetail = (): ReactElement => {
 
   const render = () => {
     return (
-      <div className="article-detail-page wh100">
-        <Navigation needLogo={false} needBack={true} leftNode={getNavigationLeftNode()} />
+      <Page
+          className="article-detail-page wh100"
+          navigationProps={{
+            needLogo: false,
+            needBack: true,
+            leftNode: getNavigationLeftNode()
+          }}
+      >
+        <div className="article-content flex w100 center overflow-y-auto flex-direction-column">
+          <p className="article-title font-bold text-l">{articleStore.detail?.title || ''}</p>
+          <div className="article-desc flex-align-center">
+            <div className="create flex-align-center">
+              <p>发表于</p>
+              <p>{articleStore.detail?.createTime || '-'}</p>
+            </div>
 
-        <div className="article-box w100 overflow">
-          <div className="flex-direction-column min-h100 center article-content">
-            <p className="article-title font-bold text-l">{articleStore.detail?.title || ''}</p>
-            <div className="article-desc flex-align-center">
-              <div className="create flex-align-center">
-                <p>发表于</p>
-                <p>{articleStore.detail?.createTime || '-'}</p>
-              </div>
+            {!Utils.isBlank(articleStore.detail?.updateTime || '') && <span className="spec">|</span>}
 
-              {!Utils.isBlank(articleStore.detail?.updateTime || '') && <span className="spec">|</span>}
-
-              {!Utils.isBlank(articleStore.detail?.updateTime || '') && (
+            {!Utils.isBlank(articleStore.detail?.updateTime || '') && (
                 <div className="update flex-align-center">
                   <p>更新于</p>
                   <p>{articleStore.detail?.updateTime || '-'}</p>
                 </div>
-              )}
-            </div>
+            )}
+          </div>
 
-            <div className="article-desc flex-align-center">
-              {(articleStore.detail?.tags || []).map((t: string = '') => {
-                return (
+          <div className="article-desc flex-align-center">
+            {(articleStore.detail?.tags || []).map((t: string = '') => {
+              return (
                   <div className="flex-wrap" key={t}>
                     <Tag>{t || ''}</Tag>
                   </div>
-                )
-              })}
-            </div>
-            <div className="article-content flex-1">
-              <div className="markdown-body">
-                <Markdown
+              )
+            })}
+          </div>
+          <div className="article-text flex-1">
+            <div className="markdown-body">
+              <Markdown
                   children={articleStore.detail?.content || ''}
                   options={{
                     overrides: {
                       code: SyntaxHighlightedCode,
                     },
                   }}
-                />
-              </div>
+              />
             </div>
           </div>
         </div>
 
         <Loading show={articleStore.loading} />
-      </div>
+      </Page>
     )
   }
 

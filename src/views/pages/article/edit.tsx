@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import Markdown from 'markdown-to-jsx'
 import { SyntaxHighlightedCode } from '@views/components/page/type'
 import Loading from '@views/components/loading/loading'
+import Page from '@views/components/page'
 
 const ArticleEdit = (): ReactElement => {
   const navigate = useNavigate()
@@ -48,58 +49,58 @@ const ArticleEdit = (): ReactElement => {
 
   const render = () => {
     return (
-      <div className="article-edit-page wh100">
-        <Navigation
-          needLogo={false}
-          needBack={true}
-          leftNode={getNavigationLeftNode()}
-          onBack={() => {
-            if (
-              articleStore.form.content !== (articleStore.detail.content || '') ||
-              (articleStore.form.tags || []).join(',') !== (articleStore.detail.tagOptions || []).join(',') ||
-              articleStore.form.title !== (articleStore.detail.title || '')
-            ) {
-              Modal.confirm({
-                title: '友情提醒',
-                content: '当前内容未保存, 是否退出?',
-                onOk: () => {
-                  articleStore.form = Utils.deepCopy(articleStore.defaultForm)
-                  // navigate(RouterUrls.ARTICLE_URL)
-                  window.history.go(-1)
-                },
-              })
-            } else {
-              articleStore.form = Utils.deepCopy(articleStore.defaultForm)
-              // navigate(RouterUrls.ARTICLE_URL)
-              window.history.go(-1)
-            }
+      <Page
+          className="article-edit-page wh100"
+          navigationProps={{
+              needLogo: false,
+              needBack: true,
+              leftNode: getNavigationLeftNode(),
+              onBack: () => {
+                  if (
+                      articleStore.form.content !== (articleStore.detail.content || '') ||
+                      (articleStore.form.tags || []).join(',') !== (articleStore.detail.tagOptions || []).join(',') ||
+                      articleStore.form.title !== (articleStore.detail.title || '')
+                  ) {
+                      Modal.confirm({
+                          title: '友情提醒',
+                          content: '当前内容未保存, 是否退出?',
+                          onOk: () => {
+                              articleStore.form = Utils.deepCopy(articleStore.defaultForm)
+                              // navigate(RouterUrls.ARTICLE_URL)
+                              window.history.go(-1)
+                          },
+                      })
+                  } else {
+                      articleStore.form = Utils.deepCopy(articleStore.defaultForm)
+                      // navigate(RouterUrls.ARTICLE_URL)
+                      window.history.go(-1)
+                  }
+              }
           }}
-        />
+      >
 
-        <div className="content-box flex-direction-column w100">
-          <div className="article-content flex wh100">
+        <div className="article-content flex wh100">
             <div className="article-content-left flex-1">
-              <Input.TextArea
-                placeholder="请输入"
-                value={articleStore.form.content}
-                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-                  articleStore.form.content = e.target.value || ''
-                }}
-              />
+                <Input.TextArea
+                    placeholder="请输入"
+                    value={articleStore.form.content}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                        articleStore.form.content = e.target.value || ''
+                    }}
+                />
             </div>
             <div className="article-content-right flex-1 cursor-pointer overflow">
-              <div className="markdown-body">
-                <Markdown
-                  children={articleStore.form.content}
-                  options={{
-                    overrides: {
-                      code: SyntaxHighlightedCode,
-                    },
-                  }}
-                />
-              </div>
+                <div className="markdown-body">
+                    <Markdown
+                        children={articleStore.form.content}
+                        options={{
+                            overrides: {
+                                code: SyntaxHighlightedCode,
+                            },
+                        }}
+                    />
+                </div>
             </div>
-          </div>
         </div>
 
         <Modal
@@ -163,7 +164,7 @@ const ArticleEdit = (): ReactElement => {
         </Modal>
 
         <Loading show={articleStore.loading} />
-      </div>
+      </Page>
     )
   }
 
