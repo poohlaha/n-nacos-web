@@ -3,7 +3,7 @@
  * @date 2023-08-28
  * @author poohlaha
  */
-import React, {ReactElement, useState} from 'react'
+import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import Navigation from '@pages/home/navigation'
 import { Tag, Tooltip } from 'antd'
@@ -13,37 +13,37 @@ import Markdown from 'markdown-to-jsx'
 import { SyntaxHighlightedCode } from '@views/components/page/type'
 import RouterUrls from '@route/router.url.toml'
 import Utils from '@utils/utils'
-import useMount from "@hooks/useMount";
-import {ADDRESS} from "@utils/base";
+import useMount from '@hooks/useMount'
+import { ADDRESS } from '@utils/base'
 
 const ArticleDetail = (): ReactElement => {
   const navigate = useNavigate()
   const { articleStore } = useStore()
-    const [id, setId] = useState('')
+  const [id, setId] = useState('')
 
-    useMount(async () => {
-        let id = ADDRESS.getAddressQueryString('id') || ''
-        id = Utils.decrypt(decodeURIComponent(id))
-        console.log('id:', id)
-        setId(id)
-        await articleStore.getDetail(id)
-    })
+  useMount(async () => {
+    let id = ADDRESS.getAddressQueryString('id') || ''
+    id = Utils.decrypt(decodeURIComponent(id))
+    console.log('id:', id)
+    setId(id)
+    await articleStore.getDetail(id)
+  })
 
   const getNavigationLeftNode = () => {
     return (
       <Tooltip title="修改">
         <div
-            className="edit-button page-margin-left cursor-pointer"
-            onClick={() => {
-              articleStore.form = {
-                  title: articleStore.detail.title || '',
-                  tags: articleStore.detail.tagOptions,
-                  content: articleStore.detail.content || '',
-              }
+          className="edit-button page-margin-left cursor-pointer"
+          onClick={() => {
+            articleStore.form = {
+              title: articleStore.detail.title || '',
+              tags: articleStore.detail.tagOptions,
+              content: articleStore.detail.content || '',
+            }
 
-              console.log(articleStore.form, articleStore.detail)
-              navigate(RouterUrls.ARTICLE_EDIT_URL)
-            }}
+            console.log(articleStore.form, articleStore.detail)
+            navigate(RouterUrls.ARTICLE_EDIT_URL)
+          }}
         >
           <div className="svg-box">
             <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -72,11 +72,7 @@ const ArticleDetail = (): ReactElement => {
                 <p>{articleStore.detail?.createTime || '-'}</p>
               </div>
 
-                {
-                    !Utils.isBlank(articleStore.detail?.updateTime || '') && (
-                        <span className="spec">|</span>
-                    )
-                }
+              {!Utils.isBlank(articleStore.detail?.updateTime || '') && <span className="spec">|</span>}
 
               {!Utils.isBlank(articleStore.detail?.updateTime || '') && (
                 <div className="update flex-align-center">

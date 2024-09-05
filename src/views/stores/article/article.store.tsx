@@ -97,12 +97,12 @@ class ArticleStore extends BaseStore {
     try {
       this.detail = {}
       this.loading = true
-      let result: { [K: string]: any } = (await invoke('get_article_detail', {id})) || {}
+      let result: { [K: string]: any } = (await invoke('get_article_detail', { id })) || {}
       this.loading = false
       let data = this.handleResult(result) || {}
       this.detail = data || {}
       let tags = (this.detail.tags || []).map((t: string = '') => {
-        return {label: t || '', value: t || ''}
+        return { label: t || '', value: t || '' }
       })
 
       this.detail.tagOptions = tags || []

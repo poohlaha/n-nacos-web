@@ -95,9 +95,11 @@ const ArticleList = (): ReactElement => {
                           <p
                             className="item-title font-bold over-two-ellipsis cursor-pointer"
                             onClick={() => {
-                              navigate(`${RouterUrls.ARTICLE_DETAIL_URL}?id=${Utils.encrypt(
+                              navigate(
+                                `${RouterUrls.ARTICLE_DETAIL_URL}?id=${Utils.encrypt(
                                   encodeURIComponent(item.id || '')
-                              )}`)
+                                )}`
+                              )
                             }}
                           >
                             {item.title || ''}
@@ -118,17 +120,13 @@ const ArticleList = (): ReactElement => {
                             <div className="desc flex-align-center">
                               <p>发表于</p>
                               <p>{item.createTime || ''}</p>
-                              {
-                                  !Utils.isBlank(item.updateTime || '') && (
-                                      <span className="spec">|</span>
-                                  )
-                              }
+                              {!Utils.isBlank(item.updateTime || '') && <span className="spec">|</span>}
 
                               {!Utils.isBlank(item.updateTime || '') && (
-                                  <div className="update flex-align-center">
-                                    <p>更新于</p>
-                                    <p>{item.updateTime || '-'}</p>
-                                  </div>
+                                <div className="update flex-align-center">
+                                  <p>更新于</p>
+                                  <p>{item.updateTime || '-'}</p>
+                                </div>
                               )}
                             </div>
                           </div>
