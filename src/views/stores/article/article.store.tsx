@@ -31,7 +31,6 @@ class ArticleStore extends BaseStore {
     content: '',
   }
   @observable form: { [K: string]: any } = Utils.deepCopy(this.defaultForm)
-  @observable selectedItem: { [K: string]: any } = {}
 
   @action
   async getList(callback?: Function) {
@@ -90,8 +89,33 @@ class ArticleStore extends BaseStore {
     }
   }
 
+  /**
+   * 获取文章详情
+   */
   @action
-  async onSave(callback?: Function) {
+  async getDetail(id: string = '', callback?: Function) {
+    try {
+      this.detail = {}
+      this.loading = true
+      let result: { [K: string]: any } = (await invoke('get_article_detail', {id})) || {}
+      this.loading = false
+      let data = this.handleResult(result) || {}
+      this.detail = data || {}
+      let tags = (this.detail.tags || []).map((t: string = '') => {
+        return {label: t || '', value: t || ''}
+      })
+
+      this.detail.tagOptions = tags || []
+      console.log('get article detail result:', this.detail)
+      callback?.()
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
+  @action
+  async onSaveOrUpdate(callback?: Function) {
     try {
       if (Utils.isBlank(this.form.title || '')) {
         TOAST.show({ message: '标题不能为空', type: 4 })
@@ -116,10 +140,14 @@ class ArticleStore extends BaseStore {
         return t.value || ''
       })
 
+      if (!Utils.isObjectNull(this.detail || {})) {
+        params.id = this.detail.id || ''
+      }
+
       console.log('on save article params:', params)
       await info(`on save article params: ${JSON.stringify(params)}`)
       this.loading = true
-      let result: { [K: string]: any } = (await invoke('save_article', { article: params })) || {}
+      let result: { [K: string]: any } = (await invoke('save_or_update_article', { article: params })) || {}
       this.loading = false
       let flag = this.handleResult(result)
       console.log('on save article result:', flag)

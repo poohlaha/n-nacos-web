@@ -83,20 +83,21 @@ const ArticleList = (): ReactElement => {
         <Navigation rightNode={getNavigationRightNode()} />
 
         {!articleStore.loading && (
-          <div className="article-box flex wh100">
-            <div className="box-wrapper flex overflow-y-auto w100">
+          <div className="article-box flex wh100 overflow-y-auto">
+            <div className="box-wrapper flex w100 center">
               <div className="box-left flex-1">
                 {list.length > 0 &&
                   list.map((item: { [K: string]: any } = {}, index: number) => {
                     let tags = item.tags || []
                     return (
                       <div className={`content-item ${index !== 0 ? 'page-margin-top' : ''}`} key={item.id || index}>
-                        <div className="content-info flex-direction-column">
+                        <div className="content-info flex-direction-column h100">
                           <p
                             className="item-title font-bold over-two-ellipsis cursor-pointer"
                             onClick={() => {
-                              articleStore.selectedItem = item || {}
-                              navigate(RouterUrls.ARTICLE_DETAIL_URL)
+                              navigate(`${RouterUrls.ARTICLE_DETAIL_URL}?id=${Utils.encrypt(
+                                  encodeURIComponent(item.id || '')
+                              )}`)
                             }}
                           >
                             {item.title || ''}
@@ -117,6 +118,18 @@ const ArticleList = (): ReactElement => {
                             <div className="desc flex-align-center">
                               <p>发表于</p>
                               <p>{item.createTime || ''}</p>
+                              {
+                                  !Utils.isBlank(item.updateTime || '') && (
+                                      <span className="spec">|</span>
+                                  )
+                              }
+
+                              {!Utils.isBlank(item.updateTime || '') && (
+                                  <div className="update flex-align-center">
+                                    <p>更新于</p>
+                                    <p>{item.updateTime || '-'}</p>
+                                  </div>
+                              )}
                             </div>
                           </div>
 
@@ -133,8 +146,8 @@ const ArticleList = (): ReactElement => {
                           )}
 
                           <div
-                            className="item-content over-three-ellipsis"
-                            dangerouslySetInnerHTML={{ __html: '' }}
+                            className="item-content over-three-ellipsis page-margin-top"
+                            dangerouslySetInnerHTML={{ __html: item.content || '' }}
                           ></div>
                         </div>
                       </div>

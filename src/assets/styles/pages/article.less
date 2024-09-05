@@ -3,6 +3,18 @@
  * @date 2024-09-03
  * @author poohlaha
  */
+@article_background: linear-gradient(
+        90deg,
+        rgba(247, 149, 51, 0.1),
+        rgba(243, 112, 85, 0.1) 15%,
+        rgba(239, 78, 123, 0.1) 30%,
+        rgba(161, 102, 171, 0.1) 44%,
+        rgba(80, 115, 184, 0.1) 58%,
+        rgba(16, 152, 173, 0.1) 72%,
+        rgba(7, 179, 155, 0.1) 86%,
+        rgba(109, 186, 130, 0.1)
+);
+
 .article-list-page {
   .article-button {
     .svg-box {
@@ -34,17 +46,7 @@
   .article-box {
     height: calc(100% - 56px);
     animation: main 1s;
-    background: linear-gradient(
-      90deg,
-      rgba(247, 149, 51, 0.1),
-      rgba(243, 112, 85, 0.1) 15%,
-      rgba(239, 78, 123, 0.1) 30%,
-      rgba(161, 102, 171, 0.1) 44%,
-      rgba(80, 115, 184, 0.1) 58%,
-      rgba(16, 152, 173, 0.1) 72%,
-      rgba(7, 179, 155, 0.1) 86%,
-      rgba(109, 186, 130, 0.1)
-    );
+    background: @article_background;
     cursor: url(../../images/default.cur), default;
   }
 
@@ -60,7 +62,7 @@
       background: #ffffff;
       box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.06);
       transition: all 0.3s;
-      height: 250px;
+      height: 220px;
 
       .content-info {
         padding: 20px;
@@ -81,6 +83,11 @@
 
           .desc {
             margin-left: 8px;
+
+            .spec {
+              margin-left: 4px;
+              margin-right: 4px;
+            }
 
             p:first-child {
               margin-right: 8px;
@@ -199,8 +206,14 @@
 }
 
 .article-detail-page {
-  .article-box {
+  background: @article_background;
+
+  .article-content {
+    background: #ffffff;
     padding: 20px;
+  }
+
+  .article-box {
     height: calc(100% - 56px);
 
     .article-title {

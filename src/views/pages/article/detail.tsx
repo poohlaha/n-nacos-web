@@ -3,7 +3,7 @@
  * @date 2023-08-28
  * @author poohlaha
  */
-import React, { ReactElement } from 'react'
+import React, {ReactElement, useState} from 'react'
 import { observer } from 'mobx-react-lite'
 import Navigation from '@pages/home/navigation'
 import { Tag, Tooltip } from 'antd'
@@ -11,16 +11,40 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '@views/stores'
 import Markdown from 'markdown-to-jsx'
 import { SyntaxHighlightedCode } from '@views/components/page/type'
+import RouterUrls from '@route/router.url.toml'
 import Utils from '@utils/utils'
+import useMount from "@hooks/useMount";
+import {ADDRESS} from "@utils/base";
 
 const ArticleDetail = (): ReactElement => {
   const navigate = useNavigate()
   const { articleStore } = useStore()
+    const [id, setId] = useState('')
+
+    useMount(async () => {
+        let id = ADDRESS.getAddressQueryString('id') || ''
+        id = Utils.decrypt(decodeURIComponent(id))
+        console.log('id:', id)
+        setId(id)
+        await articleStore.getDetail(id)
+    })
 
   const getNavigationLeftNode = () => {
     return (
       <Tooltip title="修改">
-        <div className="edit-button page-margin-left cursor-pointer" onClick={() => {}}>
+        <div
+            className="edit-button page-margin-left cursor-pointer"
+            onClick={() => {
+              articleStore.form = {
+                  title: articleStore.detail.title || '',
+                  tags: articleStore.detail.tagOptions,
+                  content: articleStore.detail.content || '',
+              }
+
+              console.log(articleStore.form, articleStore.detail)
+              navigate(RouterUrls.ARTICLE_EDIT_URL)
+            }}
+        >
           <div className="svg-box">
             <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -39,27 +63,31 @@ const ArticleDetail = (): ReactElement => {
       <div className="article-detail-page wh100">
         <Navigation needLogo={false} needBack={true} leftNode={getNavigationLeftNode()} />
 
-        <div className="article-box w100">
-          <div className="flex-direction-column overflow h100">
-            <p className="article-title font-bold text-l">{articleStore.selectedItem?.title || ''}</p>
+        <div className="article-box w100 overflow">
+          <div className="flex-direction-column h100 center article-content">
+            <p className="article-title font-bold text-l">{articleStore.detail?.title || ''}</p>
             <div className="article-desc flex-align-center">
               <div className="create flex-align-center">
                 <p>发表于</p>
-                <p>{articleStore.selectedItem?.createTime || '-'}</p>
+                <p>{articleStore.detail?.createTime || '-'}</p>
               </div>
 
-              <span className="spec">|</span>
+                {
+                    !Utils.isBlank(articleStore.detail?.updateTime || '') && (
+                        <span className="spec">|</span>
+                    )
+                }
 
-              {!Utils.isBlank(articleStore.selectedItem?.updateTime || '') && (
+              {!Utils.isBlank(articleStore.detail?.updateTime || '') && (
                 <div className="update flex-align-center">
                   <p>更新于</p>
-                  <p>{articleStore.selectedItem?.updateTime || '-'}</p>
+                  <p>{articleStore.detail?.updateTime || '-'}</p>
                 </div>
               )}
             </div>
 
             <div className="article-desc flex-align-center">
-              {(articleStore.selectedItem?.tags || []).map((t: string = '') => {
+              {(articleStore.detail?.tags || []).map((t: string = '') => {
                 return (
                   <div className="flex-wrap" key={t}>
                     <Tag>{t || ''}</Tag>
@@ -70,7 +98,7 @@ const ArticleDetail = (): ReactElement => {
             <div className="article-content flex-1">
               <div className="markdown-body">
                 <Markdown
-                  children={articleStore.selectedItem?.content || ''}
+                  children={articleStore.detail?.content || ''}
                   options={{
                     overrides: {
                       code: SyntaxHighlightedCode,
