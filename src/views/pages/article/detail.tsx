@@ -96,12 +96,12 @@ const ArticleDetail = (): ReactElement => {
   const render = () => {
     return (
       <Page
-          className="article-detail-page wh100"
-          navigationProps={{
-            needLogo: false,
-            needBack: true,
-            leftNode: getNavigationLeftNode()
-          }}
+        className="article-detail-page wh100"
+        navigationProps={{
+          needLogo: false,
+          needBack: true,
+          leftNode: getNavigationLeftNode(),
+        }}
       >
         <div className="article-content flex w100 center overflow-y-auto flex-direction-column">
           <p className="article-title font-bold text-l">{articleStore.detail?.title || ''}</p>
@@ -114,31 +114,31 @@ const ArticleDetail = (): ReactElement => {
             {!Utils.isBlank(articleStore.detail?.updateTime || '') && <span className="spec">|</span>}
 
             {!Utils.isBlank(articleStore.detail?.updateTime || '') && (
-                <div className="update flex-align-center">
-                  <p>更新于</p>
-                  <p>{articleStore.detail?.updateTime || '-'}</p>
-                </div>
+              <div className="update flex-align-center">
+                <p>更新于</p>
+                <p>{articleStore.detail?.updateTime || '-'}</p>
+              </div>
             )}
           </div>
 
           <div className="article-desc flex-align-center">
             {(articleStore.detail?.tags || []).map((t: string = '') => {
               return (
-                  <div className="flex-wrap" key={t}>
-                    <Tag>{t || ''}</Tag>
-                  </div>
+                <div className="flex-wrap" key={t}>
+                  <Tag>{t || ''}</Tag>
+                </div>
               )
             })}
           </div>
           <div className="article-text flex-1">
             <div className="markdown-body">
               <Markdown
-                  children={articleStore.detail?.content || ''}
-                  options={{
-                    overrides: {
-                      code: SyntaxHighlightedCode,
-                    },
-                  }}
+                children={articleStore.detail?.content || ''}
+                options={{
+                  overrides: {
+                    code: SyntaxHighlightedCode,
+                  },
+                }}
               />
             </div>
           </div>
