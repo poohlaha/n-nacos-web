@@ -112,57 +112,59 @@ const ArticleList = (): ReactElement => {
                     let tags = item.tags || []
                     return (
                       <div className={`content-item ${index !== 0 ? 'page-margin-top' : ''}`} key={item.id || index}>
-                        <div className="content-info flex-direction-column h100">
-                          <p
-                            className="item-title font-bold over-two-ellipsis cursor-pointer"
-                            onClick={() => {
-                              navigate(
-                                `${RouterUrls.ARTICLE_DETAIL_URL}?id=${Utils.encrypt(
-                                  encodeURIComponent(item.id || '')
-                                )}`
-                              )
-                            }}
-                          >
-                            {item.title || ''}
-                          </p>
-
-                          <div className="item-desc flex-align-center">
-                            <svg
-                              className="svg-icon"
-                              viewBox="0 0 1024 1024"
-                              version="1.1"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M667.648 85.333333L853.333333 256v597.589333A85.12 85.12 0 0 1 768.256 938.666667H255.744A85.205333 85.205333 0 0 1 170.666667 853.76V170.24C170.666667 123.392 208.853333 85.333333 256.085333 85.333333h411.562667zM597.333333 170.666667H256v682.666666h512V341.333333h-149.333333a21.504 21.504 0 0 1-21.333334-21.674666V170.666667z m42.794667 512c21.802667 0 39.808 16.341333 42.24 37.674666L682.666667 725.333333c0 23.552-19.328 42.666667-42.538667 42.666667H383.872A42.496 42.496 0 0 1 341.333333 725.333333c0-23.552 19.328-42.666667 42.538667-42.666666h256.256z m0-170.666667c21.802667 0 39.808 16.341333 42.24 37.674667L682.666667 554.666667c0 23.552-19.328 42.666667-42.538667 42.666666H383.872A42.496 42.496 0 0 1 341.333333 554.666667c0-23.552 19.328-42.666667 42.538667-42.666667h256.256zM469.333333 341.333333a42.666667 42.666667 0 0 1 0 85.333334H384a42.666667 42.666667 0 1 1 0-85.333334h85.333333z m213.333334-135.850666V256h61.952L682.666667 205.482667z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
-                            <div className="desc flex-align-center">
-                              <p>发表于</p>
-                              <p>{item.createTime || ''}</p>
-                              {!Utils.isBlank(item.updateTime || '') && <span className="spec">|</span>}
-
-                              {!Utils.isBlank(item.updateTime || '') && (
-                                <div className="update flex-align-center">
-                                  <p>更新于</p>
-                                  <p>{item.updateTime || '-'}</p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {tags.length > 0 && (
-                            <div className="item-desc flex-align-center">
-                              {tags.map((t: string = '') => {
-                                return (
-                                  <div className="flex-wrap" key={t}>
-                                    <Tag>{t || ''}</Tag>
-                                  </div>
+                        <div className="content-info flex-direction-column h100 flex-jsc-between">
+                          <div className="flex-direction-column">
+                            <p
+                              className="item-title font-bold over-two-ellipsis cursor-pointer"
+                              onClick={() => {
+                                navigate(
+                                  `${RouterUrls.ARTICLE_DETAIL_URL}?id=${Utils.encrypt(
+                                    encodeURIComponent(item.id || '')
+                                  )}`
                                 )
-                              })}
+                              }}
+                            >
+                              {item.title || ''}
+                            </p>
+
+                            <div className="item-desc flex-align-center">
+                              <svg
+                                className="svg-icon"
+                                viewBox="0 0 1024 1024"
+                                version="1.1"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M667.648 85.333333L853.333333 256v597.589333A85.12 85.12 0 0 1 768.256 938.666667H255.744A85.205333 85.205333 0 0 1 170.666667 853.76V170.24C170.666667 123.392 208.853333 85.333333 256.085333 85.333333h411.562667zM597.333333 170.666667H256v682.666666h512V341.333333h-149.333333a21.504 21.504 0 0 1-21.333334-21.674666V170.666667z m42.794667 512c21.802667 0 39.808 16.341333 42.24 37.674666L682.666667 725.333333c0 23.552-19.328 42.666667-42.538667 42.666667H383.872A42.496 42.496 0 0 1 341.333333 725.333333c0-23.552 19.328-42.666667 42.538667-42.666666h256.256z m0-170.666667c21.802667 0 39.808 16.341333 42.24 37.674667L682.666667 554.666667c0 23.552-19.328 42.666667-42.538667 42.666666H383.872A42.496 42.496 0 0 1 341.333333 554.666667c0-23.552 19.328-42.666667 42.538667-42.666667h256.256zM469.333333 341.333333a42.666667 42.666667 0 0 1 0 85.333334H384a42.666667 42.666667 0 1 1 0-85.333334h85.333333z m213.333334-135.850666V256h61.952L682.666667 205.482667z"
+                                  fill="currentColor"
+                                ></path>
+                              </svg>
+                              <div className="desc flex-align-center">
+                                <p>发表于</p>
+                                <p>{item.createTime || ''}</p>
+                                {!Utils.isBlank(item.updateTime || '') && <span className="spec">|</span>}
+
+                                {!Utils.isBlank(item.updateTime || '') && (
+                                  <div className="update flex-align-center">
+                                    <p>更新于</p>
+                                    <p>{item.updateTime || '-'}</p>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          )}
+
+                            {tags.length > 0 && (
+                              <div className="item-desc flex-align-center">
+                                {tags.map((t: string = '') => {
+                                  return (
+                                    <div className="flex-wrap" key={t}>
+                                      <Tag>{t || ''}</Tag>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            )}
+                          </div>
 
                           <Popover
                             overlayClassName="card-item-popover"
@@ -172,7 +174,7 @@ const ArticleList = (): ReactElement => {
                             trigger="hover"
                           >
                             <div
-                              className="item-content over-three-ellipsis page-margin-top"
+                              className="item-content over-three-ellipsis"
                               dangerouslySetInnerHTML={{ __html: item.content || '' }}
                             ></div>
                           </Popover>

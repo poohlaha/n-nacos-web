@@ -45,7 +45,7 @@ const Tag = (): ReactElement => {
                         `${RouterUrls.ARTICLE_TAG_DETAIL_URL}?id=${Utils.encrypt(
                           encodeURIComponent(item.id || '')
                         )}&name=${Utils.encrypt(encodeURIComponent(item.tagName || ''))}&title=${Utils.encrypt(
-                            encodeURIComponent('分类')
+                          encodeURIComponent('分类')
                         )}`
                       )
                     }
