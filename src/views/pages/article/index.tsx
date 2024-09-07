@@ -101,6 +101,11 @@ const ArticleList = (): ReactElement => {
         pageBodyNeedPadding={false}
         navigationProps={{
           rightNode: getNavigationRightNode(),
+          needBack: true,
+          needLogo: false,
+          onBack: () => {
+            navigate(RouterUrls.MAIN_URL)
+          },
         }}
       >
         {!articleStore.loading && (
@@ -170,7 +175,7 @@ const ArticleList = (): ReactElement => {
                             overlayClassName="card-item-popover"
                             placement="right"
                             content={getCardContent(item.content || '')}
-                            title={item.title || ''}
+                            title=""
                             trigger="hover"
                           >
                             <div

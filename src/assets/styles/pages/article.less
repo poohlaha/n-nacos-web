@@ -68,6 +68,10 @@
           color: @color;
           transition: all 0.2s ease-in-out;
           font-size: 16px;
+
+          &:hover {
+            color: @theme;
+          }
         }
 
         .item-desc {
@@ -154,6 +158,11 @@
               background: @color_menu_active;
               border-radius: 4px;
               cursor: pointer;
+              color: @theme;
+
+              p:last-child {
+                color: @theme_orange!important;
+              }
             }
 
             .archive-item {
