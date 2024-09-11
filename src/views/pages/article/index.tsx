@@ -29,7 +29,10 @@ const ArticleList = (): ReactElement => {
       <Tooltip title="写作">
         <div
           className="page-margin-right article-button flex-align-center cursor-pointer"
-          onClick={() => navigate(RouterUrls.ARTICLE_EDIT_URL)}
+          onClick={() => {
+            articleStore.detail = {}
+            navigate(RouterUrls.ARTICLE_EDIT_URL)
+          }}
         >
           <div className="svg-box">
             <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
