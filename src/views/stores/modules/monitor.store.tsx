@@ -16,13 +16,9 @@ class MonitorStore extends BaseStore {
   @observable addProcesses: Array<string> = []
   @observable commandForm: { [K: string]: string } = {
     name: '',
-    exec: '',
+    exec: ''
   }
   @observable execCommand: string = ''
-
-  constructor() {
-    super()
-  }
 
   /**
    * 获取监控信息
@@ -50,15 +46,16 @@ class MonitorStore extends BaseStore {
    * 结束进程
    */
   @action
+  //@ts-ignore
   async onKillProcess(processName: string, pidList: Array<string>) {
     this.loading = true
     let result: { [K: string]: any } = await invoke('kill_monitor_process', {
       userId: this.userId,
-      processIds: pidList || [],
+      processIds: pidList || []
     })
     console.log('result:', result)
     this.loading = false
-    this.analysisResult(result, '结束进程失败!') || {}
+    this.analysisResult(result, '结束进程失败!')
     if (result.code === 200) {
       await this.getProcessList()
     }
@@ -71,11 +68,11 @@ class MonitorStore extends BaseStore {
     this.loading = true
     let result: { [K: string]: any } = await invoke('add_monitor_process', {
       userId: this.userId,
-      processNames: this.addProcesses || [],
+      processNames: this.addProcesses || []
     })
     console.log('result:', result)
     this.loading = false
-    this.analysisResult(result, '添加进程失败!') || {}
+    this.analysisResult(result, '添加进程失败!')
     if (result.code === 200) {
       callback?.()
       await this.getProcessList()
@@ -91,11 +88,11 @@ class MonitorStore extends BaseStore {
     this.loading = true
     let result: { [K: string]: any } = await invoke('remove_monitor_process', {
       userId: this.userId,
-      processNames: [processName],
+      processNames: [processName]
     })
     console.log('result:', result)
     this.loading = false
-    this.analysisResult(result, '移除进程失败!') || {}
+    this.analysisResult(result, '移除进程失败!')
     if (result.code === 200) {
       await this.getProcessList()
     }
@@ -119,7 +116,7 @@ class MonitorStore extends BaseStore {
     let result: { [K: string]: any } = await invoke('add_monitor_command', {
       userId: this.userId,
       name: this.commandForm.name || '',
-      exec: this.commandForm.exec || '',
+      exec: this.commandForm.exec || ''
     })
     console.log('result:', result)
     this.loading = false

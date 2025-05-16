@@ -1,22 +1,101 @@
 # 前端路由, 需要按模块分
-HOME_URL = '/home'
-ARTICLE_URL = '/article'
-ARTICLE_EDIT_URL = '/articleEdit'
-ARTICLE_DETAIL_URL = '/articleDetail'
-ARTICLE_TAG_URL = '/articleTag'
-ARTICLE_TAG_DETAIL_URL = '/articleTagDetail'
-MAIN_URL = '/main'
-DASHBOARD_URL = '/dashboard'
+MAIN_URL = '/'
+NOT_FOUND_URL = '/404'
+
 PROCESS_URL = '/process'
 COMMAND_URL = '/command'
 DIRECTORY_URL = '/directory'
 NGINX_URL = '/nginx'
 
+# 控制台
+[DASHBOARD]
+KEY = 'dashboard'
+NAME = '控制台'
+URL = '/'
+
+# 服务器
+[SERVER]
+KEY = 'server'
+NAME = '服务器'
+URL = ''
+
+[SERVER.LIST]
+KEY = 'serverList'
+NAME = '服务器列表'
+URL = '/serverList'
+
+[SERVER.DETAIL]
+KEY = 'serverDetail'
+NAME = '服务器详情'
+URL = '/serverDetail'
+
+# 持续交付
 [PIPELINE]
-URL = '/pipeline'
-ADD_URL = '/pipelineAdd'
-DETAIL_URL = '/pipelineDetail'
-MARKET_URL = '/pipelinePluginMarket'
+KEY = 'pileline'
+NAME = '持续交付'
+URL = ''
+
+[PIPELINE.LIST]
+KEY = 'pipelineList'
+NAME = '流水线'
+URL = '/pipelineList'
+
+[PIPELINE.ADD]
+KEY = 'pipelineAdd'
+NAME = '流水线'
+URL = '/pipelineAdd'
+
+[PIPELINE.DETAIL]
+KEY = 'pipelineDetail'
+NAME = '流水线'
+URL = '/pipelineDetail'
+
+[PIPELINE.MARKET]
+KEY = 'pipelineMarket'
+NAME = '插件市场'
+URL = '/pipelineMarket'
+
+# 笔记
+[NOTE]
+KEY = 'note'
+NAME = '笔记'
+URL = ''
+
+[NOTE.LIST]
+KEY = 'noteList'
+NAME = '笔记列表'
+URL = '/nodeList'
+
+[NOTE.EDIT]
+KEY = 'noteEdit'
+NAME = '编辑笔记'
+URL = '/nodeEdit'
+
+[NOTE.DETAIL]
+KEY = 'noteDetail'
+NAME = '笔记详情'
+URL = '/nodeDetail'
+
+[NOTE.TAG]
+KEY = 'noteTag'
+NAME = '笔记标签'
+URL = '/nodeTag'
+
+[NOTE.TAGDETAIL]
+KEY = 'noteTagDetail'
+NAME = '笔记标签详情'
+URL = '/nodeTagDetail'
+
+# 设置
+[SETTING]
+KEY = 'setting'
+NAME = '设置'
+URL = ''
+
+[SETTING.SQL]
+KEY = 'sql'
+NAME = '数据库表'
+URL = '/sql'
 
 [MONITOR]
 SERVER_URL = '/server'

@@ -41,7 +41,7 @@ const MAnchor: React.FC<IMAnchorProps> = (props: IMAnchorProps): ReactElement =>
       let rect = content.getBoundingClientRect()
       newColumns.push({
         ...props.columns[index],
-        rect,
+        rect
       })
     })
 

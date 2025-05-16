@@ -18,8 +18,8 @@ class Builder {
   _packageDir = ''
   _configurationsDir = ''
   _copyDir = ''
-   _pcDestDir = ''
-   _mobileDestDir = ''
+  _pcDestDir = ''
+  _mobileDestDir = ''
   _mutateVersion
   _args = []
   _command = 2 // default dev
@@ -41,7 +41,6 @@ class Builder {
     this._projectBuilder = new ProjectBuilder()
     this._mutateVersion = new MutateVersion({ language: 'react', babelImportPluginName: '', useTypescript: true })
   }
-
 
   // 获取输入命令 0: clean 1: copy files 2: start 3: dev 4: prod
   _getCommand() {
@@ -107,7 +106,7 @@ class Builder {
 
   // build
   _build() {
-    this._copyFiles()
+    // this._copyFiles()
     this._projectBuilder.instance()
   }
 

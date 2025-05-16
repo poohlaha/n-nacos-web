@@ -9,73 +9,66 @@ import { lazy } from 'react'
 import RouterUrls from '@route/router.url.toml'
 import React from 'react'
 import Utils from '@utils/utils'
-import { SYSTEM } from '@config/index'
-import PipelineAdd from '@pages/delivery/pipeline/add'
-import PipelineDetail from '@pages/delivery/pipeline/detail'
+import PipelineAdd from '@pages/pipeline/add'
+import PipelineDetail from '@pages/pipeline/detail'
+import { ADDRESS } from '@utils/base'
 
 class HomeStore extends BaseStore {
-  readonly menuList = [
+  // 选中的菜单
+  @observable selectedMenuKeys: Array<string> = []
+
+  // 用户信息
+  @observable userInfo: { [K: string]: any } = {}
+
+  readonly MENU_LIST: Array<{ [K: string]: any }> = [
     {
-      name: '控制台',
-      key: 'dashboard',
+      key: RouterUrls.DASHBOARD.KEY,
+      label: RouterUrls.DASHBOARD.NAME,
+      url: RouterUrls.DASHBOARD.URL,
       icon: (
-        <svg
-          key="dashboard-svg"
-          className="svg-icon"
-          viewBox="0 0 1024 1024"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
           <path
             fill="currentColor"
             d="M902.016 130.016H123.008q-23.008 0-40 16.992t-16.992 40v480q0 24 16.992 40.512t40 16.512H480v108h-147.008q-12.992 0-22.496 9.504t-9.504 22.496 9.504 22.016 22.496 8.992h358.016q12.992 0 22.496-8.992t9.504-22.016-9.504-22.496-22.496-9.504h-148v-108h359.008q24 0 40.512-16.512t16.512-40.512v-480q0-23.008-16.512-40t-40.512-16.992zM896 192.992v468H128.992V192.992H896z"
           ></path>
         </svg>
       ),
-      url: RouterUrls.DASHBOARD_URL,
-      component: lazy(() => import(/* webpackChunkName:'dashboard' */ '@pages/dashboard/index')),
+      component: lazy(() => import(/* webpackChunkName:'dashboard' */ '@views/pages/dashboard'))
     },
     {
-      name: '监控',
-      key: 'monitor',
+      key: RouterUrls.SERVER.KEY,
+      label: RouterUrls.SERVER.NAME,
+      url: RouterUrls.SERVER.URL,
+      type: 'group',
       children: [
         {
-          name: '服务器信息',
-          key: 'serverInfo',
+          key: RouterUrls.SERVER.LIST.KEY,
+          label: RouterUrls.SERVER.LIST.NAME,
+          url: RouterUrls.SERVER.LIST.URL,
           icon: (
-            <svg
-              key="server-info-svg"
-              className="svg-icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <path
-                d="M900.788 448.274V287.975L512.929 64.038l-134.904 77.896c-11.073-10.496-25.93-17.043-42.347-17.043-34.026 0-61.736 27.689-61.736 61.736 0 4.951 0.74 9.704 1.846 14.322l-150.675 87.026v447.83l133.107 76.82c-1.772 5.744-3.003 11.719-3.003 18.037 0 34.048 27.711 61.736 61.736 61.736 17.816 0 33.772-7.709 45.052-19.828l150.923 87.128 387.86-223.937V565.57c25.055-7.861 43.418-31.023 43.418-58.648s-18.362-50.787-43.418-58.648zM335.677 157.923c15.831 0 28.704 12.851 28.704 28.704s-12.873 28.704-28.704 28.704-28.704-12.851-28.704-28.704 12.873-28.704 28.704-28.704z m-18.724 701.442c-15.831 0-28.704-12.851-28.704-28.704 0-15.854 12.873-28.704 28.704-28.704 15.831 0 28.704 12.851 28.704 28.704 0.001 15.854-12.872 28.704-28.704 28.704z m547.624-144.448L512.929 917.922 377.76 839.863c0.458-3.025 0.93-6.05 0.93-9.202 0-34.048-27.711-61.736-61.736-61.736-14.529 0-27.727 5.258-38.287 13.692l-117.342-67.745V308.819l132.934-76.734c10.979 10.011 25.434 16.279 41.42 16.279 34.026 0 61.736-27.689 61.736-61.736 0-4.546-0.566-8.948-1.501-13.215l117.017-67.598L864.579 308.82v139.326c-25.273 7.725-43.843 30.998-43.843 58.777 0 27.78 18.569 51.052 43.843 58.777v149.217z m17.893-179.291c-15.831 0-28.704-12.851-28.704-28.704s12.873-28.704 28.704-28.704c15.831 0 28.704 12.851 28.704 28.704s-12.872 28.704-28.704 28.704zM287.598 694.595h445.666V333.629H287.598v360.966z m33.032-327.934h379.602v130.935H320.63V366.661z m0 163.967h379.602v130.935H320.63V530.628z m306.605-122.86c-12.486 0-22.61 10.124-22.61 22.61 0 12.489 10.124 22.61 22.61 22.61 12.489 0 22.61-10.121 22.61-22.61 0-12.486-10.121-22.61-22.61-22.61z m1.91 168.632c-12.486 0-22.61 10.124-22.61 22.61 0 12.489 10.124 22.61 22.61 22.61s22.61-10.121 22.61-22.61c0-12.486-10.124-22.61-22.61-22.61zM362.891 447.518H553.31v-33.032H362.891v33.032z m0 166.617H553.31v-33.032H362.891v33.032z"
+                d="M960 42.666667H64c-12.8 0-21.333333 8.533333-21.333333 21.333333v896c0 12.8 8.533333 21.333333 21.333333 21.333333h896c12.8 0 21.333333-8.533333 21.333333-21.333333V64c0-12.8-8.533333-21.333333-21.333333-21.333333z m-21.333333 896H85.333333V682.666667h853.333334v256z m0-298.666667H85.333333V384h853.333334v256z m0-298.666667H85.333333V85.333333h853.333334v256zM298.666667 768h-42.666667v85.333333h42.666667v-85.333333z m-85.333334 0H170.666667v85.333333h42.666666v-85.333333z m661.333334 21.333333h-170.666667v42.666667h170.666667v-42.666667zM298.666667 469.333333h-42.666667v85.333334h42.666667v-85.333334z m-85.333334 0H170.666667v85.333334h42.666666v-85.333334z m661.333334 21.333334h-170.666667v42.666666h170.666667v-42.666666zM298.666667 170.666667h-42.666667v85.333333h42.666667V170.666667z m-85.333334 0H170.666667v85.333333h42.666666V170.666667z m661.333334 21.333333h-170.666667v42.666667h170.666667V192z"
                 fill="currentColor"
               ></path>
             </svg>
           ),
-          url: RouterUrls.MONITOR.SERVER_URL,
-          component: lazy(() => import(/* webpackChunkName:'pipelineList' */ '@pages/monitor/server')),
-        },
-      ],
+          component: lazy(() => import(/* webpackChunkName:'serverList' */ '@views/pages/server'))
+        }
+      ]
     },
     {
-      name: '持续交付',
-      key: 'pipeline',
+      key: RouterUrls.PIPELINE.KEY,
+      label: RouterUrls.PIPELINE.NAME,
+      url: RouterUrls.PIPELINE.URL,
+      type: 'group',
       children: [
         {
-          name: '流水线',
-          key: 'pipelineList',
+          key: RouterUrls.PIPELINE.LIST.KEY,
+          label: RouterUrls.PIPELINE.LIST.NAME,
+          url: RouterUrls.PIPELINE.LIST.URL,
           icon: (
-            <svg
-              key="pipeline-list-svg"
-              className="svg-icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M204.8 51.2a153.6 153.6 0 1 1 0 307.2 153.6 153.6 0 0 1 0-307.2z m0 102.4a51.2 51.2 0 1 0 0 102.4 51.2 51.2 0 0 0 0-102.4zM819.2 665.6a153.6 153.6 0 1 1 0 307.2 153.6 153.6 0 0 1 0-307.2z m0 102.4a51.2 51.2 0 1 0 0 102.4 51.2 51.2 0 0 0 0-102.4z"
                 fill="currentColor"
@@ -86,33 +79,80 @@ class HomeStore extends BaseStore {
               ></path>
             </svg>
           ),
-          url: RouterUrls.PIPELINE.URL,
-          component: lazy(() => import(/* webpackChunkName:'pipelineList' */ '@pages/delivery/pipeline/index')),
+          component: lazy(() => import(/* webpackChunkName:'pipelineList' */ '@views/pages/pipeline/index'))
         },
         {
-          name: '插件市场',
-          key: 'pipelinePluginMarket',
+          key: RouterUrls.PIPELINE.MARKET.KEY,
+          label: RouterUrls.PIPELINE.MARKET.NAME,
+          url: RouterUrls.PIPELINE.MARKET.URL,
           icon: (
-            <svg
-              key="pipeline-plugin-market-svg"
-              className="svg-icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M585.955556 151.893333c20.252444 28.558222 25.315556 65.194667 13.653333 98.247111h149.959111A71.850667 71.850667 0 0 1 821.475556 321.991111v149.959111a107.975111 107.975111 0 1 1 0 203.434667v149.959111a71.850667 71.850667 0 0 1-71.907556 72.078222h-149.674667a107.975111 107.975111 0 1 0-203.548444 0H246.328889a71.850667 71.850667 0 0 1-71.850667-72.078222v-149.276444a107.747556 107.747556 0 1 0 0-203.377778V322.673778c0-39.708444 32.199111-71.850667 71.850667-71.850667h149.959111a107.861333 107.861333 0 0 1 101.831111-143.701333l-0.113778-0.910222c34.929778 0 67.754667 17.066667 88.007111 45.681777z"
                 fill="currentColor"
               ></path>
             </svg>
           ),
-          url: RouterUrls.PIPELINE.MARKET_URL,
-          component: lazy(
-            () => import(/* webpackChunkName:'pipelinePluginMarket' */ '@pages/delivery/pipelineMarket/index')
-          ),
-        },
-      ],
+          component: lazy(() => import(/* webpackChunkName:'pipelineMarket' */ '@views/pages/pipeline/market'))
+        }
+      ]
     },
+    {
+      key: RouterUrls.NOTE.KEY,
+      label: RouterUrls.NOTE.NAME,
+      url: RouterUrls.NOTE.URL,
+      type: 'group',
+      children: [
+        {
+          key: RouterUrls.NOTE.LIST.KEY,
+          label: RouterUrls.NOTE.LIST.NAME,
+          url: RouterUrls.NOTE.LIST.URL,
+          icon: (
+            <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M903.104 0a120.224 120.224 0 0 1 119.872 119.936v783.2a120.224 120.224 0 0 1-119.84 119.872H119.872A120.224 120.224 0 0 1 0 903.168V119.968A120.192 120.192 0 0 1 119.84 0.032h0.032z m-18.656 85.248H138.528a52.8 52.8 0 0 0-37.504 15.68c-9.696 9.6-15.744 22.88-15.776 37.6v745.92c0 14.08 5.632 27.52 15.68 37.6 9.6 9.664 22.88 15.68 37.6 15.68h745.92a52.8 52.8 0 0 0 37.504-15.68 52.8 52.8 0 0 0 15.776-37.504V138.624v-0.032c0-14.72-5.984-28.032-15.68-37.632a52.8 52.8 0 0 0-37.6-15.68zM312.864 255.744l184.896 311.328c7.744 17.056 13.888 30.848 18.336 41.344l26.016-56.608 12.032-25.408 171.168-270.656h127.2v511.488h-91.2V339.104l-207.488 342.88h-85.408l-206.72-350.112v435.36H170.56V255.744h142.368z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          ),
+          component: lazy(() => import(/* webpackChunkName:'note' */ '@views/pages/note/index'))
+        }
+      ]
+    },
+    {
+      key: RouterUrls.SETTING.KEY,
+      label: RouterUrls.SETTING.NAME,
+      url: RouterUrls.SETTING.URL,
+      type: 'group',
+      icon: (
+        <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M204.8 51.2a153.6 153.6 0 1 1 0 307.2 153.6 153.6 0 0 1 0-307.2z m0 102.4a51.2 51.2 0 1 0 0 102.4 51.2 51.2 0 0 0 0-102.4zM819.2 665.6a153.6 153.6 0 1 1 0 307.2 153.6 153.6 0 0 1 0-307.2z m0 102.4a51.2 51.2 0 1 0 0 102.4 51.2 51.2 0 0 0 0-102.4z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M818.9952 153.6c81.92 0 148.8896 63.9488 153.5488 144.5888L972.8 307.2v102.4a153.7024 153.7024 0 0 1-144.7424 153.344l-9.0624 0.256H205.0048a51.2 51.2 0 0 0-50.944 45.2096L153.7024 614.4v102.4a51.2 51.2 0 0 0 45.312 50.8416l5.9904 0.3584h510.1568v102.4H205.0048a153.7024 153.7024 0 0 1-153.5488-144.5888L51.2 716.8v-102.4a153.7024 153.7024 0 0 1 144.7424-153.344L205.0048 460.8h613.9904a51.2 51.2 0 0 0 50.944-45.2096L870.2976 409.6V307.2a51.2 51.2 0 0 0-45.312-50.8416L818.9952 256H258.1504V153.6h560.8448z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      ),
+      children: [
+        {
+          key: RouterUrls.SETTING.SQL.KEY,
+          label: RouterUrls.SETTING.SQL.NAME,
+          url: RouterUrls.SETTING.SQL.URL,
+          icon: (
+            <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M903.104 0a120.224 120.224 0 0 1 119.872 119.936v783.2a120.224 120.224 0 0 1-119.84 119.872H119.872A120.224 120.224 0 0 1 0 903.168V119.968A120.192 120.192 0 0 1 119.84 0.032h0.032z m-18.656 85.248H138.528a52.8 52.8 0 0 0-37.504 15.68c-9.696 9.6-15.744 22.88-15.776 37.6v745.92c0 14.08 5.632 27.52 15.68 37.6 9.6 9.664 22.88 15.68 37.6 15.68h745.92a52.8 52.8 0 0 0 37.504-15.68 52.8 52.8 0 0 0 15.776-37.504V138.624v-0.032c0-14.72-5.984-28.032-15.68-37.632a52.8 52.8 0 0 0-37.6-15.68zM312.864 255.744l184.896 311.328c7.744 17.056 13.888 30.848 18.336 41.344l26.016-56.608 12.032-25.408 171.168-270.656h127.2v511.488h-91.2V339.104l-207.488 342.88h-85.408l-206.72-350.112v435.36H170.56V255.744h142.368z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          ),
+          component: lazy(() => import(/* webpackChunkName:'setting' */ '@views/pages/setting/sql'))
+        }
+      ]
+    }
   ]
 
   @observable breadcrumbItems: Array<{ [K: string]: any }> = [] // 面包屑
@@ -129,7 +169,7 @@ class HomeStore extends BaseStore {
         path: RouterUrls.PIPELINE.ADD_URL,
         belong: 'pipeline',
         // component: lazy(() => import(/* webpackChunkName:'pipelineAdd' */ '@pages/delivery/pipeline/add')),
-        component: PipelineAdd,
+        component: PipelineAdd
       },
       {
         name: '',
@@ -137,8 +177,8 @@ class HomeStore extends BaseStore {
         type: 'detail',
         path: RouterUrls.PIPELINE.DETAIL_URL,
         belong: 'pipeline',
-        component: PipelineDetail,
-      },
+        component: PipelineDetail
+      }
     ]
   }
 
@@ -157,7 +197,7 @@ class HomeStore extends BaseStore {
             </svg>
           ),
           url: RouterUrls.PROCESS_URL,
-          component: lazy(() => import(/* webpackChunkName:'process' */ '@pages/monitor/process')),
+          component: lazy(() => import(/* webpackChunkName:'process' */ '@pages/monitor/process'))
         },
         {
           name: 'Command',
@@ -182,7 +222,7 @@ class HomeStore extends BaseStore {
             </svg>
           ),
           url: RouterUrls.COMMAND_URL,
-          component: lazy(() => import(/* webpackChunkName:'command' */ '@pages/monitor/command')),
+          component: lazy(() => import(/* webpackChunkName:'command' */ '@pages/monitor/command'))
         },
         {
           name: 'Directory',
@@ -199,9 +239,9 @@ class HomeStore extends BaseStore {
             </svg>
           ),
           url: RouterUrls.DIRECTORY_URL,
-          component: lazy(() => import(/* webpackChunkName:'directory' */ '@pages/monitor/directory')),
-        },
-      ],
+          component: lazy(() => import(/* webpackChunkName:'directory' */ '@pages/monitor/directory'))
+        }
+      ]
     }
   }
 
@@ -220,10 +260,67 @@ class HomeStore extends BaseStore {
             </svg>
           ),
           url: RouterUrls.NGINX_URL,
-          component: lazy(() => import('@pages/configuration/nginx')),
-        },
-      ],
+          component: lazy(() => import('@pages/configuration/nginx'))
+        }
+      ]
     }
+  }
+
+  /**
+   * 获取选中的菜单
+   */
+  @action
+  getSelectedKeysByUrl() {
+    const list = this.MENU_LIST || []
+    if (list.length === 0) return []
+
+    let { addressUrl } = ADDRESS.getAddress()
+    console.log('addressUrl', addressUrl)
+
+    // dashboard
+    if (addressUrl === RouterUrls.DASHBOARD.URL || Utils.isBlank(addressUrl || '')) {
+      this.selectedMenuKeys = [RouterUrls.DASHBOARD.KEY]
+      return
+    }
+
+    // 如果有三层 /, 去掉最后一层
+    if (addressUrl.endsWith('/')) {
+      addressUrl = addressUrl.substring(0, addressUrl.length - 1)
+    }
+
+    let moreSplit = addressUrl.split('/').filter(Boolean).length > 2
+    let path = addressUrl
+    if (moreSplit) {
+      path = addressUrl.substring(0, addressUrl.lastIndexOf('/'))
+    }
+
+    let obj = this.findMenu(this.MENU_LIST, '', path) || {}
+    this.selectedMenuKeys.push(obj.key || '')
+  }
+
+  /**
+   * 查找菜单
+   */
+  findMenu(list: Array<{ [K: string]: any }> = [], key: string = '', url: string = ''): { [K: string]: any } {
+    if (list.length === 0) return {}
+
+    for (const item of list) {
+      if (item.key === key || (item.url === url && !Utils.isBlank(url || ''))) {
+        return item || {}
+      }
+
+      const children = item.children || []
+      if (children.length === 0) {
+        continue
+      }
+
+      let obj = this.findMenu(children, key, url) || {}
+      if (!Utils.isObjectNull(obj || {})) {
+        return obj
+      }
+    }
+
+    return {}
   }
 
   // 直接根据 url 查找
@@ -246,16 +343,48 @@ class HomeStore extends BaseStore {
   }
 
   /**
-   * 获取选中的服务器
+   * 获取面包屑
    */
-  @action
-  getSelectServer() {
-    let serverCache = Utils.getLocal(SYSTEM.SERVER_TOKEN_NAME)
-    if (typeof serverCache === 'string') {
-      return JSON.parse(serverCache) || {}
+  getBreadcrumbItemList(name: string = '', isNew: boolean = true) {
+    let routes: Array<{ [K: string]: any }> = []
+
+    routes.push({
+      name: this.MENU_LIST[0].label || '',
+      url: this.MENU_LIST[0].url || '',
+      icon: this.MENU_LIST[0].icon || '',
+      onClick: () => {
+        this.selectedMenuKeys = [RouterUrls.DASHBOARD.KEY]
+      }
+    }) // dashboard
+
+    routes.push({
+      name: this.MENU_LIST[2].children[0].label || '',
+      url: this.MENU_LIST[2].children[0].url || '',
+      icon: this.MENU_LIST[2].children[0].icon || ''
+    }) // pipeline
+
+    if (!isNew) {
+      routes.push({
+        name: name || '',
+        type: 'detail'
+      }) // 流水线详情
+    } else {
+      routes.push({
+        name: this.getOtherSubRoutes()[0].name || '',
+        type: 'new'
+      }) // 新建流水线
     }
 
-    return serverCache || {}
+    return routes
+  }
+
+  /**
+   * 重置数据
+   */
+  @action
+  onReset() {
+    this.selectedMenuKeys = []
+    this.userInfo = {}
   }
 }
 

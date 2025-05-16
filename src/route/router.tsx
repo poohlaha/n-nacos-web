@@ -14,55 +14,21 @@ export const routes: RouteInterface[] = [
     exact: true,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/main/index')),
     auth: false,
-    title: '首页',
+    title: '首页'
   },
   {
-    path: RouterUrls.MAIN_URL,
-    exact: true,
+    path: `${RouterUrls.MAIN_URL}/*`,
+    exact: false,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/main/index')),
     auth: false,
-    title: '首页',
+    title: '首页'
   },
   {
-    path: `${RouterUrls.HOME_URL}/*`,
-    exact: false,
-    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/home/index')),
-    auth: false,
-    title: '首页',
-  },
-  {
-    path: RouterUrls.ARTICLE_URL,
-    exact: false,
-    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/index')),
-    auth: false,
-    title: '文章',
-  },
-  {
-    path: RouterUrls.ARTICLE_EDIT_URL,
-    exact: false,
-    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/edit')),
-    auth: false,
-    title: '文章',
-  },
-  {
-    path: RouterUrls.ARTICLE_DETAIL_URL,
-    exact: false,
-    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/detail')),
-    auth: false,
-    title: '文章',
-  },
-  {
-    path: RouterUrls.ARTICLE_TAG_URL,
-    exact: false,
-    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/tag')),
-    auth: false,
-    title: '文章标签',
-  },
-  {
-    path: RouterUrls.ARTICLE_TAG_DETAIL_URL,
-    exact: false,
-    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/article/tagDetail')),
-    auth: false,
-    title: '文章标签',
-  },
+    path: RouterUrls.NOT_FOUND_URL,
+    component: lazy(() => import(/* webpackChunkName:'notfound' */ '@route/not-found/index')),
+    exact: true,
+    name: 'notFound',
+    title: '页面不存在',
+    auth: false
+  }
 ]

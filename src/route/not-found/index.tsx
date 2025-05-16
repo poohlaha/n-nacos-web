@@ -4,7 +4,7 @@ import RouterUrls from '@route/router.url.toml'
 /**
  * 页面找不到
  */
-const PageNotFound: React.FC<IRouterProps> = (props: IRouterProps) => {
+const PageNotFound = () => {
   return (
     <div className="not-found">
       <span>页面未找到.</span>

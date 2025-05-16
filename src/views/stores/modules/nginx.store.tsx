@@ -17,13 +17,13 @@ class NginxStore extends BaseStore {
       title: '属性名称',
       dataIndex: 'propName',
       key: 'propName',
-      width: '40%',
+      width: '40%'
     },
     {
       title: '属性值',
       dataIndex: 'propValue',
-      key: 'propValue',
-    },
+      key: 'propValue'
+    }
   ]
 
   /**
@@ -33,6 +33,7 @@ class NginxStore extends BaseStore {
   async getFileData(callback?: any) {
     this.loading = true
     this.fileData = {}
+    //@ts-ignore
     return await $http.post({
       url: BackUrls.GET_NGINX_FILE_URL,
       data: {},
@@ -41,7 +42,7 @@ class NginxStore extends BaseStore {
         this.fileData = res
         callback?.()
       },
-      fail: () => (this.loading = false),
+      fail: () => (this.loading = false)
     })
   }
 
@@ -51,6 +52,7 @@ class NginxStore extends BaseStore {
   async getList() {
     this.loading = true
     this.fileData = {}
+    //@ts-ignore
     return await $http.post({
       url: BackUrls.GET_NGINX_LIST_URL,
       data: {},
@@ -58,7 +60,7 @@ class NginxStore extends BaseStore {
         this.loading = false
         this.data = res || []
       },
-      fail: () => (this.loading = false),
+      fail: () => (this.loading = false)
     })
   }
 }

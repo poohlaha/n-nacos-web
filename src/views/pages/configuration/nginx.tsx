@@ -12,6 +12,7 @@ import Loading from '@views/components/loading/loading'
 import Utils from '@utils/utils'
 import MBreadcrumb from '@views/modules/breadcrumb'
 
+//@ts-ignore
 interface DataType {
   key: string
   index: string
@@ -20,7 +21,7 @@ interface DataType {
   children?: DataType[]
 }
 
-const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
+const Nginx = (): ReactElement => {
   const [showDrawer, setShowDrawer] = useState(false) // 是否显示 nginx 配置文件
   const { nginxStore, homeStore } = useStore()
 
@@ -81,10 +82,10 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
       }
 
       let object = {
-        key: i + '' + (index || ''),
+        key: `${i}${index || ''}`,
         propName: token.name || '',
         propValue,
-        children: [],
+        children: []
       }
 
       let childrens = item.childrens || []
@@ -120,7 +121,7 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
     return (
       <div className="nginx-page w100 min-h100">
         <div className="breadcrumb-top flex-align-center">
-          <MBreadcrumb items={homeStore.menuList} />
+          <MBreadcrumb items={homeStore.MENU_LIST} />
         </div>
 
         <Card title="Nginx 配置文件" extra={<p onClick={onShowDrawer}>查看配置文件</p>}>
@@ -128,11 +129,9 @@ const Nginx: React.FC<IRouterProps> = (props: IRouterProps): ReactElement => {
         </Card>
 
         {/* 查看配置文件 */}
-        {
-          <Drawer title="Nginx配置文件" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
-            {getNginxFileConfHtml()}
-          </Drawer>
-        }
+        <Drawer title="Nginx配置文件" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
+          {getNginxFileConfHtml()}
+        </Drawer>
 
         <Loading show={nginxStore.loading} />
       </div>

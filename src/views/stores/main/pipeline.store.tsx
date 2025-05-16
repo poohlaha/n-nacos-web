@@ -11,6 +11,7 @@ import { TOAST } from '@utils/base'
 import { invoke } from '@tauri-apps/api/core'
 import { info } from '@tauri-apps/plugin-log'
 
+// @ts-ignore
 class PipelineProcessConfig {
   id: string
   pipelineId: string
@@ -166,48 +167,48 @@ class PipelineStore extends BaseStore {
     {
       label: '开发',
       value: 'Develop',
-      color: 'processing',
+      color: 'processing'
     },
     {
       label: '测试',
       value: 'Test',
-      color: 'orange',
+      color: 'orange'
     },
     {
       label: 'C++',
       value: 'CAddAdd',
-      color: 'lime',
+      color: 'lime'
     },
     {
       label: 'Rust',
       value: 'Rust',
-      color: 'gold',
+      color: 'gold'
     },
     {
       label: 'Java',
       value: 'Java',
-      color: 'purple',
+      color: 'purple'
     },
     {
       label: 'Android',
       value: 'Android',
-      color: 'volcano',
+      color: 'volcano'
     },
     {
       label: 'Ios',
       value: 'Ios',
-      color: 'cyan',
+      color: 'cyan'
     },
     {
       label: 'H5',
       value: 'H5',
-      color: 'success',
+      color: 'success'
     },
     {
       label: 'Docker-H5',
       value: 'DockerH5',
-      color: 'magenta',
-    },
+      color: 'magenta'
+    }
   ]
 
   // 流水线状态
@@ -215,59 +216,59 @@ class PipelineStore extends BaseStore {
     {
       label: '尚未运行',
       value: 'No',
-      color: 'default',
+      color: 'default'
     },
     {
       label: '排队中',
       value: 'Queue',
-      color: 'processing',
+      color: 'processing'
     },
     {
       label: '构建中',
       value: 'Process',
-      color: 'processing',
+      color: 'processing'
     },
     {
       label: '运行成功',
       value: 'Success',
-      color: 'success',
+      color: 'success'
     },
     {
       label: '运行失败',
       value: 'Failed',
-      color: 'error',
+      color: 'error'
     },
     {
       label: '运行中止',
       value: 'Stop',
-      color: 'error',
-    },
+      color: 'error'
+    }
   ]
 
   readonly SELECT_OPTIONS: any = [
     {
       label: '是',
-      value: 'yes',
+      value: 'yes'
     },
     {
       label: '否',
-      value: 'no',
-    },
+      value: 'no'
+    }
   ]
 
   readonly VARIABLE_OPTIONS: any = [
     {
       label: '字符串',
-      value: 'str',
+      value: 'str'
     },
     {
       label: '下拉框',
-      value: 'select',
+      value: 'select'
     },
     {
       label: '输入框',
-      value: 'input',
-    },
+      value: 'input'
+    }
   ]
 
   @observable list: Array<{ [K: string]: any }> = []
@@ -285,7 +286,7 @@ class PipelineStore extends BaseStore {
     select: '',
     disabled: this.SELECT_OPTIONS[1].value || '',
     require: this.SELECT_OPTIONS[1].value || '',
-    desc: '',
+    desc: ''
   }
 
   // 添加页面基本信息表单
@@ -293,7 +294,7 @@ class PipelineStore extends BaseStore {
     name: '',
     tag: '',
     path: '',
-    desc: '',
+    desc: ''
   }
 
   @observable addDefaultForm: { [K: string]: any } = {
@@ -303,8 +304,8 @@ class PipelineStore extends BaseStore {
     basic: Utils.deepCopy(this.addBasicDefaultForm), // 基本信息
     processConfig: {
       // 流程配置
-      steps: [],
-    },
+      steps: []
+    }
   }
 
   @observable addForm: { [K: string]: any } = Utils.deepCopy(this.addDefaultForm)
@@ -325,10 +326,10 @@ class PipelineStore extends BaseStore {
       branch: '',
       make: '',
       command: '',
-      script: '',
+      script: ''
     },
     variable: {},
-    remark: '',
+    remark: ''
   }
 
   @observable runDialogProps: { [K: string]: any } = Utils.deepCopy(this.runDialogDefaultProps)
@@ -429,9 +430,8 @@ class PipelineStore extends BaseStore {
         console.log('addVariableList:', this.addVariableList)
         this.addForm.variable = Utils.deepCopy(this.addVariableDefaultForm)
         return true
-      } else {
-        id = Utils.generateUUID()
       }
+      id = Utils.generateUUID()
     }
 
     if (Utils.isBlank(id)) {
@@ -446,7 +446,7 @@ class PipelineStore extends BaseStore {
       value,
       disabled,
       require,
-      desc,
+      desc
     })
 
     console.log('addVariableList:', this.addVariableList)
@@ -492,7 +492,7 @@ class PipelineStore extends BaseStore {
       this.list = data.map((item: { [K: string]: any } = {}) => {
         return {
           ...item,
-          key: item.id || '',
+          key: item.id || ''
         }
       })
       console.log('get pipeline list result:', this.list)
@@ -517,7 +517,7 @@ class PipelineStore extends BaseStore {
       name,
       tag,
       path,
-      desc,
+      desc
     }
   }
 
@@ -590,6 +590,11 @@ class PipelineStore extends BaseStore {
       return false
     }
 
+    if (Utils.isBlank(serverId || '')) {
+      TOAST.show({ message: '请选择服务器', type: 4 })
+      return false
+    }
+
     if (Utils.isBlank(basic.path)) {
       TOAST.show({ message: '请输入或选择项目路径', type: 4 })
       return false
@@ -603,10 +608,10 @@ class PipelineStore extends BaseStore {
       processConfig: {
         id: '',
         pipelineId: '',
-        stages: this.getProcessConfig(),
+        stages: this.getProcessConfig()
       },
       duration: '',
-      variables: this.addVariableList || [],
+      variables: this.addVariableList || []
     }
 
     try {
@@ -646,7 +651,7 @@ class PipelineStore extends BaseStore {
       if (success) {
         TOAST.show({ message: '删除流水线成功', type: 2 })
         setTimeout(async () => {
-          await this.getList(serverId, { name: '', status: '' })
+          await this.getList('', { name: '', status: '' })
           callback?.()
         }, 500)
       }
@@ -666,7 +671,7 @@ class PipelineStore extends BaseStore {
         title: '变量名',
         dataIndex: 'name',
         key: 'name',
-        width: '30%',
+        width: '30%'
       },
       {
         title: '类型',
@@ -685,7 +690,7 @@ class PipelineStore extends BaseStore {
           }
 
           return <span>{this.VARIABLE_OPTIONS[0].label || ''}</span>
-        },
+        }
       },
       {
         title: '值',
@@ -693,15 +698,15 @@ class PipelineStore extends BaseStore {
         dataIndex: 'value',
         multiLine: true,
         width: '20%',
-        needTooltip: false,
+        needTooltip: false
       },
       {
         title: '描述',
         dataIndex: 'desc',
         key: 'desc',
         multiLine: true,
-        width: '20%',
-      },
+        width: '20%'
+      }
     ]
   }
 
@@ -722,7 +727,7 @@ class PipelineStore extends BaseStore {
       status: record.status || '',
       basic: record.basic || {},
       variable: {},
-      steps: record.steps || [],
+      steps: record.steps || []
     }
 
     this.addVariableList = record.variables || []
@@ -849,7 +854,7 @@ class PipelineStore extends BaseStore {
           desc: item.desc || '',
           genre: item.genre || this.VARIABLE_OPTIONS[0].value,
           require: item.require || '',
-          disabled: item.disabled || '',
+          disabled: item.disabled || ''
         }
       })
     }
@@ -947,16 +952,16 @@ class PipelineStore extends BaseStore {
       serverId,
       tag,
       stage: {
-        ...stage,
+        ...stage
       },
       stages: [],
       snapshot: {
         ...h5,
         runtimeId: '',
-        variables: [],
+        variables: []
       },
       status: this.RUN_STATUS[0].value,
-      remark: runDialogProps.remark || '',
+      remark: runDialogProps.remark || ''
     }
 
     if (isRetry) {
@@ -967,7 +972,7 @@ class PipelineStore extends BaseStore {
     for (let key in variable) {
       runnableVariable.push({
         ...variable[key],
-        genre: this.VARIABLE_OPTIONS[0].value || '',
+        genre: this.VARIABLE_OPTIONS[0].value || ''
       })
     }
 
@@ -983,7 +988,7 @@ class PipelineStore extends BaseStore {
             genre: variable.genre || '',
             require: variable.require || '',
             disabled: variable.disabled || '',
-            desc: variable.desc || '',
+            desc: variable.desc || ''
           })
         }
       }
@@ -1047,7 +1052,7 @@ class PipelineStore extends BaseStore {
         value: field.key === 'branches' ? branches : tagExtra[field.key],
         genre: field.type,
         desc: field.desc || '',
-        tag,
+        tag
       })
     }
 
@@ -1070,7 +1075,7 @@ class PipelineStore extends BaseStore {
         value: snapshot[field.value || ''],
         genre: this.VARIABLE_OPTIONS[0].value,
         desc: field.desc || '',
-        tag,
+        tag
       })
     }
 
@@ -1119,7 +1124,7 @@ class PipelineStore extends BaseStore {
       value = value.map((b: string = '') => {
         return {
           label: b,
-          value: b,
+          value: b
         }
       })
     }
@@ -1132,7 +1137,7 @@ class PipelineStore extends BaseStore {
       disabled: this.SELECT_OPTIONS[1].value,
       require: this.SELECT_OPTIONS[0].value,
       desc,
-      tag,
+      tag
     }
   }
 
@@ -1197,7 +1202,7 @@ class PipelineStore extends BaseStore {
       this.loading = true
       let params = {
         id: this.detailInfo.id || '',
-        serverId: this.detailInfo.serverId || '',
+        serverId: this.detailInfo.serverId || ''
       }
       console.log('clear run history param:', params)
       let result: { [K: string]: any } = (await invoke('clear_run_history', { ...params })) || {}

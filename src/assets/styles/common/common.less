@@ -17,7 +17,10 @@
   flex-direction: column;
 
   &:hover {
-    box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+    box-shadow:
+      0 1px 2px -2px rgba(0, 0, 0, 0.16),
+      0 3px 6px 0 rgba(0, 0, 0, 0.12),
+      0 5px 12px 4px rgba(0, 0, 0, 0.09);
   }
 
   &.m-card-border {
@@ -151,28 +154,73 @@
   color: @theme!important;
 }
 
-.border-right {
-  border-right: @border;
+.theme-bg {
+  background: @theme!important;
 }
 
-.theme-color {
-  color: @theme;
+.theme-to-bg {
+  background: @theme_to!important;
 }
 
-.border-left {
-  border-left: @border;
+.theme-blue-color {
+  color: @theme_blue;
+}
+
+.background {
+  background: @background;
+}
+
+/* border */
+.border {
+  border: @border;
 }
 
 .border-top {
   border-top: @border;
 }
 
+.border-left {
+  border-left: @border;
+}
+
+.border-right {
+  border-right: @border;
+}
+
 .border-bottom {
   border-bottom: @border;
 }
 
-.border {
-  border: @border;
+.border-theme {
+  border: @border_theme;
+}
+
+.color {
+  color: @color;
+}
+
+.color-bg {
+  color: @background;
+}
+
+.color-desc {
+  color: #646e82;
+}
+
+.color-svg {
+  color: @color_svg;
+}
+
+.color-gray-light {
+  color: @color_gray_light;
+}
+
+.color-gray-lighter {
+  color: @color_gray_lighter;
+}
+
+.red {
+  color: #ed2121;
 }
 
 .disabled {

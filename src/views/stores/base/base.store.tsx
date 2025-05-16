@@ -8,11 +8,17 @@ import Utils from '@utils/utils'
 import { COMMON, TOAST } from '@utils/base'
 
 export default class BaseStore {
-  @observable loading: boolean = false
-  @observable currentPage: number = 1
-  @observable pageSize: number = 10
-  @observable userId: string = '1f09cf1a-6359-4284-8a63-8e56ba0c30eb'
+  readonly DEFAULT_PAGE_SIZE = 10
+  readonly pageSizeOptions = [10, 20, 50, 100]
   readonly DOMAIN_PORT_REG = /^https?:\/\/[^\\/]+\/([^?#]+(\?[^#]*)?)?/
+
+  @observable loading: boolean = false
+
+  @observable pageSize: number = this.DEFAULT_PAGE_SIZE
+  @observable total: number = 0
+  @observable currentPage: number = 1
+
+  @observable userId: string = '1f09cf1a-6359-4284-8a63-8e56ba0c30eb'
 
   /**
    * 获取相对路径
@@ -136,7 +142,7 @@ export default class BaseStore {
       let extendData = body.extendData
       data.push({
         data: d,
-        extendData,
+        extendData
       })
     }
 

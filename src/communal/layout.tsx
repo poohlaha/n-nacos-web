@@ -4,7 +4,7 @@
  * @author poohlaha
  */
 import React, { ReactElement, useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router'
 import { RouteInterface } from '@router/router.interface'
 import NotFound from '@route/not-found'
 import ScrollToTop from '@router/scrollToTop'
@@ -14,9 +14,13 @@ import Utils from '@utils/utils'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@views/stores'
 import { CONSTANT } from '@config/index'
-import zhCN from 'antd/locale/zh_CN'
-import { ConfigProvider } from 'antd'
+import '@assets/styles/common/tailwind.css'
 import '@assets/styles/theme/index.less'
+import RouterUrls from '@route/router.url.toml'
+
+import '@ant-design/v5-patch-for-react-19'
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
 
 const { Suspense } = React
 
@@ -35,10 +39,10 @@ const RenderRoutes = (routes: RouteInterface[]) => {
         {routes.map((route: RouteInterface, index: number) => {
           return (
             <Route
-              key={index}
+              key={route.path}
               path={route.path}
               element={
-                <Suspense fallback={<Loading show={true} />}>
+                <Suspense fallback={<Loading show />}>
                   <ScrollToTop />
                   <route.component routes={route.routes || []} />
                 </Suspense>
@@ -46,11 +50,12 @@ const RenderRoutes = (routes: RouteInterface[]) => {
             ></Route>
           )
         })}
+
+        <Route path="*" element={<Navigate to={RouterUrls.NOT_FOUND_URL} />} />
       </Routes>
     )
-  } else {
-    return <Route element={<NotFound />} />
   }
+  return <Route element={<NotFound />} />
 }
 
 // 切换皮肤

@@ -13,7 +13,7 @@ const path = require('node:path')
 const LoggerPrefix = chalk.cyan('[Bale Chat Compiler]:')
 
 class ProjectBuilder {
-  _SCRIPTS = ['start', 'dev', 'prod'] // scripts
+  _SCRIPTS = ['start', 'dev', 'simulate', 'prod'] // scripts
   _script = ''
   _appRootDir = ''
   _dllDir = ''
@@ -47,12 +47,12 @@ class ProjectBuilder {
       return this._SCRIPTS[0]
     }
 
-    if (commands.includes(this._SCRIPTS[1])) {
-      return this._SCRIPTS[1]
-    }
-
     if (commands.includes(this._SCRIPTS[2])) {
       return this._SCRIPTS[2]
+    }
+
+    if (commands.includes(this._SCRIPTS[3])) {
+      return this._SCRIPTS[3]
     }
 
     return this._SCRIPTS[1]
@@ -62,8 +62,8 @@ class ProjectBuilder {
     // copy files
     const files = [
       {
-        from: 'src/common/@types',
-        to: 'src/@types'
+        from: 'src/common/@types/global.d.ts',
+        to: 'src/@types/global.d.ts'
       },
       {
         from: 'src/common/sample/stores/index.tsx',
@@ -78,8 +78,12 @@ class ProjectBuilder {
         to: 'src/communal/hooks'
       },
       {
-        from: 'src/common/communal/provider',
-        to: 'src/communal/provider'
+        from: 'src/common/communal/provider/language.tsx',
+        to: 'src/communal/provider/language.tsx'
+      },
+      {
+        from: 'src/common/communal/provider/theme.tsx',
+        to: 'src/communal/provider/theme.tsx'
       },
       {
         from: 'src/common/communal/router',
@@ -88,10 +92,6 @@ class ProjectBuilder {
       {
         from: 'src/common/communal/index.tsx',
         to: 'src/communal/index.tsx'
-      },
-      {
-        from: `src/${this._copyDestDir}/request`,
-        to: 'src/communal/request'
       },
       {
         from: `src/${this._copyDestDir}/utils`,
@@ -115,8 +115,8 @@ class ProjectBuilder {
 
     WebpackDllCompiler(this._script, {
       entry: {
-        vendor: ['react', 'react-dom', 'react-router-dom', 'mobx', 'mobx-react-lite'],
-        other: ['axios', 'crypto-js']
+        vendor: ['react', 'react-dom', 'react-router-dom', 'react-router', 'mobx', 'mobx-react-lite'],
+        other: ['crypto-js']
         // antd: ['antd']
       },
       output: {
@@ -124,7 +124,10 @@ class ProjectBuilder {
       },
       done: () => {
         const endTime = performance.now()
-        console.log(LoggerPrefix, `Finished ${chalk.cyan('build dll')} after ${chalk.magenta(`${endTime - startTime} ms`)}`)
+        console.log(
+            LoggerPrefix,
+            `Finished ${chalk.cyan('build dll')} after ${chalk.magenta(`${endTime - startTime} ms`)}`
+        )
         if (needBuild) this._build()
       }
     })
@@ -139,6 +142,17 @@ class ProjectBuilder {
       script: this._script,
       opts: {
         entry: path.resolve(this._appRootDir, 'src/communal/index.tsx'),
+        loaders: [
+          {
+            test: /\.css$/i,
+            exclude: /node_modules/,
+            use: [
+              { loader: 'style-loader' },
+              { loader: 'css-loader' },
+              { loader: 'postcss-loader' }
+            ]
+          }
+        ],
         settings: {
           openBrowser: false,
           jsLoaderInclude: [
@@ -151,9 +165,9 @@ class ProjectBuilder {
           useMinimize: true,
           experiments: false,
           generateReport: false,
-          providePlugin: {
-
-          },
+          useTerserWebpackPlugin: true,
+          providePlugin: {},
+          useCssLoader: false,
           compress: {
             enable: false,
             deleteOutput: true,
@@ -174,8 +188,8 @@ class ProjectBuilder {
       // 读取 .vendor 目录下的 manifest 文件
       const dllDir = this._dllDir
       if (fsExtra.pathExistsSync(dllDir)) {
-        const files = (Paths.getFileList(dllDir) || []).filter((file) => path.extname(file) === '.json')
-        const manifestList = files.map((file) => file.replace('.json', ''))
+        const files = (Paths.getFileList(dllDir) || []).filter(file => path.extname(file) === '.json')
+        const manifestList = files.map(file => file.replace('.json', ''))
         options.opts.dllSettings = {
           dllOutput: this._dllDir,
           manifestList

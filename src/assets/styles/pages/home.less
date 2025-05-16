@@ -11,14 +11,29 @@
     width: 14px;
     height: 14px;
   }
+
+  .avatar {
+    &::before {
+      content: '';
+      position: absolute;
+      right: -0.03rem;
+      bottom: 0.1rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 100%;
+      border: 0.02rem solid white;
+      z-index: 1;
+      background: @color_green;
+    }
+  }
 }
 
 // navigation
 .wrapper .navigation {
   height: 56px;
   background: @background;
-  // border-bottom: @border;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  border-bottom: @border;
+  // box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
   position: relative;
   z-index: 10;
   max-width: 100%;
@@ -68,33 +83,6 @@
         width: 100%;
         height: 100%;
         color: @theme;
-      }
-    }
-  }
-
-  .navigation-right {
-    .avatar {
-      height: 100%;
-      width: 40px;
-      position: relative;
-
-      &::before {
-        content: '';
-        position: absolute;
-        right: -3px;
-        bottom: 10px;
-        width: 11px;
-        height: 11px;
-        border-radius: 100%;
-        border: 2px solid white;
-        z-index: 1;
-        background: @color_green;
-      }
-
-      img {
-        height: 40px;
-        width: 40px;
-        border-radius: 50%;
       }
     }
   }
@@ -166,7 +154,7 @@
 
   // right
   .right {
-    background: @background_right;
+    // background: @background_right;
     overflow: auto;
     width: calc(100% - 250px);
 

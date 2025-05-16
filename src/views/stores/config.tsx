@@ -13,11 +13,13 @@ import mainStore from './main/main.store'
 import pipelineStore from './main/pipeline.store'
 import serverStore from './modules/server.store'
 import pipelineMarketStore from './main/pipeline.market.store'
-import articleStore from '@stores/article/article.store'
+import noteStore from '@stores/note/note.store'
+import loginStore from '@stores/login/login.store'
 
 export function createStore() {
   return {
     commonStore,
+    loginStore,
     homeStore,
     dashboardStore,
     monitorStore,
@@ -27,7 +29,7 @@ export function createStore() {
     pipelineStore,
     serverStore,
     pipelineMarketStore,
-    articleStore,
+    noteStore
   }
 }
 
