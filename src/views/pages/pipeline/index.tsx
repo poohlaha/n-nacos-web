@@ -329,15 +329,15 @@ const Pipeline = (): ReactElement => {
 
   const render = () => {
     return (
-      <Page className="pipeline-page overflow background page-padding-left page-padding-right page-padding-bottom">
+      <Page className="pipeline-page overflow">
         {/* title */}
-        <div className="page-title flex-align-center pt-5 pl-5 pr-5">
+        <div className="page-title flex-align-center">
           <p className="flex-1 font-bold text-xl">{RouterUrls.PIPELINE.LIST.NAME}</p>
         </div>
 
-        <div className="page-wrapper content-box flex-1 flex-direction-column pl-5 pr-5 pt-5">
+        <div className="page-wrapper content-box flex-1 flex-direction-column pt-5">
           {/* tags */}
-          <div className="tags flex-align-center pt-3 pb-3">
+          <div className="tags flex-align-center">
             <p className="label page-margin-right">标签</p>
             {pipelineStore.TAGS.length > 0 &&
               pipelineStore.TAGS.map((item: { [K: string]: any } = {}, index: number = 0) => {

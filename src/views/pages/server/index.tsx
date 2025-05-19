@@ -150,7 +150,7 @@ const Server = (): ReactElement => {
         contentClassName="content-box wh100 flex-direction-column"
       >
         {/* title */}
-        <div className="page-title flex-align-center pt-5 pl-5 pr-5">
+        <div className="page-title flex-align-center">
           <p className="flex-1 font-bold text-xl">{RouterUrls.SERVER.LIST.NAME}</p>
           <Button
             type="primary"
@@ -165,7 +165,7 @@ const Server = (): ReactElement => {
         </div>
 
         {/* table */}
-        <div className="page-wrapper flex-1 flex-direction-column pl-5 pr-5 pt-5">
+        <div className="page-wrapper flex-1 flex-direction-column pt-5">
           {/* table */}
           <Table
             className="m-ant-table flex-1"

@@ -1,8 +1,33 @@
 /**
- * @fileOverview antd
+ * @fileOverview antd, 阿里样式需要统一设置为 m-ant 开头
  * @date 2023-4-19
  * @author poohlaha
  */
+.m-ant-input,
+.m-ant-input-icon {
+  .ant-input-prefix svg {
+    color: @color_svg;
+  }
+
+  .ant-input-suffix {
+    .anticon-eye svg {
+      path:not(:nth-child(2)) {
+        fill: @theme!important;
+      }
+
+      path:nth-child(2) {
+        fill: none !important;
+      }
+    }
+  }
+
+  &.ant-input-outlined:not(.ant-input-disabled):hover,
+  &.ant-input-outlined:not(.ant-input-disabled):focus-within {
+    border-color: @theme;
+    box-shadow: unset;
+  }
+}
+
 // alert
 .ant-alert {
   border-radius: 0;
@@ -356,5 +381,40 @@
     background: @color_menu_active;
     color: @theme;
     border-radius: 4px !important;
+  }
+}
+
+.m-ant-tabs {
+  &.ant-tabs-left {
+    .ant-tabs-content-holder {
+      margin-left: 0 !important;
+      border-left: unset !important;
+    }
+
+    .ant-tabs-nav-list .ant-tabs-tab {
+      border-right: @border;
+
+      &:hover {
+        color: @theme!important;
+      }
+
+      &:not(:first-child) {
+        margin: 0 !important;
+        padding-top: 1rem !important;
+      }
+    }
+  }
+
+  .ant-tabs-tab-active {
+    border-right: 0.1rem solid @theme!important;
+    .ant-tabs-tab-btn {
+      color: @theme!important;
+    }
+  }
+
+  .ant-tabs-content,
+  .ant-tabs-tabpane {
+    width: 100%;
+    height: 100%;
   }
 }

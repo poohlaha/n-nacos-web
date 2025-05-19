@@ -63,7 +63,7 @@ URL = ''
 
 [NOTE.LIST]
 KEY = 'noteList'
-NAME = '笔记列表'
+NAME = '文章列表'
 URL = '/nodeList'
 
 [NOTE.EDIT]
@@ -85,6 +85,16 @@ URL = '/nodeTag'
 KEY = 'noteTagDetail'
 NAME = '笔记标签详情'
 URL = '/nodeTagDetail'
+
+[TOOLS]
+KEY = 'tools'
+NAME = '工具'
+URL = ''
+
+[TOOLS.FILELOOK]
+KEY = 'quickLook'
+NAME = '文件查看'
+URL = '/quickLook'
 
 # 设置
 [SETTING]

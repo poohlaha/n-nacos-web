@@ -9,6 +9,7 @@ import { useStore } from '@stores/index'
 import useMount from '@hooks/useMount'
 import Loading from '@views/components/loading/loading'
 import Page from '@views/modules/page'
+import RouterUrls from '@route/router.url.toml'
 
 const Dashboard = (): ReactElement => {
   const { dashboardStore } = useStore()
@@ -17,8 +18,12 @@ const Dashboard = (): ReactElement => {
 
   const render = () => {
     return (
-      <Page className="dashboard-page p-4">
-        <p className="font-bold text-xl">Dashboard</p>
+      <Page className="dashboard-page">
+        {/* title */}
+        <div className="page-title flex-align-center">
+          <p className="flex-1 font-bold text-xl">{RouterUrls.DASHBOARD.NAME}</p>
+        </div>
+
         <Loading show={dashboardStore.loading} />
       </Page>
     )

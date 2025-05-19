@@ -102,10 +102,10 @@ const ArticleList = (): ReactElement => {
     return (
       <Page
         className="article-list-page wh100 overflow-hidden"
-        contentClassName="page-content position-relative overflow page-padding"
+        contentClassName="page-content position-relative overflow"
         loading={noteStore.loading}
       >
-        <div className="article-content flex w100 min-h100 center">
+        <div className="article-content flex w100 min-h100 center p-5">
           <div className="box-left flex-1 flex-direction-column">
             <div className="flex-1 flex-direction-column">
               {list.length > 0 &&

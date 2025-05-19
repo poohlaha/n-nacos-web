@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
 module.exports = {
     darkMode: 'class', // media 跟随系统
     content: [
@@ -8,11 +9,16 @@ module.exports = {
     theme: {
         extend: {},
         screens: {
-            sm: '480px',
+            sm: '640px',
             md: '768px',
-            lg: '976px',
-            xl: '1440px'
+            lg: '1024px',
+            xl: '1280px',
+            '2xl': '1536px'
         }
     },
-    plugins: []
+    plugins: [
+        plugin(({ addVariant }) => {
+            addVariant('not-last', '&:not(:last-child)');
+        })
+    ]
 }

@@ -827,8 +827,7 @@ const PipelineDetail = (): ReactElement => {
   const render = () => {
     return (
       <Page
-        className="pipeline-detail-page page-white"
-        contentClassName="page-padding-left page-padding-right page-padding-bottom"
+        className="pipeline-detail-page"
         breadCrumbItemList={homeStore.getBreadcrumbItemList((pipelineStore.detailInfo || {}).basic?.name || '', false)}
       >
         <div className="content-box flex-1">

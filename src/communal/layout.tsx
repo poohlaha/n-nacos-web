@@ -21,6 +21,7 @@ import RouterUrls from '@route/router.url.toml'
 import '@ant-design/v5-patch-for-react-19'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
+import { px2remTransformer, StyleProvider } from '@ant-design/cssinjs'
 
 const { Suspense } = React
 
@@ -36,7 +37,7 @@ const RenderRoutes = (routes: RouteInterface[]) => {
   if (usedRoutes.length > 0) {
     return (
       <Routes>
-        {routes.map((route: RouteInterface, index: number) => {
+        {routes.map((route: RouteInterface) => {
           return (
             <Route
               key={route.path}
@@ -82,8 +83,16 @@ const Layout = (): ReactElement => {
     switchSkin(commonStore.skin)
   }, [commonStore.skin])
 
+  const px2rem = px2remTransformer({
+    rootValue: 16 // 32px = 1rem; @default 16
+  })
+
   const render = () => {
-    return <ConfigProvider locale={zhCN}>{RenderRoutes(routes)}</ConfigProvider>
+    return (
+      <StyleProvider transformers={[px2rem]}>
+        <ConfigProvider locale={zhCN}>{RenderRoutes(routes)}</ConfigProvider>
+      </StyleProvider>
+    )
   }
 
   return render()

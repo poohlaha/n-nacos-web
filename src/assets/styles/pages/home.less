@@ -6,10 +6,11 @@
 @left-width: 250px;
 @color_green: #49a342;
 @color_text: #db831d;
+
 .wrapper {
   .svg-icon {
-    width: 14px;
-    height: 14px;
+    width: 1rem;
+    height: 1rem;
   }
 
   .avatar {
@@ -102,9 +103,6 @@
     overflow: auto;
 
     .left-group {
-      .left-item {
-      }
-
       .left-title {
         margin: 0 20px;
         height: 50px;
@@ -156,11 +154,9 @@
   .right {
     // background: @background_right;
     overflow: auto;
-    width: calc(100% - 250px);
+    // width: calc(100% - 250px);
 
     .breadcrumb-top {
-      height: 50px;
-      min-height: 50px;
       border-bottom: @border;
     }
 
@@ -226,10 +222,6 @@
       }
     }
 
-    .loading {
-      left: @left-width!important;
-    }
-
     .ant-card {
       .ant-card-extra {
         color: @theme_blue;
@@ -258,10 +250,9 @@
     .ant-breadcrumb {
       .breadcrumb {
         cursor: pointer;
-        padding: 0 3px;
 
         .icon {
-          margin-right: 7px;
+          margin-right: 0.4rem;
         }
       }
     }

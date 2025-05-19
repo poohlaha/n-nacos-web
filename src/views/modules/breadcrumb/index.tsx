@@ -90,7 +90,7 @@ const MBreadcrumb: React.FC<IMBreadcrumbProps> = (props: IMBreadcrumbProps): Rea
               toPage(url, item.onClick)
             }}
           >
-            <div className="flex-align-center breadcrumb">
+            <div className="flex-align-center breadcrumb pl-1 pr-1">
               {icon && (
                 <p className="icon flex-center" key={`${icon}-${i}`}>
                   {icon}

@@ -27,7 +27,7 @@ const Page = (props: PropsWithChildren<IPageProps>): ReactElement => {
   const render = () => {
     return (
       <div className={`wh100 ${props.className || ''}`}>
-        <div className={`${props.contentClassName || ''} wh100 md:pt-0`}>
+        <div className={`${props.contentClassName || ''} wh100 p-6`}>
           {(props.breadCrumbItemList || []).length > 0 && getBreadcrumb()}
 
           {props.children}

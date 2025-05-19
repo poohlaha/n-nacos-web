@@ -26,8 +26,8 @@ const Home = (): ReactElement => {
   const render = () => {
     return (
       <Page
-        className="home-page wh100 overflow-hidden bg-white"
-        contentClassName="flex-direction-column"
+        className="home-page wh100 overflow-hidden background"
+        contentClassName="flex-direction-column !p-0"
         loading={homeStore.loading}
       >
         {/* 导航条

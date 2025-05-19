@@ -88,9 +88,9 @@ const PipelinePluginMarket = (): ReactElement => {
     let language = prism.languages['json']
     const html = prism.highlight(JSON.stringify(selectedPlugin || '', null, 2), language, 'json')
     return (
-      <Page className="pipeline-plugin-market-page overflow-y-auto page-padding-left page-padding-right page-padding-bottom">
+      <Page className="pipeline-plugin-market-page overflow-y-auto">
         {/* title */}
-        <div className="page-title flex-align-center pt-5 pl-5 pr-5">
+        <div className="page-title flex-align-center">
           <p className="flex-1 font-bold text-xl">{RouterUrls.PIPELINE.MARKET.NAME}</p>
         </div>
 
@@ -98,10 +98,10 @@ const PipelinePluginMarket = (): ReactElement => {
         <div className="form"></div>
 
         {/* list */}
-        <div className="plugin-list w100 page-margin-top grid gap-4 auto-rows-auto mt-4 md:grid-cols-3 lg:grid-cols-4 pb-6 sm:grid-cols-2">
+        <div className="plugin-list w100 page-margin-top grid gap-4 auto-rows-auto mt-4 lg:grid-cols-2 xl:grid-cols-4 pb-6">
           {Templates.map((template: { [K: string]: any }, index: number) => {
             return (
-              <div key={template.key || `${index}`} className="plugin-item mb-5 pl-3 pr-3">
+              <div key={template.key || `${index}`} className="plugin-item mb-5">
                 {getTemplateHtml(template.label || '', template.desc || '', template.date, () => {
                   setOpen(true)
                   setSelectedPlugin(template)

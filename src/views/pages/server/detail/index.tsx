@@ -434,7 +434,7 @@ const Server = (): ReactElement => {
 
   const getHtml = () => {
     return (
-      <div className="flex-direction-column mt-4 p-4">
+      <div className="flex-direction-column pt-4 pb-4">
         {/* 服务器基本信息 */}
         {getServerInfoHtml()}
 
@@ -449,7 +449,7 @@ const Server = (): ReactElement => {
     return (
       <Page className="server-info-page">
         {/* title */}
-        <div className="page-title flex-align-center pt-5 pl-5 pr-5">
+        <div className="page-title flex-align-center">
           {CommonHtmlHandler.getBackNode()}
           <p className="flex-1 font-bold text-xl ml-2">{RouterUrls.SERVER.DETAIL.NAME}</p>
         </div>
