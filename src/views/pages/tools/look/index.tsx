@@ -3,24 +3,153 @@
  * @date 2023-08-28
  * @author poohlaha
  */
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useRef, useState, useCallback } from 'react'
 import { observer } from 'mobx-react-lite'
 import RouterUrls from '@route/router.url.toml'
 import Page from '@views/modules/page'
 import useMount from '@hooks/useMount'
 import { useStore } from '@views/stores'
-import { Tabs, Input } from 'antd'
+import { Tabs, Input, Table } from 'antd'
 import Utils from '@utils/utils'
 import NoData from '@views/components/noData'
-import MTable from '@views/modules/table'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { SearchOutlined } from '@ant-design/icons'
+
+// 节流
+export function useThrottle<T extends (...args: any[]) => void>(fn: T, delay: number) {
+  const lastCall = useRef(0)
+
+  return useCallback(
+    (...args: Parameters<T>) => {
+      const now = Date.now()
+      if (now - lastCall.current >= delay) {
+        lastCall.current = now
+        fn(...args)
+      }
+    },
+    [fn, delay]
+  )
+}
+
+// 防抖
+export function useDebounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  return useCallback(
+    (...args: Parameters<T>) => {
+      if (timer.current) {
+        clearTimeout(timer.current)
+      }
+
+      timer.current = setTimeout(() => {
+        fn(...args)
+      }, delay)
+    },
+    [fn, delay]
+  )
+}
 
 const QuickLook = (): ReactElement => {
   const { lookStore } = useStore()
   const [activeTabKey, setActiveTabKey] = useState('tab1')
+  const [searchName, setSearchName] = useState('')
+  const [tableBodyHeight, setTableBodyHeight] = useState(0)
+  const [trHeight, setTrHeight] = useState(0)
+  const ref = useRef<any>(null)
 
   useMount(async () => {
     await lookStore.getRecentUsedList()
   })
+
+  // @ts-ignore
+  const throttle = (func: Function, delay: number) => {
+    let lastCall = 0
+    return (...args: any[]) => {
+      const now = Date.now()
+      if (now - lastCall >= delay) {
+        lastCall = now
+        func(...args)
+      }
+    }
+  }
+
+  const onSearch = useDebounce(async (value: string = '') => {
+    if (activeTabKey === 'tab1') {
+      await lookStore.getRecentUsedList(value || '')
+    } else if (activeTabKey === 'tab2') {
+      await lookStore.getDesktopList(value || '')
+    } else if (activeTabKey === 'tab3') {
+      await lookStore.getDocumentList(value || '')
+    } else if (activeTabKey === 'tab4') {
+      await lookStore.getPictureList(value || '')
+    } else if (activeTabKey === 'tab5') {
+      await lookStore.getDownloadList(value || '')
+    }
+  }, 500)
+
+  const getTableHeight = () => {
+    // 设置 table 最大高度
+    const node = document.querySelector('.look-page')
+    const titleNode = document.querySelector('.page-title')
+    const pageSearchNode = document.querySelector('.page-search')
+    const paginationNode = document.querySelector('.page-pagination')
+    if (!node) return 0
+
+    const rect = node.getBoundingClientRect()
+    let height = rect.height || 0
+    if (titleNode) {
+      let titleRect = titleNode.getBoundingClientRect()
+      height -= titleRect.height
+    }
+
+    if (pageSearchNode) {
+      let pageSearchRect = pageSearchNode.getBoundingClientRect()
+      height -= pageSearchRect.height
+    }
+
+    if (paginationNode) {
+      let paginationRect = paginationNode.getBoundingClientRect()
+      height -= paginationRect.height
+    } else {
+      height -= 60
+    }
+
+    return height
+  }
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const tableBodyNode = document.querySelector('.ant-table-tbody')
+      if (tableBodyNode) {
+        let height = getTableHeight()
+        const tableHeaderNode = document.querySelector('.ant-table-thead')
+        if (tableHeaderNode) {
+          let ableHeaderRect = tableHeaderNode.getBoundingClientRect()
+          height -= ableHeaderRect.height
+        }
+
+        let trDomList = document.querySelectorAll('.ant-table-tbody tr td.ant-table-cell')
+        if (trDomList.length > 0) {
+          let trRect = trDomList[0].getBoundingClientRect()
+          setTrHeight(trRect.height)
+        }
+
+        // const tableBodyDom = tableBodyNode as HTMLDivElement
+        // tableBodyDom.style.maxHeight = `${height}px`
+        setTableBodyHeight(height)
+        observer.disconnect()
+      }
+    })
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   /**
    * 列表展示
@@ -133,10 +262,17 @@ const QuickLook = (): ReactElement => {
 
     if (fileKind.toLowerCase() === 'dir') {
       return (
-        <div className="svg-box relative w100 flex-center w-4 max-w-4 min-w-4">
-          <svg className="wh100 folder-color" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <div
+          className={`svg-box relative w100 flex-center ${lookStore.activeDisplayName === 'grid' ? 'w-24 h-24' : 'w-4 max-w-4 min-w-4'}`}
+        >
+          <svg
+            className={`folder-color ${lookStore.activeDisplayName === 'grid' ? 'w-20 h-20' : 'wh100'}`}
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
-              d="M1099.433546 289.842983h-1.08787v-99.462424a128.679511 128.679511 0 0 0-93.246023-126.65918v-3.263611A60.454505 60.454505 0 0 0 944.023508 0.003264H729.246837A60.454505 60.454505 0 0 0 668.326102 59.836128H122.526051A126.65918 126.65918 0 0 0 0.062941 190.380559V890.502778a12.277393 12.277393 0 0 0 2.331151 6.216401v1.243281c0 72.110257 46.623011 126.03754 113.760147 126.03754H969.821575c67.603366 0 105.212595-68.225006 122.463109-130.544431L1174.652004 419.610365c18.182974-75.063048-7.459682-129.767381-75.218458-129.767382z m-897.337556 0a160.072339 160.072339 0 0 0-132.253942 78.637479v-124.32803a73.198128 73.198128 0 0 1 46.623011-54.859743H668.326102a60.609915 60.609915 0 0 1 60.454505-59.988274h215.242901a60.609915 60.609915 0 0 1 60.454505 60.609914v3.108201a126.50377 126.50377 0 0 1 90.604052 97.908324z"
+              d="M885.333333 168.533333h-448L341.333333 110.933333c-6.4-4.266667-14.933333-6.4-21.333333-6.4H134.4c-51.2 0-93.866667 42.666667-93.866667 93.866667v622.933333c0 51.2 42.666667 93.866667 93.866667 93.866667h750.933333c51.2 0 93.866667-42.666667 93.866667-93.866667V262.4c0-51.2-40.533333-93.866667-93.866667-93.866667z m-738.133333 21.333334h160l96 57.6c6.4 4.266667 14.933333 6.4 21.333333 6.4h445.866667c12.8 0 21.333333 8.533333 21.333333 21.333333V298.666667c0 12.8-8.533333 21.333333-21.333333 21.333333h-725.333333c-12.8 0-21.333333-8.533333-21.333334-21.333333V211.2c2.133333-10.666667 12.8-21.333333 23.466667-21.333333z"
               fill="currentColor"
             ></path>
           </svg>
@@ -148,26 +284,32 @@ const QuickLook = (): ReactElement => {
     filename = filename.replaceAll('"', '').trim() // 替换引号
 
     let text = ''
-    const match = fileKind.match(/^([A-Za-z\s]+)/)
-    if (match) {
-      text = match[0].trim()
-      if (text.indexOf(' ') !== -1) {
-        let names = text.split(' ') || []
-        if (names.length > 0) {
-          text = names[0] || ''
+    if (fileKind.toLowerCase().startsWith('application/')) {
+      text = fileKind.replace('application/', '')
+    } else if (fileKind.toLowerCase().startsWith('image/')) {
+      text = fileKind.replace('image/', '')
+    } else {
+      const match = fileKind.match(/^([A-Za-z\s]+)/)
+      if (match) {
+        text = match[0].trim()
+        if (text.indexOf(' ') !== -1) {
+          let names = text.split(' ') || []
+          if (names.length > 0) {
+            text = names[0] || ''
+          }
         }
-      }
-    } else if (filename.indexOf('.') !== -1) {
-      let names = filename.split('.') || []
-      if (names.length > 1) {
-        text = names[1] || ''
+      } else if (filename.indexOf('.') !== -1) {
+        let names = filename.split('.') || []
+        if (names.length > 1) {
+          text = names[1] || ''
+        }
       }
     }
 
-    return getFileIcon(needText ? text : '')
+    return getFileIcon(needText ? text.toUpperCase() : '')
   }
 
-  const getItemHtml = (list: Array<{ [K: string]: any }> = []) => {
+  const getItemHtml = (list: Array<{ [K: string]: any }> = [], total: number = 0, fetchMore: any) => {
     if (lookStore.loading) return null
     if (list.length === 0) {
       return (
@@ -179,35 +321,74 @@ const QuickLook = (): ReactElement => {
 
     if (lookStore.activeDisplayName === 'grid') {
       return (
-        <div className={`w100 ${lookStore.activeDisplayName === 'grid' ? 'flex-wrap' : 'flex-1'}`}>
-          {list.map((file: { [K: string]: any } = {}, index: number) => {
-            return (
-              <div className="p-4 flex-center w-36 h-46 look-item-box flex-align-start" key={index}>
-                <div className="w-28 flex-direction-column flex-align-center cursor-pointer look-item rounded p-2">
-                  {getIconByFileType(file || {})}
-                  <p className="text-c mt-1 text-sm over-two-ellipsis max-h-10 w-24 pl-2 pr-2">
-                    {(file.fileName || '').replaceAll('"', '').trim()}
-                  </p>
+        <div
+          className={`wh100 position-relative ${lookStore.activeDisplayName === 'grid' ? 'flex-wrap overflow-y-auto' : 'flex-1'}`}
+        >
+          {list.length > lookStore.size && (
+            <div
+              className="w-6 h-6 absolute right-4 bottom-4 cursor-pointer color-svg"
+              onClick={() => {
+                ref.current?.scrollTo({
+                  top: 0,
+                  behavior: 'smooth'
+                })
+              }}
+            >
+              <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M512 960c-247.039484 0-448-200.960516-448-448S264.960516 64 512 64 960 264.960516 960 512 759.039484 960 512 960zM512 128c-211.744443 0-384 172.255557-384 384s172.255557 384 384 384 384-172.255557 384-384S723.744443 128 512 128z"
+                  fill="currentColor"
+                ></path>
+                <path
+                  d="M694.463217 458.367639l-158.495686-160.25545c-9.34412-9.471415-23.167639-11.840129-34.784142-7.135385-0.736245 0.287273-1.312512 0.992555-2.016073 1.343475-2.975944 1.47249-5.951888 3.072275-8.447897 5.5356-0.032684 0.032684-0.032684 0.063647-0.063647 0.096331-0.032684 0.032684-0.063647 0.032684-0.096331 0.063647l-159.359226 158.911974c-12.512727 12.480043-12.54369 32.735385-0.063647 45.248112 6.239161 6.271845 14.463432 9.407768 22.65674 9.407768 8.160624 0 16.352211-3.103239 22.591372-9.34412l103.616181-103.296224 0 305.056632c0 17.695686 14.336138 31.99914 32.00086 31.99914s32.00086-14.303454 32.00086-31.99914L544.00258 397.247252l104.959656 106.112189c6.239161 6.335493 14.496116 9.504099 22.751351 9.504099 8.12794 0 16.25588-3.072275 22.496761-9.247789C706.783282 491.199355 706.912297 470.944013 694.463217 458.367639z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </div>
+          )}
+          <InfiniteScroll
+            dataLength={list.length || 0}
+            hasMore={list.length < total}
+            next={fetchMore}
+            pullDownToRefreshThreshold={100}
+            height={getTableHeight()}
+            className="w100 flex-wrap"
+            loader={<p></p>}
+            onScroll={event => {
+              ref.current = event.target || null
+            }}
+          >
+            {list.map((file: { [K: string]: any } = {}, index: number) => {
+              return (
+                <div className="p-4 flex-center w-36 look-item-box flex-align-start" key={index}>
+                  <div className="w-28 flex-direction-column flex-align-center cursor-pointer look-item rounded p-2">
+                    {getIconByFileType(file || {})}
+                    <p className="text-c mt-1 text-sm word-break over-two-ellipsis max-h-10 w-24 pl-2 pr-2">
+                      {(file.fileName || '').replaceAll('"', '').trim()}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </InfiniteScroll>
         </div>
       )
     }
 
-    const columns = [
+    const columns: any = [
       {
         title: '名称',
         dataIndex: 'fileName',
         key: 'fileName',
-        width: '20%',
-        needTooltip: true,
-        render: (record: { [K: string]: any } = {}) => {
+        width: 200,
+        fixed: 'left',
+        render: (_: any, record: { [K: string]: any } = {}) => {
           let fileName = (record.fileName || '').replaceAll('"', '').trim()
           return (
             <div className="flex-align-center">
-              <div className="w-4 max-w-4 min-w-4 mr-1.5 h-6">{getIconByFileType(record || {}, false)}</div>
+              <div className="w-4 max-w-4 min-w-4 mr-1.5 h-6 flex-center mr-1">
+                {getIconByFileType(record || {}, false)}
+              </div>
               <p className="over-ellipsis">{fileName}</p>
             </div>
           )
@@ -217,15 +398,23 @@ const QuickLook = (): ReactElement => {
         title: '修改日期',
         dataIndex: 'fileUpdated',
         key: 'fileUpdated',
-        width: '20%',
-        needTooltip: false
+        width: 200,
+        needTooltip: false,
+        render: (_: any, record: { [K: string]: any } = {}) => {
+          let fileUpdated = record.fileUpdated || ''
+          if (fileUpdated === 'null' || fileUpdated === '(null)') {
+            return <span>--</span>
+          }
+
+          return <span>{fileUpdated || ''}</span>
+        }
       },
       {
         title: '种类',
         dataIndex: 'fileKind',
         key: 'fileKind',
-        width: '20%',
-        render: (record: { [K: string]: any } = {}) => {
+        width: 200,
+        render: (_: any, record: { [K: string]: any } = {}) => {
           let kind = (record.fileKind || '').replaceAll('"', '').trim().toLowerCase()
           if (kind.startsWith('image/')) {
             kind = kind.replace('image/', '').trim() || ''
@@ -268,15 +457,15 @@ const QuickLook = (): ReactElement => {
         title: '添加日期',
         dataIndex: 'fileCreated',
         key: 'fileCreated',
-        width: '20%'
+        width: 200
       },
       {
         title: '大小',
         key: 'fileSize',
         dataIndex: 'fileSize',
-        width: '20%',
+        width: 100,
         needTooltip: false,
-        render: (record: { [K: string]: any } = {}) => {
+        render: (_: any, record: { [K: string]: any } = {}) => {
           let kind = (record.fileKind || '').replaceAll('"', '').trim().toLowerCase()
           if (kind === 'dir') {
             return <span className="text-r">--</span>
@@ -289,8 +478,34 @@ const QuickLook = (): ReactElement => {
 
     // list
     return (
-      <div className="w100 flex-wrap">
-        <MTable dataSource={list || []} columns={columns} actions={[]} className="w100" />
+      <div className="wh100">
+        {/* table */}
+        <div className="page-wrapper flex-direction-column pt-5 wh100 pb-5">
+          {/* table */}
+          <Table
+            className="m-ant-table h100"
+            columns={columns}
+            scroll={{ x: 1500, y: tableBodyHeight }}
+            dataSource={list || []}
+            pagination={false}
+            onScroll={async event => {
+              let target = event.target
+              if (target && !lookStore.pullLoading) {
+                let scrollTop = (target as HTMLDivElement).scrollTop ?? 0
+                let height = tableBodyHeight
+                if (lookStore.currentPage > 1 && trHeight > 0) {
+                  height += trHeight * lookStore.size
+                } else {
+                  height = tableBodyHeight * lookStore.currentPage
+                }
+
+                if (scrollTop > height - 100) {
+                  fetchMore()
+                }
+              }
+            }}
+          />
+        </div>
       </div>
     )
   }
@@ -299,38 +514,112 @@ const QuickLook = (): ReactElement => {
    * 最近使用
    */
   const getRecentUsedHtml = () => {
-    return getItemHtml(lookStore.recentUsedList || [])
+    return getItemHtml(lookStore.recentUsedList || [], lookStore.total, () => {})
   }
+
+  const onFetchDesktopMore = async () => {
+    console.log('触底了，加载数据中...')
+    if (lookStore.desktopList.length === 0) {
+      return
+    }
+
+    lookStore.currentPage = lookStore.currentPage + 1
+    await lookStore.getDesktopList(searchName)
+  }
+
+  const throttledDesktopFetchMore = useThrottle(async () => {
+    await onFetchDesktopMore()
+  }, 1000)
 
   /**
    * 桌面
    */
   const getDesktopHtml = () => {
-    return getItemHtml(lookStore.desktopList || [])
+    return getItemHtml(
+      lookStore.desktopList || [],
+      lookStore.total,
+      lookStore.activeDisplayName === 'grid' ? onFetchDesktopMore : throttledDesktopFetchMore
+    )
   }
+
+  const onFetchDocumentMore = async () => {
+    console.log('触底了，加载数据中...')
+    if (lookStore.documentList.length === 0) {
+      return
+    }
+
+    lookStore.currentPage = lookStore.currentPage + 1
+    await lookStore.getDocumentList(searchName)
+  }
+
+  const throttledDocumentFetchMore = useThrottle(async () => {
+    await onFetchDocumentMore()
+  }, 1000)
 
   /**
    * 文稿
    */
   const getDocumentHtml = () => {
-    return getItemHtml(lookStore.documentList || [])
+    return getItemHtml(
+      lookStore.documentList || [],
+      lookStore.total,
+      lookStore.activeDisplayName === 'grid' ? onFetchDocumentMore : throttledDocumentFetchMore
+    )
   }
+
+  const onFetchPictureMore = async () => {
+    console.log('触底了，加载数据中...')
+    if (lookStore.pictureList.length === 0) {
+      return
+    }
+
+    lookStore.currentPage = lookStore.currentPage + 1
+    await lookStore.getPictureList(searchName)
+  }
+
+  const throttledPictureFetchMore = useThrottle(async () => {
+    await onFetchPictureMore()
+  }, 1000)
 
   /**
    * 图片
    */
   const getPictureHtml = () => {
-    return getItemHtml(lookStore.pictureList || [])
+    return getItemHtml(
+      lookStore.pictureList || [],
+      lookStore.total,
+      lookStore.activeDisplayName === 'grid' ? onFetchPictureMore : throttledPictureFetchMore
+    )
   }
+
+  const onFetchDownloadMore = async () => {
+    console.log('触底了，加载数据中...')
+    if (lookStore.downloadList.length === 0) {
+      return
+    }
+
+    lookStore.currentPage = lookStore.currentPage + 1
+    await lookStore.getDownloadList(searchName, '', false)
+  }
+
+  const throttledDownloadFetchMore = useThrottle(async () => {
+    await onFetchDownloadMore()
+  }, 1000)
 
   /**
    * 下载
    */
   const getDownloadHtml = () => {
-    return getItemHtml(lookStore.downloadList || [])
+    return getItemHtml(
+      lookStore.downloadList || [],
+      lookStore.total,
+      lookStore.activeDisplayName === 'grid' ? onFetchDownloadMore : throttledDownloadFetchMore
+    )
   }
 
   const render = () => {
+    const height = getTableHeight()
+
     return (
       <Page className="look-page overflow-hidden" loading={lookStore.loading} contentClassName="flex-direction-column">
         {/* title */}
@@ -344,10 +633,14 @@ const QuickLook = (): ReactElement => {
             <div className="search-item flex-align-center h-10 w100">
               <Input
                 placeholder="请输入文件名搜索"
-                value=""
                 allowClear
                 className="m-ant-input wh100"
-                onChange={e => {}}
+                prefix={<SearchOutlined />}
+                value={searchName || ''}
+                onChange={e => {
+                  setSearchName(e.target.value || '')
+                  onSearch(e.target.value || '')
+                }}
               />
             </div>
 
@@ -358,7 +651,12 @@ const QuickLook = (): ReactElement => {
           </div>
 
           {/* 最近查看的内容 | 下载 ｜ 图片 ｜ 文稿 */}
-          <div className="mt-4 w100 flex-1">
+          <div
+            className="w100 flex-1"
+            style={{
+              height: `${height}px`
+            }}
+          >
             <Tabs
               className="m-ant-tabs wh100"
               tabPosition="left"
@@ -368,16 +666,24 @@ const QuickLook = (): ReactElement => {
                 console.log('on tab click ', key)
                 setActiveTabKey(key || '')
                 if (activeTabKey === key) return
+                lookStore.recentUsedList = []
+                lookStore.desktopList = []
+                lookStore.documentList = []
+                lookStore.pictureList = []
+                lookStore.downloadList = []
+                lookStore.currentPage = 1
+                lookStore.total = 0
+
                 if (key === 'tab1') {
-                  await lookStore.getRecentUsedList()
+                  await lookStore.getRecentUsedList(searchName || '')
                 } else if (key === 'tab2') {
-                  await lookStore.getDesktopList()
+                  await lookStore.getDesktopList(searchName || '')
                 } else if (key === 'tab3') {
-                  await lookStore.getDocumentList()
+                  await lookStore.getDocumentList(searchName || '')
                 } else if (key === 'tab4') {
-                  await lookStore.getPictureList()
+                  await lookStore.getPictureList(searchName || '')
                 } else if (key === 'tab5') {
-                  await lookStore.getDownloadList()
+                  await lookStore.getDownloadList(searchName || '')
                 }
               }}
             />

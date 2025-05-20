@@ -20,32 +20,6 @@ const Server = (): ReactElement => {
 
   useMount(async () => {
     await serverStore.getList()
-
-    // 设置 table 最大高度
-    const node = document.querySelector('.server-page')
-    const titleNode = document.querySelector('.page-title')
-    const paginationNode = document.querySelector('.page-pagination')
-    if (!node) return
-
-    const rect = node.getBoundingClientRect()
-    let height = rect.height || 0
-    if (titleNode) {
-      let titleRect = titleNode.getBoundingClientRect()
-      height -= titleRect.height
-    }
-
-    if (paginationNode) {
-      let paginationRect = paginationNode.getBoundingClientRect()
-      height -= paginationRect.height
-    }
-
-    if (height > 0) {
-      let tableBodyNode = document.querySelector('.ant-table-body')
-      if (tableBodyNode) {
-        const tableBodyDom = tableBodyNode as HTMLDivElement
-        tableBodyDom.style.maxHeight = `${height}px`
-      }
-    }
   })
 
   const COLUMNS: any = [
@@ -170,7 +144,7 @@ const Server = (): ReactElement => {
           <Table
             className="m-ant-table flex-1"
             columns={COLUMNS}
-            scroll={{ x: 1500, y: 300 }}
+            scroll={{ x: 1500 }}
             dataSource={serverStore.list || []}
             pagination={false}
           />
