@@ -65,6 +65,13 @@ const Right = (): ReactElement => {
         url: RouterUrls.SERVER.DETAIL.URL,
         icon: null,
         component: ServerDetail
+      },
+      {
+        key: RouterUrls.SETTING.SYSTEM.KEY,
+        label: RouterUrls.SETTING.SYSTEM.NAME,
+        url: RouterUrls.SETTING.SYSTEM.URL,
+        icon: null,
+        component: lazy(() => import(/* webpackChunkName:'setting' */ '@views/pages/setting/system'))
       }
     ]
   }

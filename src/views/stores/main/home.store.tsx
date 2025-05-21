@@ -20,7 +20,7 @@ class HomeStore extends BaseStore {
   // 用户信息
   @observable userInfo: { [K: string]: any } = {}
 
-  readonly MENU_LIST: Array<{ [K: string]: any }> = [
+  readonly MENU_LIST_BAK: Array<{ [K: string]: any }> = [
     {
       key: RouterUrls.DASHBOARD.KEY,
       label: RouterUrls.DASHBOARD.NAME,
@@ -101,7 +101,7 @@ class HomeStore extends BaseStore {
       key: RouterUrls.NOTE.KEY,
       label: RouterUrls.NOTE.NAME,
       url: RouterUrls.NOTE.URL,
-      type: 'group',
+      // type: 'group',
       children: [
         {
           key: RouterUrls.NOTE.LIST.KEY,
@@ -172,6 +172,103 @@ class HomeStore extends BaseStore {
           component: lazy(() => import(/* webpackChunkName:'setting' */ '@views/pages/setting/system'))
         }
       ]
+    }
+  ]
+
+  readonly MENU_LIST: Array<{ [K: string]: any }> = [
+    {
+      key: RouterUrls.DASHBOARD.KEY,
+      label: RouterUrls.DASHBOARD.NAME,
+      url: RouterUrls.DASHBOARD.URL,
+      parentUrl: '',
+      icon: (
+        <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill="currentColor"
+            d="M902.016 130.016H123.008q-23.008 0-40 16.992t-16.992 40v480q0 24 16.992 40.512t40 16.512H480v108h-147.008q-12.992 0-22.496 9.504t-9.504 22.496 9.504 22.016 22.496 8.992h358.016q12.992 0 22.496-8.992t9.504-22.016-9.504-22.496-22.496-9.504h-148v-108h359.008q24 0 40.512-16.512t16.512-40.512v-480q0-23.008-16.512-40t-40.512-16.992zM896 192.992v468H128.992V192.992H896z"
+          ></path>
+        </svg>
+      ),
+      component: lazy(() => import(/* webpackChunkName:'dashboard' */ '@views/pages/dashboard'))
+    },
+    {
+      key: RouterUrls.SERVER.LIST.KEY,
+      label: RouterUrls.SERVER.LIST.NAME,
+      url: RouterUrls.SERVER.LIST.URL,
+      parentUrl: RouterUrls.SERVER.URL,
+      icon: (
+        <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M960 42.666667H64c-12.8 0-21.333333 8.533333-21.333333 21.333333v896c0 12.8 8.533333 21.333333 21.333333 21.333333h896c12.8 0 21.333333-8.533333 21.333333-21.333333V64c0-12.8-8.533333-21.333333-21.333333-21.333333z m-21.333333 896H85.333333V682.666667h853.333334v256z m0-298.666667H85.333333V384h853.333334v256z m0-298.666667H85.333333V85.333333h853.333334v256zM298.666667 768h-42.666667v85.333333h42.666667v-85.333333z m-85.333334 0H170.666667v85.333333h42.666666v-85.333333z m661.333334 21.333333h-170.666667v42.666667h170.666667v-42.666667zM298.666667 469.333333h-42.666667v85.333334h42.666667v-85.333334z m-85.333334 0H170.666667v85.333334h42.666666v-85.333334z m661.333334 21.333334h-170.666667v42.666666h170.666667v-42.666666zM298.666667 170.666667h-42.666667v85.333333h42.666667V170.666667z m-85.333334 0H170.666667v85.333333h42.666666V170.666667z m661.333334 21.333333h-170.666667v42.666667h170.666667V192z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      ),
+      component: lazy(() => import(/* webpackChunkName:'serverList' */ '@views/pages/server'))
+    },
+    {
+      key: RouterUrls.PIPELINE.LIST.KEY,
+      label: RouterUrls.PIPELINE.LIST.NAME,
+      url: RouterUrls.PIPELINE.LIST.URL,
+      parentUrl: RouterUrls.PIPELINE.URL,
+      icon: (
+        <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M204.8 51.2a153.6 153.6 0 1 1 0 307.2 153.6 153.6 0 0 1 0-307.2z m0 102.4a51.2 51.2 0 1 0 0 102.4 51.2 51.2 0 0 0 0-102.4zM819.2 665.6a153.6 153.6 0 1 1 0 307.2 153.6 153.6 0 0 1 0-307.2z m0 102.4a51.2 51.2 0 1 0 0 102.4 51.2 51.2 0 0 0 0-102.4z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M818.9952 153.6c81.92 0 148.8896 63.9488 153.5488 144.5888L972.8 307.2v102.4a153.7024 153.7024 0 0 1-144.7424 153.344l-9.0624 0.256H205.0048a51.2 51.2 0 0 0-50.944 45.2096L153.7024 614.4v102.4a51.2 51.2 0 0 0 45.312 50.8416l5.9904 0.3584h510.1568v102.4H205.0048a153.7024 153.7024 0 0 1-153.5488-144.5888L51.2 716.8v-102.4a153.7024 153.7024 0 0 1 144.7424-153.344L205.0048 460.8h613.9904a51.2 51.2 0 0 0 50.944-45.2096L870.2976 409.6V307.2a51.2 51.2 0 0 0-45.312-50.8416L818.9952 256H258.1504V153.6h560.8448z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      ),
+      component: lazy(() => import(/* webpackChunkName:'pipelineList' */ '@views/pages/pipeline/index'))
+    },
+    {
+      key: RouterUrls.PIPELINE.MARKET.KEY,
+      label: RouterUrls.PIPELINE.MARKET.NAME,
+      url: RouterUrls.PIPELINE.MARKET.URL,
+      parentUrl: RouterUrls.PIPELINE.URL,
+      icon: (
+        <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M115.808 774.88a128 128 0 1 0 0-205.728L97.12 544H64v-128a96 96 0 0 1 96-96h74.944a192 192 0 1 1 362.144 0H640a96 96 0 0 1 96 96v74.944a192 192 0 1 1 0 362.144V896a96 96 0 0 1-96 96H160a96 96 0 0 1-96-96v-96a32 32 0 0 1 51.808-25.12zM128 853.056V896a32 32 0 0 0 32 32h480a32 32 0 0 0 32-32v-96a32 32 0 0 1 51.808-25.12 128 128 0 1 0 0-205.76A32 32 0 0 1 672 544v-128a32 32 0 0 0-32-32h-96a32 32 0 0 1-20.864-56.256l-0.768-0.512a128 128 0 1 0-210.88 2.752l-0.16 0.128A32 32 0 0 1 288 384H160.032a32 32 0 0 0-32 32v74.944a192 192 0 1 1 0 362.144zM96 576a32 32 0 1 1 0-64 32 32 0 0 1 0 64z m0 256a32 32 0 1 1 0-64 32 32 0 0 1 0 64z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      ),
+      component: lazy(() => import(/* webpackChunkName:'pipelineMarket' */ '@views/pages/pipeline/market'))
+    },
+    {
+      key: RouterUrls.NOTE.LIST.KEY,
+      label: RouterUrls.NOTE.LIST.NAME,
+      url: RouterUrls.NOTE.LIST.URL,
+      parentUrl: RouterUrls.NOTE.URL,
+      icon: (
+        <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M903.104 0a120.224 120.224 0 0 1 119.872 119.936v783.2a120.224 120.224 0 0 1-119.84 119.872H119.872A120.224 120.224 0 0 1 0 903.168V119.968A120.192 120.192 0 0 1 119.84 0.032h0.032z m-18.656 85.248H138.528a52.8 52.8 0 0 0-37.504 15.68c-9.696 9.6-15.744 22.88-15.776 37.6v745.92c0 14.08 5.632 27.52 15.68 37.6 9.6 9.664 22.88 15.68 37.6 15.68h745.92a52.8 52.8 0 0 0 37.504-15.68 52.8 52.8 0 0 0 15.776-37.504V138.624v-0.032c0-14.72-5.984-28.032-15.68-37.632a52.8 52.8 0 0 0-37.6-15.68zM312.864 255.744l184.896 311.328c7.744 17.056 13.888 30.848 18.336 41.344l26.016-56.608 12.032-25.408 171.168-270.656h127.2v511.488h-91.2V339.104l-207.488 342.88h-85.408l-206.72-350.112v435.36H170.56V255.744h142.368z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      ),
+      component: lazy(() => import(/* webpackChunkName:'note' */ '@views/pages/note/index'))
+    },
+    {
+      key: RouterUrls.TOOLS.FILELOOK.KEY,
+      label: RouterUrls.TOOLS.FILELOOK.NAME,
+      url: RouterUrls.TOOLS.FILELOOK.URL,
+      parentUrl: RouterUrls.TOOLS.URL,
+      icon: (
+        <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M758.442667 0a180.167111 180.167111 0 0 1 179.882666 169.870222l0.284445 10.24v311.068445a28.444444 28.444444 0 0 1-56.433778 5.12l-0.455111-5.12V180.110222a123.278222 123.278222 0 0 0-114.460445-122.936889l-8.817777-0.341333H209.237333a123.278222 123.278222 0 0 0-122.993777 114.460444l-0.284445 8.817778v662.641778c0 65.080889 50.460444 118.385778 114.460445 122.88l8.817777 0.341333h397.653334a28.444444 28.444444 0 0 1 5.12 56.433778l-5.12 0.455111h-397.653334a180.167111 180.167111 0 0 1-179.882666-169.927111l-0.284445-10.24V180.167111A180.167111 180.167111 0 0 1 198.997333 0.227556L209.237333 0h549.205334z m-71.964445 487.822222a227.555556 227.555556 0 0 1 180.167111 366.535111l120.035556 119.978667a28.444444 28.444444 0 0 1-36.352 43.52l-3.925333-3.299556-119.864889-119.808a227.555556 227.555556 0 1 1-140.060445-406.926222z m0 56.888889a170.666667 170.666667 0 1 0 0 341.333333 170.666667 170.666667 0 0 0 0-341.333333zM360.789333 682.666667a28.444444 28.444444 0 0 1 5.12 56.433777l-5.12 0.455112H199.111111a28.444444 28.444444 0 0 1-5.12-56.433778L199.111111 682.666667h161.678222z m113.777778-227.555556a28.444444 28.444444 0 0 1 5.12 56.433778L474.510222 512H199.111111a28.444444 28.444444 0 0 1-5.12-56.433778L199.111111 455.111111h275.456zM768 227.555556a28.444444 28.444444 0 0 1 5.12 56.433777L768 284.444444H199.111111a28.444444 28.444444 0 0 1-5.12-56.433777L199.111111 227.555556h568.888889z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      ),
+      component: lazy(() => import(/* webpackChunkName:'note' */ '@views/pages/tools/look'))
     }
   ]
 
