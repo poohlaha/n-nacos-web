@@ -13,6 +13,7 @@ import Page from '@views/modules/page'
 import RouterUrls from '@route/router.url.toml'
 import Left from '@pages/main/left'
 import Right from '@pages/main/right'
+import TitleBar from '@sdk/titleBar'
 
 const Home = (): ReactElement => {
   const { homeStore } = useStore()
@@ -30,6 +31,14 @@ const Home = (): ReactElement => {
         contentClassName="flex-direction-column !p-0"
         loading={homeStore.loading}
       >
+        {/* 标题栏 */}
+        <TitleBar
+          onHome={() => {
+            homeStore.selectedMenuKeys = [RouterUrls.DASHBOARD.URL]
+            navigate(RouterUrls.DASHBOARD.URL)
+          }}
+        />
+
         {/* 导航条
         <Navigation
           userName={homeStore.userInfo.userName || ''}
@@ -44,15 +53,7 @@ const Home = (): ReactElement => {
 
         {/* main */}
         <main className="flex-1 w100 overflow-hidden flex">
-          <Left
-            userName={homeStore.userInfo.userName || ''}
-            onLogout={async () => {}}
-            onUpdatePwd={() => {}}
-            onHome={() => {
-              homeStore.selectedMenuKeys = [RouterUrls.DASHBOARD.URL]
-              navigate(RouterUrls.DASHBOARD.URL)
-            }}
-          />
+          <Left userName={homeStore.userInfo.userName || ''} onLogout={async () => {}} onUpdatePwd={() => {}} />
           <Right />
         </main>
       </Page>

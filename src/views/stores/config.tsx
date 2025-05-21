@@ -16,6 +16,7 @@ import pipelineMarketStore from './main/pipeline.market.store'
 import noteStore from '@stores/note/note.store'
 import loginStore from '@stores/login/login.store'
 import lookStore from '@stores/look/look.store'
+import systemStore from '@stores/setting/system.store'
 
 export function createStore() {
   return {
@@ -31,7 +32,8 @@ export function createStore() {
     serverStore,
     pipelineMarketStore,
     noteStore,
-    lookStore
+    lookStore,
+    systemStore
   }
 }
 

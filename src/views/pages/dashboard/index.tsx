@@ -6,15 +6,12 @@
 import React, { ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
-import useMount from '@hooks/useMount'
 import Loading from '@views/components/loading/loading'
 import Page from '@views/modules/page'
 import RouterUrls from '@route/router.url.toml'
 
 const Dashboard = (): ReactElement => {
   const { dashboardStore } = useStore()
-
-  useMount(async () => {})
 
   const render = () => {
     return (

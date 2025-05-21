@@ -13,7 +13,6 @@ import Utils from '@utils/utils'
 
 interface ILeftProps {
   userName: string
-  onHome: () => void
   onUpdatePwd: () => void
   onLogout: () => void
 }
@@ -63,27 +62,7 @@ const Left = (props: ILeftProps): ReactElement => {
   const render = () => {
     const list = generateMenuItems(homeStore.MENU_LIST || [])
     return (
-      <div className="left w-64 min-w-64 border-right flex-direction-column">
-        {/* LOGO */}
-        <div className="navigation-left flex-align-center p-4" onClick={props.onHome}>
-          <div className="svg-box cursor-pointer w-6 h-6">
-            <svg
-              className="svg-icon theme wh100 !w-6 !h-6"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              width="128"
-              height="128"
-            >
-              <path
-                d="M512 16C785.92 16 1008 238.08 1008 512c0 273.92-222.08 496-496 496C238.08 1008 16 785.92 16 512 16 238.08 238.08 16 512 16z m-68.384 291.392H292.032v408.32h151.584V506.24l143.232 209.408h155.904V307.36h-150.4v212.128l-148.736-212.096z"
-                fill="currentColor"
-              ></path>
-            </svg>
-          </div>
-          <p className="text-base font-bold ml-2 cursor-pointer">nacos</p>
-        </div>
-
+      <div className="left w-48 min-w-48 border-right flex-direction-column">
         <div className="menus w100 flex-1 pt-4 pb-4 overflow-y-auto">
           <Menu
             className="wh100 m-ant-menu"

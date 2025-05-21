@@ -8,6 +8,7 @@
       "@config/*": ["src/communal/config/*"],
       "@route/*": ["src/route/*"],
       "@views/*": ["src/views/*"],
+      "@sdk/*": ["src/sdk/*"],
       "@stores/*": ["src/views/stores/*"],
       "@pages/*": ["src/views/pages/*"],
       "@request/*": ["src/communal/request/*"],

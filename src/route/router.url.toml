@@ -102,11 +102,18 @@ KEY = 'setting'
 NAME = '设置'
 URL = ''
 
-[SETTING.SQL]
-KEY = 'sql'
-NAME = '数据库表'
-URL = '/sql'
+[SETTING.SYSTEM]
+KEY = 'system'
+NAME = '系统设置'
+URL = '/system'
 
 [MONITOR]
 SERVER_URL = '/server'
+
+[SDK]
+[SDK.TRAY]
+[SDK.TRAY.MENU]
+KEY = 'trayMenu'
+NAME = '托盘菜单'
+URL = '/trayMenu'
 

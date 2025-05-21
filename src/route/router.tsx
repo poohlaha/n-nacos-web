@@ -17,6 +17,13 @@ export const routes: RouteInterface[] = [
     title: '首页'
   },
   {
+    path: RouterUrls.SDK.TRAY.MENU.URL,
+    exact: false,
+    component: lazy(() => import(/* webpackChunkName:'lazy' */ '@sdk/menu/index')),
+    auth: false,
+    title: RouterUrls.SDK.TRAY.MENU.NAME
+  },
+  {
     path: `${RouterUrls.MAIN_URL}/*`,
     exact: false,
     component: lazy(() => import(/* webpackChunkName:'lazy' */ '@pages/main/index')),

@@ -11,7 +11,6 @@ const { performance } = require('node:perf_hooks')
 const path = require('node:path')
 
 const LoggerPrefix = chalk.cyan('[Bale Chat Compiler]:')
-
 class ProjectBuilder {
   _SCRIPTS = ['start', 'dev', 'simulate', 'prod'] // scripts
   _script = ''
@@ -89,10 +88,11 @@ class ProjectBuilder {
         from: 'src/common/communal/router',
         to: 'src/communal/router'
       },
-      {
+      /*{
         from: 'src/common/communal/index.tsx',
         to: 'src/communal/index.tsx'
       },
+       */
       {
         from: `src/${this._copyDestDir}/utils`,
         to: 'src/communal/utils'
