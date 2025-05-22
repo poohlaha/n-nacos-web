@@ -17,10 +17,6 @@ class SystemStore extends BaseStore {
       value: 'PingFangSC'
     },
     {
-      label: 'sans-serif',
-      value: 'sans-serif'
-    },
-    {
       label: '阿里妈妈方圆体',
       value: 'Alimama'
     },
@@ -38,15 +34,50 @@ class SystemStore extends BaseStore {
     }
   ]
 
-  readonly MIN_FONT_SIZE = 12
-  readonly MAX_FONT_SIZE = 24
+  readonly FONT_LIST: Array<any> = [
+    {
+      label: 'text-xs',
+      value: 'text-xs',
+      desc1: 'font-size: 0.75rem(12px)',
+      desc2: 'line-height: 1rem(16px)'
+    },
+    {
+      label: 'text-sm',
+      value: 'text-sm',
+      desc1: 'font-size: 0.875rem(14px)',
+      desc2: 'line-height: 1.25rem(20px)'
+    },
+    {
+      label: 'text-base',
+      value: 'text-base',
+      desc1: 'font-size: 1rem(16px)',
+      desc2: 'line-height: 1.5rem(24px)'
+    },
+    {
+      label: 'text-lg',
+      value: 'text-lg',
+      desc1: 'font-size: 1.125rem(18px)',
+      desc2: 'line-height: 1.75rem(28px)'
+    },
+    {
+      label: 'text-xl',
+      value: 'text-xl',
+      desc1: 'font-size: 1.25rem(20px)',
+      desc2: 'line-height: 1.75rem(28px)'
+    },
+    {
+      label: 'text-2xl',
+      value: 'text-2xl',
+      desc1: 'font-size: 1.5rem(24px)',
+      desc2: 'line-height: 2rem(32px)'
+    }
+  ]
 
-  @observable selectedFontFamily: string = this.FONT_FAMILY_LIST[0].value
   @observable font: { [K: string]: any } = {
-    titleFontSize: 'text-2xl',
-    fontSize: 'text-xl',
-    descFontSize: 'text-sm',
-    fontFamily: this.FONT_FAMILY_LIST[2].value
+    titleFontSize: 'text-base',
+    fontSize: 'text-sm',
+    descFontSize: 'text-xs',
+    fontFamily: this.FONT_FAMILY_LIST[3].value
   }
   @observable startAuto: boolean = false
 }

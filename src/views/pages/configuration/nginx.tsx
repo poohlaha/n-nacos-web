@@ -129,7 +129,13 @@ const Nginx = (): ReactElement => {
         </Card>
 
         {/* 查看配置文件 */}
-        <Drawer title="Nginx配置文件" placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
+        <Drawer
+          rootClassName="m-ant-drawer"
+          title="Nginx配置文件"
+          placement="right"
+          onClose={() => setShowDrawer(false)}
+          open={showDrawer}
+        >
           {getNginxFileConfHtml()}
         </Drawer>
 

@@ -102,6 +102,7 @@ const PipelineVariable = (): ReactElement => {
                       // console.log('render action item:', item)
                       return (
                         <Popconfirm
+                          rootClassName="m-ant-popover"
                           title="友情提醒"
                           description="确定删除该条记录?"
                           placement="top"
@@ -132,6 +133,7 @@ const PipelineVariable = (): ReactElement => {
         <Modal
           title="添加/编辑启动变量"
           open={showAddDialog}
+          rootClassName="m-ant-modal"
           onOk={async () => {
             let flag = pipelineStore.onAddVariable(form || {})
             if (flag) {
@@ -154,6 +156,7 @@ const PipelineVariable = (): ReactElement => {
                 <span className="flex-center">*</span>
               </div>
               <Input
+                className="m-ant-input"
                 placeholder="请输入变量名"
                 maxLength={20}
                 value={form.name}
@@ -172,6 +175,7 @@ const PipelineVariable = (): ReactElement => {
                 <span className="flex-center">*</span>
               </div>
               <Select
+                className="m-ant-select"
                 style={{ width: '100%' }}
                 placeholder="请选择变量类型"
                 value={form.genre}
@@ -195,6 +199,7 @@ const PipelineVariable = (): ReactElement => {
                 </div>
 
                 <Input
+                  className="m-ant-input"
                   placeholder="请输入"
                   maxLength={20}
                   value={form.genre === pipelineStore.VARIABLE_OPTIONS[2].value ? form.input : form.str}
@@ -222,6 +227,7 @@ const PipelineVariable = (): ReactElement => {
                 </div>
 
                 <Input.TextArea
+                  className="m-ant-input"
                   placeholder="请输入"
                   maxLength={500}
                   value={form.select}
@@ -241,6 +247,7 @@ const PipelineVariable = (): ReactElement => {
                 <p>是否禁用</p>
               </div>
               <Select
+                className="m-ant-select"
                 style={{ width: '100%' }}
                 placeholder="请选择是否禁用"
                 value={form.disabled}
@@ -258,6 +265,7 @@ const PipelineVariable = (): ReactElement => {
                 <p>是否必填</p>
               </div>
               <Select
+                className="m-ant-select"
                 style={{ width: '100%' }}
                 placeholder="请选择是否必填"
                 value={form.require}
@@ -275,6 +283,7 @@ const PipelineVariable = (): ReactElement => {
                 <p>描述</p>
               </div>
               <Input.TextArea
+                className="m-ant-input"
                 style={{ width: '100%' }}
                 placeholder="请输入描述"
                 maxLength={500}

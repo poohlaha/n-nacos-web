@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite'
 import RouterUrls from '@route/router.url.toml'
 import Page from '@views/modules/page'
 import { useStore } from '@views/stores'
-import { Select, Slider, Switch } from 'antd'
+import { Select, Switch } from 'antd'
 
 const System = (): ReactElement => {
   const { systemStore } = useStore()
@@ -19,16 +19,14 @@ const System = (): ReactElement => {
         className="system-page wh100 overflow background-gay"
         loading={systemStore.loading}
         contentClassName="content-box wh100 flex-direction-column"
+        title={{
+          label: RouterUrls.SETTING.SYSTEM.NAME
+        }}
       >
-        {/* title */}
-        <div className="page-title flex-align-center">
-          <p className="flex-1 font-bold text-xl">{RouterUrls.SETTING.SYSTEM.NAME}</p>
-        </div>
-
         <div className="page-wrapper flex-1 flex-direction-column pt-5">
           <div className="flex-direction-column">
-            <p>主题与字体</p>
-            <div className="bg-white p-4 text-sm mt-2 rounded">
+            <p className={`${systemStore.font.titleFontSize || ''} font-bold`}>主题与字体</p>
+            <div className="background p-4 mt-2 rounded">
               <div className="flex-align-center flex-jsc-between mb-2">
                 <p>主题切换</p>
                 <div className="flex-align-center border pl-2 pr-2 pt-1 pb-1 rounded-full">
@@ -40,14 +38,37 @@ const System = (): ReactElement => {
                 </div>
               </div>
 
-              <div className="flex-align-center flex-jsc-between mb-2">
+              <div className="flex-align-center flex-jsc-between mb-2 border-bottom pb-2">
                 <p>字体设置</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
                   <Select
                     className="m-ant-select"
                     style={{ width: 200 }}
-                    value={systemStore.selectedFontFamily}
+                    value={systemStore.font.fontFamily}
                     options={systemStore.FONT_FAMILY_LIST || []}
+                    onChange={(value: string = '') => (systemStore.font.fontFamily = value || '')}
+                  />
+                </div>
+              </div>
+
+              <div className="flex-align-center flex-jsc-between">
+                <p>标题类字体大小</p>
+                <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
+                  <Select
+                    className="m-ant-select"
+                    rootClassName="font-select"
+                    style={{ width: 200 }}
+                    value={systemStore.font.titleFontSize}
+                    options={systemStore.FONT_LIST || []}
+                    optionRender={option => {
+                      return (
+                        <div className="flex-direction-column border-bottom p-2">
+                          <p className="mb-2">{option.value || ''}</p>
+                          <div className={`${option.value || ''}`}>我是字体</div>
+                        </div>
+                      )
+                    }}
+                    onChange={(value: string = '') => (systemStore.font.titleFontSize = value || '')}
                   />
                 </div>
               </div>
@@ -55,12 +76,43 @@ const System = (): ReactElement => {
               <div className="flex-align-center flex-jsc-between">
                 <p>字体大小</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
-                  <Slider
-                    className="m-ant-slider"
+                  <Select
+                    className="m-ant-select"
+                    rootClassName="font-select"
                     style={{ width: 200 }}
-                    min={systemStore.MIN_FONT_SIZE}
-                    max={systemStore.MAX_FONT_SIZE}
-                    step={1}
+                    value={systemStore.font.fontSize}
+                    options={systemStore.FONT_LIST || []}
+                    optionRender={option => {
+                      return (
+                        <div className="flex-direction-column border-bottom p-2">
+                          <p className="mb-2">{option.value || ''}</p>
+                          <div className={`${option.value || ''}`}>我是字体</div>
+                        </div>
+                      )
+                    }}
+                    onChange={(value: string = '') => (systemStore.font.fontSize = value || '')}
+                  />
+                </div>
+              </div>
+
+              <div className="flex-align-center flex-jsc-between">
+                <p>描述类字体大小</p>
+                <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
+                  <Select
+                    className="m-ant-select"
+                    rootClassName="font-select"
+                    style={{ width: 200 }}
+                    value={systemStore.font.descFontSize}
+                    options={systemStore.FONT_LIST || []}
+                    optionRender={option => {
+                      return (
+                        <div className="flex-direction-column border-bottom p-2">
+                          <p className="mb-2">{option.value || ''}</p>
+                          <div className={`${option.value || ''}`}>我是字体</div>
+                        </div>
+                      )
+                    }}
+                    onChange={(value: string = '') => (systemStore.font.descFontSize = value || '')}
                   />
                 </div>
               </div>
@@ -68,8 +120,8 @@ const System = (): ReactElement => {
           </div>
 
           <div className="flex-direction-column mt-5">
-            <p>系统</p>
-            <div className="bg-white p-4 text-sm mt-2 rounded">
+            <p className={`${systemStore.font.titleFontSize || ''} font-bold`}>系统</p>
+            <div className="background p-4 mt-2 rounded">
               <div className="flex-align-center flex-jsc-between">
                 <p>开机启动</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1 rounded-full">

@@ -94,6 +94,7 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
 
           return (
             <Select
+              className="m-ant-select"
               style={{ width: '100%' }}
               placeholder="请选择"
               allowClear
@@ -127,6 +128,7 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
         let selectValue = record.value || ''
         return (
           <Input
+            className="m-ant-input"
             style={{ width: '100%' }}
             placeholder="请输入"
             defaultValue={selectValue}
@@ -175,18 +177,21 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
     return (
       <div className="run-dialog-content">
         <div className="content-item page-margin-top">
-          <div className="title">启动变量</div>
+          <div className="title font-bold">启动变量</div>
 
           {!props.isReadonly && (
             <Radio.Group
+              className="m-ant-radio-group"
               value={dialogProps.value}
               onChange={(e: any = {}) => {
                 let value = e.target.value || '0'
                 props.onRadioChange?.(value)
               }}
             >
-              <Radio value="0">默认启动变量</Radio>
-              <Radio value="1" disabled={!props.hasNeedRadioChange}>
+              <Radio value="0" className="m-ant-radio">
+                默认启动变量
+              </Radio>
+              <Radio value="1" className="m-ant-radio" disabled={!props.hasNeedRadioChange}>
                 复用最近运行记录的启动变量
               </Radio>
             </Radio.Group>
@@ -198,6 +203,7 @@ const PipelineRunDom: React.FC<IPipelineRunDialogProps> = (props: IPipelineRunDi
         <div className="content-item page-margin-top">
           <div className="title">备注</div>
           <Input.TextArea
+            className="m-ant-input"
             placeholder="请输入备注"
             maxLength={500}
             allowClear

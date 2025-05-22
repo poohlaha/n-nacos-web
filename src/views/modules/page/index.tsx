@@ -30,7 +30,7 @@ const Page = (props: PropsWithChildren<IPageProps>): ReactElement => {
 
   const getBreadcrumb = () => {
     return (
-      <div className="breadcrumb-top flex-align-center mb-4">
+      <div className="breadcrumb-top flex-align-center pb-3">
         <MBreadcrumb items={props.breadCrumbItemList || []} />
       </div>
     )

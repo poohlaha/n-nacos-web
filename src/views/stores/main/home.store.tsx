@@ -475,9 +475,9 @@ class HomeStore extends BaseStore {
     }) // dashboard
 
     routes.push({
-      name: this.MENU_LIST[2].children[0].label || '',
-      url: this.MENU_LIST[2].children[0].url || '',
-      icon: this.MENU_LIST[2].children[0].icon || ''
+      name: this.MENU_LIST[2].label || '',
+      url: this.MENU_LIST[2].url || '',
+      icon: this.MENU_LIST[2].icon || ''
     }) // pipeline
 
     if (!isNew) {

@@ -30,6 +30,7 @@ const PipelineRunDialog: React.FC<IPipelineRunDialogProps> = (props: IPipelineRu
         open={pipelineStore.showRunDialog}
         title={`运行流水线: ${basic.name || ''}`}
         className="run-dialog"
+        rootClassName="m-ant-modal"
         cancelText="取消"
         okText="确认"
         width={700}

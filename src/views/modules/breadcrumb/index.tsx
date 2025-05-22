@@ -7,6 +7,7 @@ import React, { ReactElement } from 'react'
 import { Breadcrumb } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import Utils from '@utils/utils'
+import { useStore } from '@views/stores'
 
 interface IMBreadcrumbProps {
   className?: string
@@ -18,6 +19,7 @@ interface IPageBreadcrumbItemProps {
 }
 
 const MBreadcrumb: React.FC<IMBreadcrumbProps> = (props: IMBreadcrumbProps): ReactElement => {
+  const { systemStore } = useStore()
   const navigate = useNavigate()
 
   const toPage = (url: string, onClick?: Function) => {
@@ -92,7 +94,7 @@ const MBreadcrumb: React.FC<IMBreadcrumbProps> = (props: IMBreadcrumbProps): Rea
           >
             <div className="flex-align-center breadcrumb pl-1 pr-1">
               {icon && (
-                <p className="icon flex-center" key={`${icon}-${i}`}>
+                <p className="icon flex-center w-4 h-4" key={`${icon}-${i}`}>
                   {icon}
                 </p>
               )}
@@ -107,7 +109,13 @@ const MBreadcrumb: React.FC<IMBreadcrumbProps> = (props: IMBreadcrumbProps): Rea
   }
 
   const render = () => {
-    return <Breadcrumb items={getItems()} className={props.className || ''} />
+    return (
+      <Breadcrumb
+        rootClassName={`m-ant-breadcrumb ${systemStore.font.descFontSize || ''}`}
+        items={getItems()}
+        className={props.className || ''}
+      />
+    )
   }
 
   return render()

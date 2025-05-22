@@ -11,7 +11,6 @@ import Utils from '@utils/utils'
 import { Tabs, Button, Tag, Drawer, Popconfirm, Space, notification } from 'antd'
 import useMount from '@hooks/useMount'
 import { ADDRESS, TOAST } from '@utils/base'
-import Loading from '@views/components/loading/loading'
 import NoData from '@views/components/noData'
 import RunDialog from '@pages/pipeline/run'
 import { listen } from '@tauri-apps/api/event'
@@ -29,7 +28,7 @@ import PipelineStore from '@stores/main/pipeline.store'
 
 const PipelineDetail = (): ReactElement => {
   const navigate = useNavigate()
-  const { pipelineStore, homeStore, serverStore } = useStore()
+  const { pipelineStore, homeStore, serverStore, systemStore } = useStore()
   const [id, setId] = useState('')
   const [serverId, setServerId] = useState('')
   const [open, setOpen] = useState(false)
@@ -237,7 +236,11 @@ const PipelineDetail = (): ReactElement => {
   const getTagHtml = (tag: string = '') => {
     let tagObj = pipelineStore.TAGS.find((t: { [K: string]: any } = {}) => t.value === tag) || {}
     if (!Utils.isObjectNull(tagObj)) {
-      return <Tag color={tagObj.color || ''}>{tagObj.label || ''}</Tag>
+      return (
+        <Tag className="m-ant-tag" color={tagObj.color || ''}>
+          {tagObj.label || ''}
+        </Tag>
+      )
     }
 
     return <div className="tag"></div>
@@ -268,7 +271,7 @@ const PipelineDetail = (): ReactElement => {
           <div className="buttons-left">
             <Button
               type="primary"
-              className={`page-margin-right ${disabledButton ? 'disabled' : ''}`}
+              className={`page-margin-right m-ant-button ${disabledButton ? 'disabled' : ''}`}
               disabled={disabledButton}
               onClick={async () => {
                 await pipelineStore.onRunDialog('', '', () => {
@@ -281,7 +284,7 @@ const PipelineDetail = (): ReactElement => {
             </Button>
             <Button
               disabled={disabledRunButton}
-              className={`${disabledRunButton ? 'disabled' : ''}`}
+              className={`m-ant-button ${disabledRunButton ? 'disabled' : ''}`}
               onClick={async () => {
                 if (disabledButton) return
                 pipelineStore.selectItem = pipelineStore.detailInfo || {}
@@ -297,7 +300,7 @@ const PipelineDetail = (): ReactElement => {
 
           <div className="buttons-right">
             <Button
-              className="page-margin-right"
+              className="mr-3 m-ant-button"
               onClick={() => {
                 navigate(
                   `${RouterUrls.PIPELINE.URL}${RouterUrls.PIPELINE.ADD.URL}?id=${Utils.encrypt(
@@ -310,11 +313,12 @@ const PipelineDetail = (): ReactElement => {
             </Button>
 
             {disabledButton ? (
-              <Button danger disabled className="page-margin-right disabled">
+              <Button danger disabled className="mr-3 m-ant-button disabled">
                 删除
               </Button>
             ) : (
               <Popconfirm
+                className="m-ant-popover"
                 title="温馨提示"
                 description="是否删除该条记录?"
                 okText="确定"
@@ -329,18 +333,19 @@ const PipelineDetail = (): ReactElement => {
                   )
                 }}
               >
-                <Button danger className="page-margin-right">
+                <Button danger className="mr-3 m-ant-button">
                   删除
                 </Button>
               </Popconfirm>
             )}
 
             {disabledButton ? (
-              <Button type="link" disabled>
+              <Button type="link" disabled className="m-ant-button">
                 清除运行历史
               </Button>
             ) : (
               <Popconfirm
+                className="m-ant-popover"
                 title="温馨提示"
                 description="是否删除所有的运行历史记录?"
                 okText="确定"
@@ -349,7 +354,9 @@ const PipelineDetail = (): ReactElement => {
                   await pipelineStore.onClearRunHistory()
                 }}
               >
-                <Button type="link">清除运行历史</Button>
+                <Button type="link" className="m-ant-button">
+                  清除运行历史
+                </Button>
               </Popconfirm>
             )}
           </div>
@@ -357,41 +364,55 @@ const PipelineDetail = (): ReactElement => {
 
         {/* 运行状态 */}
         <div className="run-status page-margin-top border flex">
-          <div className="status flex-direction-column status-step status-step-item  flex-align-center">
+          <div
+            className={`status flex-direction-column status-step status-step-item  flex-align-center p-3 ${systemStore.font.descFontSize || ''}`}
+          >
             {getStatus(status || 'No')}
           </div>
 
           <div className="status-step flex-align-center">
-            <div className="run-time status-step-item flex-direction-column flex-center">
+            <div
+              className={`run-time status-step-item flex-direction-column flex-center p-3 ${systemStore.font.descFontSize || ''}`}
+            >
               <div className="name">执行时间</div>
               <div className="text">{runtime.startTime || '-'}</div>
             </div>
 
-            <div className="exec-time status-step-item flex-direction-column flex-center">
+            <div
+              className={`exec-time status-step-item flex-direction-column flex-center p-3 ${systemStore.font.descFontSize || ''}`}
+            >
               <div className="name">运行时长</div>
               <div className="text">{duration}</div>
             </div>
           </div>
 
           <div className="status-step flex-align-center">
-            <div className="run-git status-step-item flex-direction-column flex-center">
+            <div
+              className={`run-git status-step-item flex-direction-column flex-center p-3 ${systemStore.font.descFontSize || ''}`}
+            >
               <div className="name">代码仓库</div>
               <div className="text">{runtime.projectName || '-'}</div>
             </div>
 
-            <div className="run-branch status-step-item flex-direction-column flex-center">
+            <div
+              className={`run-branch status-step-item flex-direction-column flex-center p-3 ${systemStore.font.descFontSize || ''}`}
+            >
               <div className="name">代码分支</div>
               <div className="text">{snapshot.branch || '-'}</div>
             </div>
           </div>
 
           <div className="status-step flex-align-center">
-            <div className="run-time status-step-item flex-direction-column flex-center">
+            <div
+              className={`run-time status-step-item flex-direction-column flex-center p-3 ${systemStore.font.descFontSize || ''}`}
+            >
               <div className="name">流水线名称</div>
               <div className="text">{name || '-'}</div>
             </div>
 
-            <div className="run-tag status-step-item flex-direction-column flex-center">
+            <div
+              className={`run-tag status-step-item flex-direction-column flex-center p-3 ${systemStore.font.descFontSize || ''}`}
+            >
               <div className="name">标签</div>
               <div className="text">{getTagHtml(tag || '')}</div>
             </div>
@@ -400,7 +421,7 @@ const PipelineDetail = (): ReactElement => {
 
         {/* 结果 */}
         <div className="result-tabs flex-1 pb-4">
-          <Tabs defaultActiveKey="0" items={RESULT_TABS} onChange={() => {}} />
+          <Tabs className="m-ant-tabs" defaultActiveKey="0" items={RESULT_TABS} onChange={() => {}} />
         </div>
       </div>
     )
@@ -570,12 +591,12 @@ const PipelineDetail = (): ReactElement => {
     return (
       <div className="result-build-snapshot h100">
         <div className="build-item">
-          <p className="font-bold title flex-align-center">运行属性</p>
+          <p className="font-bold title flex-align-center h-10">运行属性</p>
           <MTable dataSource={getRunProps(snapshot, displayFields)} columns={getColumns()} />
         </div>
 
-        <div className="build-item page-margin-top">
-          <p className="font-bold title flex-align-center">启动变量</p>
+        <div className="build-item mt-3">
+          <p className="font-bold title flex-align-center h-10">启动变量</p>
           <MTable dataSource={getRunVariables(detailInfo.variables, runnableVariables)} columns={getColumns()} />
         </div>
       </div>
@@ -745,7 +766,11 @@ const PipelineDetail = (): ReactElement => {
                     (status: { [K: string]: any } = {}) => status.value.toLowerCase() === runStatus.toLowerCase()
                   ) || {}
                 if (!Utils.isObjectNull(status)) {
-                  return <Tag color={status.color || ''}>{status.label || ''}</Tag>
+                  return (
+                    <Tag className="m-ant-tag" color={status.color || ''}>
+                      {status.label || ''}
+                    </Tag>
+                  )
                 }
               }
             },
@@ -828,12 +853,14 @@ const PipelineDetail = (): ReactElement => {
     return (
       <Page
         className="pipeline-detail-page"
+        loading={pipelineStore.loading}
         breadCrumbItemList={homeStore.getBreadcrumbItemList((pipelineStore.detailInfo || {}).basic?.name || '', false)}
       >
         <div className="content-box flex-1">
           <Tabs
             defaultActiveKey="0"
             items={RUN_TABS}
+            rootClassName="m-ant-tabs"
             activeKey={runTabIndex}
             onChange={async (activeKey: string = '') => {
               setRunTabIndex(activeKey)
@@ -858,7 +885,7 @@ const PipelineDetail = (): ReactElement => {
         />
 
         {/* 日志 */}
-        <Drawer className="logger-drawer" title="日志" onClose={() => setOpen(false)} open={open}>
+        <Drawer rootClassName="logger-drawer m-ant-drawer" title="日志" onClose={() => setOpen(false)} open={open}>
           {pipelineStore.loggerList.length > 0 ? (
             pipelineStore.loggerList.map((log: string = '', index: number) => {
               return (
@@ -871,7 +898,6 @@ const PipelineDetail = (): ReactElement => {
             <p>暂无日志</p>
           )}
         </Drawer>
-        <Loading show={pipelineStore.loading} />
       </Page>
     )
   }

@@ -4,7 +4,6 @@
 import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@stores/index'
-import Loading from '@views/components/loading/loading'
 import Utils from '@utils/utils'
 import useMount from '@hooks/useMount'
 import { useNavigate } from 'react-router-dom'
@@ -199,6 +198,7 @@ const PipelineAdd = (): ReactElement => {
               <span className="flex-center">*</span>
             </div>
             <Input
+              className="m-ant-input"
               style={{ width: 350 }}
               placeholder="请输入流水线名称"
               maxLength={100}
@@ -215,7 +215,7 @@ const PipelineAdd = (): ReactElement => {
               <p>流水线标签</p>
               <span className="flex-center">*</span>
             </div>
-            <Select {...tagSelectOptions} />
+            <Select className="m-ant-select" {...tagSelectOptions} />
           </div>
 
           <div className="form-item flex-align-center page-margin-top">
@@ -224,6 +224,7 @@ const PipelineAdd = (): ReactElement => {
               <span className="flex-center">*</span>
             </div>
             <Select
+              className="m-ant-select"
               style={{ width: 350 }}
               onChange={(value: string = '') => {
                 setServerId(value || '')
@@ -239,13 +240,20 @@ const PipelineAdd = (): ReactElement => {
               <p>项目路径</p>
               <span className="flex-center">*</span>
               <div className="flex-center question">
-                <Tooltip className="tooltip-question" placement="top" title={getProjectToolTipHtml()}>
+                <Tooltip
+                  className="tooltip-question"
+                  rootClassName="m-ant-tooltip"
+                  placement="top"
+                  title={getProjectToolTipHtml()}
+                >
                   {/* @ts-ignore */}
                   <QuestionCircleOutlined />
                 </Tooltip>
               </div>
             </div>
+
             <Input
+              className="m-ant-input"
               style={{ width: 350 }}
               placeholder="请输入或选择项目路径"
               maxLength={100}
@@ -258,7 +266,7 @@ const PipelineAdd = (): ReactElement => {
             />
 
             <Button
-              className="page-margin-left"
+              className="ml-3 m-ant-button"
               onClick={async () => {
                 const filePath: any = await open({
                   multiple: false,
@@ -277,6 +285,7 @@ const PipelineAdd = (): ReactElement => {
           <div className="form-item flex-align-center page-margin-top">
             <div className="label page-margin-right">描述</div>
             <Input.TextArea
+              className="m-ant-input"
               style={{ width: 350 }}
               placeholder="请输入描述"
               maxLength={500}
@@ -341,9 +350,11 @@ const PipelineAdd = (): ReactElement => {
       <Page
         className="pipeline-add-page page-white overflow-y-auto page-padding-left page-padding-right page-padding-bottom"
         breadCrumbItemList={homeStore.getBreadcrumbItemList('', true)}
+        loading={pipelineStore.loading}
       >
         <div className="content-box overflow flex-1">
           <Tabs
+            className="m-ant-tabs"
             defaultActiveKey="0"
             items={ADD_TABS}
             onChange={(activeKey: string = '') => {
@@ -356,7 +367,7 @@ const PipelineAdd = (): ReactElement => {
           <div className="buttons flex-align-center">
             <Button
               type="primary"
-              className="page-margin-right"
+              className="mr-3 m-ant-button"
               onClick={async () => {
                 await pipelineStore.onSavePipeline(serverId, () => {
                   pipelineStore.onResetAddConfig()
@@ -368,6 +379,7 @@ const PipelineAdd = (): ReactElement => {
               保存
             </Button>
             <Button
+              className="m-ant-button"
               type="default"
               onClick={() => {
                 pipelineStore.onResetAddConfig()
@@ -379,8 +391,6 @@ const PipelineAdd = (): ReactElement => {
             </Button>
           </div>
         </div>
-
-        <Loading show={pipelineStore.loading} />
       </Page>
     )
   }

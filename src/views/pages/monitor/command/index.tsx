@@ -236,7 +236,13 @@ const Index = (): ReactElement => {
         </div>
 
         {/* 查看日志 */}
-        <Drawer title={alert.name || '日志'} placement="right" onClose={() => setShowDrawer(false)} open={showDrawer}>
+        <Drawer
+          rootClassName="m-ant-drawer"
+          title={alert.name || '日志'}
+          placement="right"
+          onClose={() => setShowDrawer(false)}
+          open={showDrawer}
+        >
           {getLogHtml()}
         </Drawer>
 

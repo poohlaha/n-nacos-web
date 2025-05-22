@@ -157,6 +157,7 @@ const Index = (): ReactElement => {
 
         {/* 查看配置文件 */}
         <Drawer
+          rootClassName="m-ant-drawer"
           title={directoryStore.fileName || '文件'}
           placement="right"
           onClose={() => setShowDrawer(false)}

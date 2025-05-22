@@ -14,14 +14,14 @@
   }
 
   .m-header {
-    background: rgba(0, 0, 0, 0.04); // #f7f9fa
+    background: @background_table_head; // #f7f9fa, rgba(0, 0, 0, 0.04)
     border: @border;
     padding: 12px 12px;
 
     .m-column {
       padding: 0 12px;
       color: @color;
-      font-weight: 700;
+      .font-weight-bold();
     }
 
     .m-column:first-child {

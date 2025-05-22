@@ -93,24 +93,22 @@ const MTable: React.FC<IMTableProps> = (props: IMTableProps): ReactElement => {
             </div>
           )
         }
-      } else {
-        if (needTooltip) {
-          cells.push(
-            getToolTipHtml(
-              item[column.dataIndex] || '',
-              column.key,
-              <div key={`m-cell-${column.key}`} className="m-cell over-ellipsis" style={style}>
-                {item[column.dataIndex] || ''}
-              </div>
-            )
-          )
-        } else {
-          cells.push(
+      } else if (needTooltip) {
+        cells.push(
+          getToolTipHtml(
+            item[column.dataIndex] || '',
+            column.key,
             <div key={`m-cell-${column.key}`} className="m-cell over-ellipsis" style={style}>
               {item[column.dataIndex] || ''}
             </div>
           )
-        }
+        )
+      } else {
+        cells.push(
+          <div key={`m-cell-${column.key}`} className="m-cell over-ellipsis" style={style}>
+            {item[column.dataIndex] || ''}
+          </div>
+        )
       }
     }
 
@@ -124,7 +122,7 @@ const MTable: React.FC<IMTableProps> = (props: IMTableProps): ReactElement => {
     overlayClassName: string = ''
   ) => {
     return (
-      <Tooltip overlayClassName={overlayClassName || ''} title={title} key={`m-cell-${key}`}>
+      <Tooltip rootClassName={`${overlayClassName || ''} m-ant-tooltip`} title={title} key={`m-cell-${key}`}>
         {dom}
       </Tooltip>
     )

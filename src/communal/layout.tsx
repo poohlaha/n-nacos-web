@@ -13,7 +13,6 @@ import Loading from '../views/components/loading'
 import Utils from '@utils/utils'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@views/stores'
-import { CONSTANT } from '@config/index'
 import '@assets/styles/common/tailwind.css'
 import '@assets/styles/theme/index.less'
 import RouterUrls from '@route/router.url.toml'
@@ -63,6 +62,7 @@ const RenderRoutes = (routes: RouteInterface[]) => {
 const switchSkin = (skin: string = '', font: { [K: string]: any } = {}) => {
   let classList = document.body.classList || []
 
+  /*
   const remove = () => {
     if (skin === CONSTANT.SKINS[0]) {
       classList.remove(CONSTANT.SKINS[1])
@@ -70,15 +70,10 @@ const switchSkin = (skin: string = '', font: { [K: string]: any } = {}) => {
       classList.remove(CONSTANT.SKINS[0])
     }
   }
+   */
 
-  remove()
-  if (!classList.contains(skin)) {
-    classList.add(skin)
-  }
-
-  if (!classList.contains(font.fontSize)) {
-    classList.add(font.fontSize)
-  }
+  document.body.setAttribute('class', '')
+  document.body.setAttribute('class', `${skin} ${font.fontFamily || ''}`)
 }
 
 const Layout = (): ReactElement => {
@@ -86,7 +81,7 @@ const Layout = (): ReactElement => {
 
   useEffect(() => {
     switchSkin(commonStore.skin, systemStore.font || {})
-  }, [commonStore.skin])
+  }, [commonStore.skin, systemStore.font.fontFamily])
 
   const px2rem = px2remTransformer({
     rootValue: 16 // 32px = 1rem; @default 16

@@ -77,7 +77,11 @@ const Pipeline = (): ReactElement => {
   const getTagHtml = (t: string = '') => {
     let tag = pipelineStore.TAGS.find((tag: { [K: string]: any } = {}) => tag.value === t) || {}
     if (!Utils.isObjectNull(tag)) {
-      return <Tag color={tag.color || ''}>{tag.label || ''}</Tag>
+      return (
+        <Tag className="m-ant-tag" color={tag.color || ''}>
+          {tag.label || ''}
+        </Tag>
+      )
     }
 
     return <div className="tag"></div>
@@ -194,7 +198,11 @@ const Pipeline = (): ReactElement => {
             (status: { [K: string]: any } = {}) => status.value.toLowerCase() === (record.status || '').toLowerCase()
           ) || {}
         if (!Utils.isObjectNull(status)) {
-          return <Tag color={status.color || ''}>{status.label || ''}</Tag>
+          return (
+            <Tag className="m-ant-tag" color={status.color || ''}>
+              {status.label || ''}
+            </Tag>
+          )
         }
       }
     },
@@ -232,7 +240,7 @@ const Pipeline = (): ReactElement => {
           let className = getStepClassName(stageIndex, status, i)
           let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.label).join(',')
           arr.push(
-            <Tooltip key={i} className="tooltip-question" placement="top" title={label || ''}>
+            <Tooltip key={i} className="tooltip-question m-ant-tooltip" placement="top" title={label || ''}>
               <div className="step-box">
                 <div className={`step ${className || ''}`} />
               </div>
@@ -247,7 +255,7 @@ const Pipeline = (): ReactElement => {
       title: '标签',
       dataIndex: 'tag',
       key: 'tag',
-      width: 100,
+      width: 150,
       render: (_: any, record: { [K: string]: any } = {}) => {
         return getTagHtml(record.tag || '')
       }
@@ -309,6 +317,7 @@ const Pipeline = (): ReactElement => {
               <a className={`delete ${buttonDisabled ? 'disabled' : ''}`}>删除</a>
             ) : (
               <Popconfirm
+                rootClassName="m-ant-popover"
                 title="温馨提示"
                 description="是否删除该条记录?"
                 okText="确定"
@@ -329,20 +338,20 @@ const Pipeline = (): ReactElement => {
 
   const render = () => {
     return (
-      <Page className="pipeline-page overflow">
-        {/* title */}
-        <div className="page-title flex-align-center">
-          <p className="flex-1 font-bold text-xl">{RouterUrls.PIPELINE.LIST.NAME}</p>
-        </div>
-
-        <div className="page-wrapper content-box flex-1 flex-direction-column pt-5">
+      <Page
+        className="pipeline-page overflow"
+        title={{
+          label: RouterUrls.PIPELINE.LIST.NAME
+        }}
+      >
+        <div className="page-wrapper content-box flex-1 flex-direction-column">
           {/* tags */}
           <div className="tags flex-align-center">
             <p className="label page-margin-right">标签</p>
             {pipelineStore.TAGS.length > 0 &&
               pipelineStore.TAGS.map((item: { [K: string]: any } = {}, index: number = 0) => {
                 return (
-                  <Tag color={item.color || 'default'} key={index}>
+                  <Tag className="m-ant-tag" color={item.color || 'default'} key={index}>
                     {item.label || ''}
                   </Tag>
                 )
@@ -353,7 +362,7 @@ const Pipeline = (): ReactElement => {
           <div className="actions flex-wrap pt-4 pb-4">
             <div className="actions-left flex-1 flex-align-center page-margin-right">
               <Button
-                className="mr-2"
+                className="mr-2 m-ant-button"
                 type="primary"
                 disabled={selectedRowKeys.length === 0}
                 icon={<PlayCircleOutlined />}
@@ -367,6 +376,7 @@ const Pipeline = (): ReactElement => {
               </Button>
 
               <Button
+                className="m-ant-button"
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => {
@@ -381,7 +391,7 @@ const Pipeline = (): ReactElement => {
             <div className="actions-right flex-align-center">
               {/* 状态 */}
               <Select
-                className="mr-2"
+                className="mr-2 m-ant-select"
                 placeholder="请选择运行状态"
                 style={{ width: 180 }}
                 allowClear
@@ -396,7 +406,7 @@ const Pipeline = (): ReactElement => {
               />
 
               <Input
-                className="mr-2"
+                className="mr-2 m-ant-input"
                 style={{ width: 180 }}
                 placeholder="请输入流水线名称"
                 maxLength={100}
@@ -411,9 +421,9 @@ const Pipeline = (): ReactElement => {
               />
 
               {/* search */}
-              <Tooltip title="查询">
+              <Tooltip title="查询" className="m-ant-tooltip">
                 <Button
-                  className="mr-2"
+                  className="mr-2 m-ant-button"
                   type="primary"
                   shape="circle"
                   icon={<SearchOutlined />}
@@ -426,9 +436,9 @@ const Pipeline = (): ReactElement => {
               </Tooltip>
 
               {/* 刷新 */}
-              <Tooltip title="刷新">
+              <Tooltip title="刷新" className="m-ant-tooltip">
                 <Button
-                  className="mr-2"
+                  className="mr-2 m-ant-button"
                   shape="circle"
                   icon={<RedoOutlined />}
                   onClick={async () => {
@@ -439,6 +449,7 @@ const Pipeline = (): ReactElement => {
 
               {/* 重置 */}
               <Button
+                className="m-ant-button"
                 type="default"
                 onClick={async () => {
                   setQueryForm({ name: '', status: '' })
