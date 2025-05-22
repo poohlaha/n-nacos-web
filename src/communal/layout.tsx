@@ -21,6 +21,7 @@ import '@ant-design/v5-patch-for-react-19'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import { px2remTransformer, StyleProvider } from '@ant-design/cssinjs'
+import useMount from '@hooks/useMount'
 
 const { Suspense } = React
 
@@ -60,9 +61,8 @@ const RenderRoutes = (routes: RouteInterface[]) => {
 
 // 切换皮肤
 const switchSkin = (skin: string = '', font: { [K: string]: any } = {}) => {
-  let classList = document.body.classList || []
-
   /*
+  let classList = document.body.classList || []
   const remove = () => {
     if (skin === CONSTANT.SKINS[0]) {
       classList.remove(CONSTANT.SKINS[1])
@@ -82,6 +82,10 @@ const Layout = (): ReactElement => {
   useEffect(() => {
     switchSkin(commonStore.skin, systemStore.font || {})
   }, [commonStore.skin, systemStore.font.fontFamily])
+
+  useMount(() => {
+    commonStore.onGetSkin()
+  })
 
   const px2rem = px2remTransformer({
     rootValue: 16 // 32px = 1rem; @default 16

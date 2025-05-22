@@ -11,6 +11,8 @@ import { listen } from '@tauri-apps/api/event'
 import createTrayMenu from '@communal/tray'
 import { LogicalPosition } from '@tauri-apps/api/dpi'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { useStore } from '@views/stores'
+import { CONSTANT } from '@config/index'
 
 // @ts-ignore
 interface ITitleBarProps {
@@ -18,6 +20,7 @@ interface ITitleBarProps {
 }
 
 const TitleBar = (): ReactElement => {
+  const { commonStore } = useStore()
   const [alwaysOnTop, setAlwaysOnTop] = useState(false)
 
   useMount(async () => {
@@ -55,7 +58,9 @@ const TitleBar = (): ReactElement => {
 
   const render = () => {
     return (
-      <div className="title-bar relative bg-transparent z-999 left-0 w-full top-0 h-10 pt-1 pb-1 pl-2 pr-2 select-none flex-jsc-end flex flex-shrink-0 items-center grap-4">
+      <div
+        className={`title-bar relative ${commonStore.skin === CONSTANT.SKINS[0] ? 'bg-transparent' : 'background-right'} z-999 left-0 w-full top-0 h-10 pt-1 pb-1 pl-2 pr-2 select-none flex-jsc-end flex flex-shrink-0 items-center grap-4`}
+      >
         {/* 拖拽区域 */}
         <div className=" absolute left-0 top-0 z-0 h-full w-full" data-tauri-drag-region></div>
 
@@ -83,7 +88,7 @@ const TitleBar = (): ReactElement => {
         <div className="relative right z-1 flex items-center gap-1">
           {/* 置顶 */}
           <div
-            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer theme-hover bg-menu-hover rounded"
+            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer bg-menu-hover rounded color-svg"
             onClick={async () => await onAlwaysOnTop()}
           >
             {alwaysOnTop ? (
@@ -105,7 +110,7 @@ const TitleBar = (): ReactElement => {
 
           {/* 最小化 */}
           <div
-            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer theme-hover bg-menu-hover rounded"
+            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer bg-menu-hover rounded color-svg"
             onClick={async () => await onMinimize()}
           >
             <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +123,7 @@ const TitleBar = (): ReactElement => {
 
           {/* 最大化 */}
           <div
-            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer theme-hover bg-menu-hover rounded"
+            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer bg-menu-hover rounded color-svg"
             onClick={async () => await onMaximized()}
           >
             <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -131,7 +136,7 @@ const TitleBar = (): ReactElement => {
 
           {/* 关闭 */}
           <div
-            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer theme-hover bg-menu-hover rounded"
+            className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer bg-menu-hover rounded color-svg"
             onClick={async () => await onMinimize()}
           >
             <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">

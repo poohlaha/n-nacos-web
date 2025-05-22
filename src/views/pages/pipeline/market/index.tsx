@@ -50,8 +50,8 @@ const PipelinePluginMarket = (): ReactElement => {
           </div>
 
           <div className="mt-3 flex-1">
-            <p className="over-two-ellipsis title font-bold">{title || ''}</p>
-            <div className={`desc mt-1 flex ${systemStore.font.descFontSize || ''}`}>
+            <p className="over-two-ellipsis title font-bold color">{title || ''}</p>
+            <div className={`desc mt-1 flex color ${systemStore.font.descFontSize || ''}`}>
               <p>自定义插件</p>
               <p className="spec">|</p>
               <p>构建</p>

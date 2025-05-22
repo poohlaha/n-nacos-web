@@ -11,7 +11,7 @@ import { useStore } from '@views/stores'
 import { Select, Switch } from 'antd'
 
 const System = (): ReactElement => {
-  const { systemStore } = useStore()
+  const { systemStore, commonStore } = useStore()
 
   const render = () => {
     return (
@@ -34,7 +34,12 @@ const System = (): ReactElement => {
                   <div className="bg-menu-hover mr-2 cursor-pointer pl-3 pr-3 pt-1 pb-1 rounded-full theme-bg text-white">
                     浅色
                   </div>
-                  <div className="bg-menu-hover cursor-pointer pl-3 pr-3 pt-1 pb-1 rounded-full">深色</div>
+                  <div
+                    className="bg-menu-hover cursor-pointer pl-3 pr-3 pt-1 pb-1 rounded-full"
+                    onClick={() => commonStore.onSkinChange()}
+                  >
+                    深色
+                  </div>
                 </div>
               </div>
 

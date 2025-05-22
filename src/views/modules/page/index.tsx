@@ -46,7 +46,7 @@ const Page = (props: PropsWithChildren<IPageProps>): ReactElement => {
           {(props.breadCrumbItemList || []).length > 0 && getBreadcrumb()}
 
           {hasTitle && (
-            <div className="page-title flex-align-center mb-4">
+            <div className="page-title flex-align-center mb-4 color">
               {needBack && CommonHtmlHandler.getBackNode()}
               <p className={`flex-1 font-bold ${systemStore.font.titleFontSize || ''} ${needBack ? 'ml-2' : ''}`}>
                 {title.label || ''}

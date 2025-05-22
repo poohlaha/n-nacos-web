@@ -15,12 +15,12 @@ const Dashboard = (): ReactElement => {
 
   const render = () => {
     return (
-      <Page className="dashboard-page">
-        {/* title */}
-        <div className="page-title flex-align-center">
-          <p className="flex-1 font-bold text-xl">{RouterUrls.DASHBOARD.NAME}</p>
-        </div>
-
+      <Page
+        className="dashboard-page"
+        title={{
+          label: RouterUrls.DASHBOARD.NAME || ''
+        }}
+      >
         <Loading show={dashboardStore.loading} />
       </Page>
     )

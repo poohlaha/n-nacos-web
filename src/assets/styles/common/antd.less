@@ -185,6 +185,8 @@
 .m-ant-table,
 .ant-table {
   .font-unset();
+  background: @background_right;
+  color: @color;
 }
 
 .m-ant-table {
@@ -198,9 +200,28 @@
     .font-unset();
   }
 
+  .ant-table-thead {
+    .ant-table-cell::before {
+      background: @divider!important;
+    }
+  }
+
+  tbody > tr > td {
+    border-bottom: @border!important;
+  }
+
   .ant-table-tbody {
     tr {
       cursor: pointer;
+    }
+
+    .ant-table-cell-fix-right, .ant-table-cell-fix-left {
+      background: @background_right;
+      color: @color;
+    }
+
+    .ant-table-cell-row-hover {
+      background: @color_menu_active;
     }
 
     .ant-table-cell {
@@ -454,7 +475,7 @@
 .m-ant-modal .ant-modal-footer button,
 .m-ant-popover .ant-popconfirm-buttons button {
   .font-unset();
-  height: unset !important;
+  // height: unset !important;
 
   &:not(.disabled).ant-btn-primary,
   &:not(.disabled).ant-btn-primary:hover {
@@ -549,6 +570,15 @@
 // card
 .m-ant-card {
   .font-unset();
+   background: @color_menu_active;
+
+  &.ant-card-bordered {
+    border: @border!important;
+  }
+
+  .ant-card-head {
+    border-bottom: @border!important;
+  }
 
   .ant-card-head {
     color: @color;
@@ -561,6 +591,7 @@
     .ant-descriptions-item-label,
     .ant-descriptions-item-content {
       .font-unset();
+      color: @color!important;
     }
   }
 }
@@ -570,6 +601,10 @@
 .m-ant-popover,
 .markdown-body {
   .font-unset();
+
+  .ant-drawer-content {
+    background: @background;
+  }
 
   pre,
   code {
@@ -610,9 +645,20 @@
     }
   }
 
+  li:hover {
+    button {
+      color: @color_menu_active;
+    }
+  }
+
+  .ant-pagination-item-link {
+    color: @color;
+  }
+
   .ant-pagination-total-text {
     display: flex;
     align-items: center;
+    color: @color;
   }
 
   .ant-pagination-jump-next,
