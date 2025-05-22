@@ -17,7 +17,6 @@ import * as echarts from 'echarts'
 // import { Chart, Interval, Coordinate, Legend, View, Annotation } from 'bizcharts'
 import Page from '@views/modules/page'
 import RouterUrls from '@route/router.url.toml'
-import CommonHtmlHandler from '@views/handlers/common'
 
 const Server = (): ReactElement => {
   const [showPwd, setShowPwd] = useState(false)
@@ -191,7 +190,7 @@ const Server = (): ReactElement => {
   // 服务器基本信息
   const getServerInfoHtml = () => {
     return (
-      <Card title="服务器基本信息" className="server-info-card">
+      <Card title="服务器基本信息" className="server-info-card m-ant-card">
         <Descriptions bordered column={2}>
           <Descriptions.Item label="IP">
             <p className="color-text">{serverStore.serverInfo?.ip || '-'}</p>
@@ -207,11 +206,12 @@ const Server = (): ReactElement => {
               <p className="color-text flex-1">{showPwd ? serverStore.serverInfo?.pwd || '' : '*********'}</p>
 
               <div className="buttons">
-                <Button type="link" onClick={() => setShowPwd(!showPwd)}>
+                <Button className="m-ant-button" type="link" onClick={() => setShowPwd(!showPwd)}>
                   {showPwd ? '隐藏' : '查看'}
                 </Button>
 
                 <Button
+                  className="m-ant-button"
                   type="link"
                   onClick={() => {
                     try {
@@ -275,7 +275,7 @@ const Server = (): ReactElement => {
           </div>
         }
       >
-        <Card className="info-card" bordered>
+        <Card className="info-card m-ant-card" bordered>
           <Descriptions bordered column={2}>
             <Descriptions.Item label="操作系统">
               <p className="color-text">{os.os_type || '-'}</p>
@@ -315,7 +315,7 @@ const Server = (): ReactElement => {
   // @ts-ignore
   const getMemUsedChatHtml = () => {
     return (
-      <Card title="内存使用率" className="mem-info-card page-margin-top">
+      <Card title="内存使用率" className="mem-info-card page-margin-top m-ant-card">
         <div
           ref={memUsedRef}
           style={{
@@ -329,7 +329,7 @@ const Server = (): ReactElement => {
   // CPU使用率
   const getCpuUsedChatHtml = () => {
     return (
-      <Card title="CPU使用率" className="cpu-info-card page-margin-top">
+      <Card title="CPU使用率" className="cpu-info-card page-margin-top m-ant-card">
         <div
           ref={cupUsedRef}
           style={{
@@ -345,11 +345,11 @@ const Server = (): ReactElement => {
   const getDistInfoHtml = () => {
     let diskInfo = serverStore.monitorListenInfo.diskInfo || []
     return (
-      <Card title="磁盘情况" className="dist-info-card page-margin-top">
+      <Card title="磁盘情况" className="dist-info-card page-margin-top m-ant-card">
         <div className="card-item disk-card flex-center">
           {diskInfo.map((disk: { [K: string]: any }, index: number) => {
             return (
-              <Card hoverable style={{ width: 250 }} cover={getDiskCardHtml(disk)} key={index}>
+              <Card hoverable style={{ width: 250 }} cover={getDiskCardHtml(disk)} key={index} className="m-ant-card">
                 <Card.Meta
                   title={`${disk.name || ''}(${disk.type_ || ''})`}
                   description={`位置: ${disk.mount_point || ''}`}
@@ -447,13 +447,13 @@ const Server = (): ReactElement => {
 
   const render = () => {
     return (
-      <Page className="server-info-page">
-        {/* title */}
-        <div className="page-title flex-align-center">
-          {CommonHtmlHandler.getBackNode()}
-          <p className="flex-1 font-bold text-xl ml-2">{RouterUrls.SERVER.DETAIL.NAME}</p>
-        </div>
-
+      <Page
+        className="server-info-page"
+        title={{
+          label: RouterUrls.SERVER.DETAIL.NAME,
+          needBack: true
+        }}
+      >
         {getHtml()}
         <Loading show={serverStore.loading} />
       </Page>

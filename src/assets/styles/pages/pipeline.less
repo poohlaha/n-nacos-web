@@ -352,7 +352,6 @@
       .template-item {
         border: @border;
         padding: 10px 20px;
-        border-radius: @border_radius;
         height: 165px;
 
         &:hover {
@@ -380,11 +379,6 @@
           }
 
           .item-top-right {
-            .title {
-              font-size: @font_large;
-              font-weight: 500;
-            }
-
             .desc {
               margin-top: 5px;
               font-size: @font_small;
@@ -398,10 +392,7 @@
         }
 
         .item-desc {
-          margin-top: 10px;
           white-space: pre-line;
-          font-size: @font;
-          color: @color_gray;
         }
 
         .item-footer {
@@ -416,13 +407,8 @@
 
           .item-footer-right {
             .button {
-              margin: 0 8px 0 0;
-              padding: 0 7px;
-              line-height: 20px;
               white-space: nowrap;
               border: @border;
-              border-radius: 2px;
-              font-size: @font_small;
             }
           }
         }

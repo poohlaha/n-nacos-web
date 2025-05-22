@@ -12,7 +12,6 @@ import useMount from '@hooks/useMount'
 import Loading from '@views/components/loading/loading'
 import RouterUrls from '@route/router.url.toml'
 import Utils from '@utils/utils'
-import CommonHtmlHandler from '@views/handlers/common'
 
 const Tag = (): ReactElement => {
   const navigate = useNavigate()
@@ -27,11 +26,12 @@ const Tag = (): ReactElement => {
       <Page
         className="article-tag-page wh100 overflow-hidden"
         contentClassName="page-content position-relative overflow page-padding"
+        title={{
+          label: '分类',
+          needBack: true
+        }}
       >
-        <div className="article-content min-h100 center flex-direction-column overflow">
-          {CommonHtmlHandler.getBackNode()}
-          <p className="page-title">分类</p>
-
+        <div className="article-content p-4 min-h100 center flex-direction-column overflow background rounded-md">
           <div className="article-tag-content page-margin-top">
             {noteStore.tagClassify.length > 0 &&
               noteStore.tagClassify.map((item: { [K: string]: any } = {}, index: number) => {

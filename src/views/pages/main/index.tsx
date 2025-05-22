@@ -8,16 +8,13 @@ import { observer } from 'mobx-react-lite'
 import { useStore } from '@views/stores'
 import useMount from '@hooks/useMount'
 import { USER } from '@utils/base'
-import { useNavigate } from 'react-router'
 import Page from '@views/modules/page'
-import RouterUrls from '@route/router.url.toml'
 import Left from '@pages/main/left'
 import Right from '@pages/main/right'
 import TitleBar from '@sdk/titleBar'
 
 const Home = (): ReactElement => {
-  const { homeStore } = useStore()
-  const navigate = useNavigate()
+  const { homeStore, systemStore } = useStore()
 
   useMount(() => {
     homeStore.userInfo = USER.getUserInfo() || {}
@@ -27,17 +24,15 @@ const Home = (): ReactElement => {
   const render = () => {
     return (
       <Page
-        className="home-page wh100 overflow-hidden background"
+        className={`home-page wh100 overflow-hidden background ${systemStore.font.fontSize}`}
         contentClassName="flex-direction-column !p-0"
         loading={homeStore.loading}
+        title={{
+          show: false
+        }}
       >
         {/* 标题栏 */}
-        <TitleBar
-          onHome={() => {
-            homeStore.selectedMenuKeys = [RouterUrls.DASHBOARD.URL]
-            navigate(RouterUrls.DASHBOARD.URL)
-          }}
-        />
+        <TitleBar />
 
         {/* 导航条
         <Navigation

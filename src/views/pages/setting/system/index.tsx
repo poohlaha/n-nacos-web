@@ -61,7 +61,6 @@ const System = (): ReactElement => {
                     min={systemStore.MIN_FONT_SIZE}
                     max={systemStore.MAX_FONT_SIZE}
                     step={1}
-                    value={systemStore.fontSize}
                   />
                 </div>
               </div>

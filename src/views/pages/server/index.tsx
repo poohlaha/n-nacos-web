@@ -122,53 +122,51 @@ const Server = (): ReactElement => {
         className="server-page wh100 overflow"
         loading={serverStore.loading}
         contentClassName="content-box wh100 flex-direction-column"
-      >
-        {/* title */}
-        <div className="page-title flex-align-center">
-          <p className="flex-1 font-bold text-xl">{RouterUrls.SERVER.LIST.NAME}</p>
-          <Button
-            type="primary"
-            className="m-ant-button ml-3"
-            onClick={async () => {
-              serverStore.form = Utils.deepCopy(serverStore.defaultForm)
-              serverStore.showAddDialog = true
-            }}
-          >
-            添 加
-          </Button>
-        </div>
-
-        {/* table */}
-        <div className="page-wrapper flex-1 flex-direction-column pt-5">
-          {/* table */}
-          <Table
-            className="m-ant-table flex-1"
-            columns={COLUMNS}
-            scroll={{ x: 1500 }}
-            dataSource={serverStore.list || []}
-            pagination={false}
-          />
-          {/* pagination */}
-          <div className="flex-jsc-end h-20 flex-align-center page-pagination">
-            <Pagination
-              className="m-ant-pagination"
-              showSizeChanger={false}
-              total={serverStore.list.length}
-              current={serverStore.currentPage}
-              pageSize={serverStore.pageSize}
-              pageSizeOptions={serverStore.pageSizeOptions}
-              showTotal={total => `共 ${total} 条`}
-              onChange={async (page: number, pageSize: number) => {
-                serverStore.currentPage = serverStore.pageSize !== pageSize ? 1 : page
-                serverStore.pageSize = pageSize
-                await serverStore.getList()
+        title={{
+          label: RouterUrls.SERVER.LIST.NAME,
+          right: (
+            <Button
+              type="primary"
+              className="m-ant-button ml-3"
+              onClick={async () => {
+                serverStore.form = Utils.deepCopy(serverStore.defaultForm)
+                serverStore.showAddDialog = true
               }}
-            />
-          </div>
+            >
+              添 加
+            </Button>
+          )
+        }}
+      >
+        {/* table */}
+        <Table
+          className="m-ant-table flex-1"
+          columns={COLUMNS}
+          scroll={{ x: 1500 }}
+          dataSource={serverStore.list || []}
+          pagination={false}
+        />
+        {/* pagination */}
+        <div className="flex-jsc-end h-20 flex-align-center page-pagination">
+          <Pagination
+            className="m-ant-pagination"
+            showSizeChanger={false}
+            total={serverStore.list.length}
+            current={serverStore.currentPage}
+            pageSize={serverStore.pageSize}
+            pageSizeOptions={serverStore.pageSizeOptions}
+            showTotal={total => `共 ${total} 条`}
+            onChange={async (page: number, pageSize: number) => {
+              serverStore.currentPage = serverStore.pageSize !== pageSize ? 1 : page
+              serverStore.pageSize = pageSize
+              await serverStore.getList()
+            }}
+          />
         </div>
 
         {/* 添加服务器 */}
         <Modal
+          rootClassName="m-ant-modal"
           title="添加/编辑服务器"
           open={serverStore.showAddDialog}
           onOk={async () => serverStore.onSave()}
@@ -179,13 +177,14 @@ const Server = (): ReactElement => {
           maskClosable={false}
         >
           <div className="modal-body flex-direction-column">
-            <div className="ip form-item page-margin-top  flex-align-center">
-              <div className="label page-margin-right flex-align-center">
+            <div className="ip form-item mt-4 flex-align-center">
+              <div className="label mr-4 flex-align-center">
                 <p>服务器IP</p>
                 <span className="flex-center">*</span>
               </div>
 
               <Input
+                className="m-ant-input"
                 placeholder="请输入服务器IP"
                 status={serverStore.form.error || ''}
                 maxLength={20}
@@ -201,12 +200,13 @@ const Server = (): ReactElement => {
               />
             </div>
 
-            <div className="port form-item page-margin-top  flex-align-center">
-              <div className="label page-margin-right flex-align-center">
+            <div className="port form-item mt-4 flex-align-center">
+              <div className="label mr-4 flex-align-center">
                 <p>服务器端口</p>
               </div>
 
               <Input
+                className="m-ant-input"
                 placeholder="请输入服务器端口"
                 maxLength={10}
                 value={serverStore.form.port}
@@ -221,13 +221,14 @@ const Server = (): ReactElement => {
               />
             </div>
 
-            <div className="account form-item page-margin-top  flex-align-center">
-              <div className="label page-margin-right flex-align-center">
+            <div className="account form-item mt-4 flex-align-center">
+              <div className="label mr-4 flex-align-center">
                 <p>服务器账号</p>
                 <span className="flex-center">*</span>
               </div>
 
               <Input
+                className="m-ant-input"
                 placeholder="请输入服务器账号"
                 maxLength={200}
                 value={serverStore.form.account}
@@ -242,13 +243,14 @@ const Server = (): ReactElement => {
               />
             </div>
 
-            <div className="pwd form-item page-margin-top  flex-align-center">
-              <div className="label page-margin-right flex-align-center">
+            <div className="pwd form-item mt-4 flex-align-center">
+              <div className="label mr-4 flex-align-center">
                 <p>服务器密码</p>
                 <span className="flex-center">*</span>
               </div>
 
               <Input.Password
+                className="m-ant-input"
                 placeholder="请输入服务器密码"
                 status={serverStore.form.error || ''}
                 maxLength={200}
@@ -265,12 +267,13 @@ const Server = (): ReactElement => {
               />
             </div>
 
-            <div className="name form-item page-margin-top  flex-align-center">
-              <div className="label page-margin-right flex-align-center">
+            <div className="name form-item mt-4 flex-align-center">
+              <div className="label mr-4 flex-align-center">
                 <p>服务器名称</p>
               </div>
 
               <Input
+                className="m-ant-input"
                 placeholder="请输入服务器名称"
                 maxLength={100}
                 value={serverStore.form.name}
@@ -282,11 +285,12 @@ const Server = (): ReactElement => {
               />
             </div>
 
-            <div className="desc form-item page-margin-top  flex-align-center">
-              <div className="label page-margin-right flex-align-center">
+            <div className="desc form-item mt-4 flex-align-center">
+              <div className="label mr-4 flex-align-center">
                 <p>描述信息</p>
               </div>
               <Input.TextArea
+                className="m-ant-input"
                 placeholder="请输入描述信息"
                 maxLength={200}
                 value={serverStore.form.desc}

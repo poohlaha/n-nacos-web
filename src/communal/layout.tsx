@@ -60,8 +60,9 @@ const RenderRoutes = (routes: RouteInterface[]) => {
 }
 
 // 切换皮肤
-const switchSkin = (skin: string = '') => {
+const switchSkin = (skin: string = '', font: { [K: string]: any } = {}) => {
   let classList = document.body.classList || []
+
   const remove = () => {
     if (skin === CONSTANT.SKINS[0]) {
       classList.remove(CONSTANT.SKINS[1])
@@ -74,13 +75,17 @@ const switchSkin = (skin: string = '') => {
   if (!classList.contains(skin)) {
     classList.add(skin)
   }
+
+  if (!classList.contains(font.fontSize)) {
+    classList.add(font.fontSize)
+  }
 }
 
 const Layout = (): ReactElement => {
-  const { commonStore } = useStore()
+  const { commonStore, systemStore } = useStore()
 
   useEffect(() => {
-    switchSkin(commonStore.skin)
+    switchSkin(commonStore.skin, systemStore.font || {})
   }, [commonStore.skin])
 
   const px2rem = px2remTransformer({

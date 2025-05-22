@@ -399,7 +399,7 @@ body {
 }
 
 .font-bold {
-  font-weight: bold;
+  .font-weight-bold();
 }
 
 .page-white {
@@ -412,7 +412,20 @@ body {
   border-color: #ffd591;
 }
 
+.bg-transparent {
+  background: transparent;
+}
+
 .center {
   // width: 1200px;
   margin: 0 auto;
+}
+
+.font-unset() {
+  font-size: unset !important;
+  font-family: unset !important;
+}
+
+.font-weight-bold() {
+  font-weight: 550 !important;
 }

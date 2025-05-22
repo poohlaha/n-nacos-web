@@ -9,8 +9,10 @@ import Templates from './templates/template.json'
 import { Drawer } from 'antd'
 import Page from '@views/modules/page'
 import RouterUrls from '@route/router.url.toml'
+import { useStore } from '@views/stores'
 
 const PipelinePluginMarket = (): ReactElement => {
+  const { systemStore } = useStore()
   const [open, setOpen] = useState(false)
   const [selectedPlugin, setSelectedPlugin] = useState<any>(null)
 
@@ -19,7 +21,7 @@ const PipelinePluginMarket = (): ReactElement => {
    */
   const getTemplateHtml = (title: string = '', desc: string = '', date: string = '', onClick?: Function) => {
     return (
-      <div className="template-item cursor-pointer flex-direction-column" onClick={() => onClick?.()}>
+      <div className="template-item cursor-pointer flex-direction-column rounded-md" onClick={() => onClick?.()}>
         <div className="item-top flex">
           <div className="svg-box">
             <svg
@@ -47,17 +49,22 @@ const PipelinePluginMarket = (): ReactElement => {
             </svg>
           </div>
 
-          <div className="item-top-right flex-1">
-            <p className="over-two-ellipsis title">{title || ''}</p>
-            <div className="desc flex">
+          <div className="mt-3 flex-1">
+            <p className="over-two-ellipsis title font-bold">{title || ''}</p>
+            <div className={`desc mt-1 flex ${systemStore.font.descFontSize || ''}`}>
               <p>自定义插件</p>
               <p className="spec">|</p>
               <p>构建</p>
             </div>
           </div>
         </div>
-        <div className="item-desc over-two-ellipsis flex-1">{desc || ''}</div>
-        <div className="item-footer flex-jsc-between">
+        <div
+          className={`item-desc over-two-ellipsis flex-1 mt-3 color-gray-lighter ${systemStore.font.descFontSize || ''}`}
+        >
+          {desc || ''}
+        </div>
+
+        <div className={`item-footer flex-jsc-between ${systemStore.font.descFontSize || ''}`}>
           <div className="item-footer-left flex-align-center">
             <div className="svg-box flex-align-center">
               <svg
@@ -75,7 +82,7 @@ const PipelinePluginMarket = (): ReactElement => {
           </div>
 
           <div className="item-footer-right">
-            <div className="button tag-orange">发布</div>
+            <div className="button tag-orange rounded pl-2 pr-2">发布</div>
           </div>
         </div>
       </div>
@@ -88,17 +95,14 @@ const PipelinePluginMarket = (): ReactElement => {
     let language = prism.languages['json']
     const html = prism.highlight(JSON.stringify(selectedPlugin || '', null, 2), language, 'json')
     return (
-      <Page className="pipeline-plugin-market-page overflow-y-auto">
-        {/* title */}
-        <div className="page-title flex-align-center">
-          <p className="flex-1 font-bold text-xl">{RouterUrls.PIPELINE.MARKET.NAME}</p>
-        </div>
-
-        {/* form */}
-        <div className="form"></div>
-
+      <Page
+        className="pipeline-plugin-market-page overflow-y-auto"
+        title={{
+          label: RouterUrls.PIPELINE.MARKET.NAME
+        }}
+      >
         {/* list */}
-        <div className="plugin-list w100 page-margin-top grid gap-4 auto-rows-auto mt-4 lg:grid-cols-2 xl:grid-cols-4 pb-6">
+        <div className="plugin-list w100 grid gap-4 auto-rows-auto lg:grid-cols-2 xl:grid-cols-4 pb-6">
           {Templates.map((template: { [K: string]: any }, index: number) => {
             return (
               <div key={template.key || `${index}`} className="plugin-item mb-5">
@@ -112,6 +116,7 @@ const PipelinePluginMarket = (): ReactElement => {
         </div>
 
         <Drawer
+          rootClassName="m-ant-drawer"
           title={selectedPlugin?.title || ''}
           width={500}
           onClose={() => {

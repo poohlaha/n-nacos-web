@@ -13,11 +13,10 @@ import useMount from '@hooks/useMount'
 import { ADDRESS } from '@utils/base'
 import Utils from '@utils/utils'
 import RouterUrls from '@route/router.url.toml'
-import CommonHtmlHandler from '@views/handlers/common'
 
 const TagDetail = (): ReactElement => {
   const navigate = useNavigate()
-  const { noteStore } = useStore()
+  const { noteStore, systemStore } = useStore()
 
   useMount(async () => {
     let { id, yearName, monthName } = getParams()
@@ -60,9 +59,9 @@ const TagDetail = (): ReactElement => {
     let arr = []
     arr.push({
       children: (
-        <div className="timeline-title flex-align-center">
+        <div className={`timeline-title flex-align-center ${systemStore.font.titleFontSize || ''}`}>
           <p>{title}</p>
-          <p className="spec">-</p>
+          <p className="spec ml-1 mr-1">-</p>
           <p>{decodeURIComponent(name || '') || ''}</p>
         </div>
       )
@@ -92,7 +91,9 @@ const TagDetail = (): ReactElement => {
         arr.push({
           children: (
             <div className="timeline-article flex-direction-column">
-              <div className="article-desc flex-align-center">
+              <div
+                className={`article-desc flex-align-center ${systemStore.font.descFontSize || ''} color-gray-lighter`}
+              >
                 <div className="svg-box">
                   <svg
                     className="svg-icon wh100 flex-center"
@@ -130,10 +131,12 @@ const TagDetail = (): ReactElement => {
       <Page
         className="article-tag-detail-page wh100 overflow-hidden"
         contentClassName="page-content position-relative overflow-hidden page-padding"
+        title={{
+          needBack: true
+        }}
       >
-        <div className="article-content !p-10 min-h100 center flex-direction-column overflow">
-          {CommonHtmlHandler.getBackNode('relative -left-[6px]')}
-          <Timeline className="article-tag-timeline mt-4" items={getContent()} />
+        <div className="article-content !p-8 rounded-md min-h100 center flex-direction-column overflow background">
+          <Timeline className="article-tag-timeline mt-4 m-ant-timeline" items={getContent()} />
         </div>
       </Page>
     )

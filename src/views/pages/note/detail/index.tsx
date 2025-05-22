@@ -14,13 +14,11 @@ import RouterUrls from '@route/router.url.toml'
 import Utils from '@utils/utils'
 import useMount from '@hooks/useMount'
 import { ADDRESS } from '@utils/base'
-import Loading from '@views/components/loading/loading'
 import Page from '@views/modules/page'
-import CommonHtmlHandler from '@views/handlers/common'
 
 const ArticleDetail = (): ReactElement => {
   const navigate = useNavigate()
-  const { noteStore } = useStore()
+  const { noteStore, systemStore } = useStore()
   const [id, setId] = useState('')
 
   useMount(async () => {
@@ -98,36 +96,34 @@ const ArticleDetail = (): ReactElement => {
       <Page
         className="article-detail-page wh100 overflow-hidden"
         contentClassName="page-content position-relative overflow page-padding"
+        title={{
+          label: noteStore.detail?.title || '',
+          needBack: true,
+          right: getActionNode()
+        }}
       >
-        <div className="article-content flex w100 min-h100 center flex-direction-column background overflow">
-          <div className="flex-align-center">
-            {CommonHtmlHandler.getBackNode()}
-            <p className="article-title font-bold text-xl ml-2 flex-1">{noteStore.detail?.title || ''}</p>
-
-            {/* 操作 */}
-            {getActionNode()}
-          </div>
-          <div className="article-desc flex-align-center">
+        <div className="article-content rounded-md p-4 flex w100 min-h100 center flex-direction-column background overflow">
+          <div className={`article-desc flex-align-center ${systemStore.font.descFontSize || ''}`}>
             <div className="create flex-align-center">
               <p>发表于</p>
               <p>{noteStore.detail?.createTime || '-'}</p>
             </div>
 
-            {!Utils.isBlank(noteStore.detail?.updateTime || '') && <span className="spec">|</span>}
+            {!Utils.isBlank(noteStore.detail?.updateTime || '') && <span className="spec ml-1 mr-1">|</span>}
 
             {!Utils.isBlank(noteStore.detail?.updateTime || '') && (
-              <div className="update flex-align-center">
+              <div className={`update flex-align-center ${systemStore.font.descFontSize || ''}`}>
                 <p>更新于</p>
                 <p>{noteStore.detail?.updateTime || '-'}</p>
               </div>
             )}
           </div>
 
-          <div className="article-desc flex-align-center">
+          <div className={`article-desc flex-align-center ${systemStore.font.descFontSize || ''}`}>
             {(noteStore.detail?.tags || []).map((t: string = '') => {
               return (
                 <div className="flex-wrap" key={t}>
-                  <Tag>{t || ''}</Tag>
+                  <Tag className="m-ant-tag">{t || ''}</Tag>
                 </div>
               )
             })}
@@ -145,8 +141,6 @@ const ArticleDetail = (): ReactElement => {
             </div>
           </div>
         </div>
-
-        <Loading show={noteStore.loading} />
       </Page>
     )
   }

@@ -9,6 +9,18 @@ import { observable } from 'mobx'
 class SystemStore extends BaseStore {
   readonly FONT_FAMILY_LIST: Array<{ [K: string]: any }> = [
     {
+      label: 'PingFangSC-Regular',
+      value: 'PingFangSC-Regular'
+    },
+    {
+      label: 'PingFang SC',
+      value: 'PingFangSC'
+    },
+    {
+      label: 'sans-serif',
+      value: 'sans-serif'
+    },
+    {
       label: '阿里妈妈方圆体',
       value: 'Alimama'
     },
@@ -30,7 +42,12 @@ class SystemStore extends BaseStore {
   readonly MAX_FONT_SIZE = 24
 
   @observable selectedFontFamily: string = this.FONT_FAMILY_LIST[0].value
-  @observable fontSize: number = 14
+  @observable font: { [K: string]: any } = {
+    titleFontSize: 'text-2xl',
+    fontSize: 'text-xl',
+    descFontSize: 'text-sm',
+    fontFamily: this.FONT_FAMILY_LIST[2].value
+  }
   @observable startAuto: boolean = false
 }
 

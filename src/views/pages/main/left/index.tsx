@@ -63,7 +63,7 @@ const Left = (props: ILeftProps): ReactElement => {
   const render = () => {
     // const list = generateMenuItems(homeStore.MENU_LIST || [])
     return (
-      <div className="left w-16 flex-align-center border-right flex-direction-column background-gay">
+      <div className="left w-16 flex-align-center border-right flex-direction-column background-gay absolute h100 top-0 z-100">
         <div className="person-info p-3 border-bottom flex-align-center">
           <Dropdown menu={{ items: getMenuItems() }} placement="bottom" trigger={['click']} arrow>
             <div className="avatar flex-align-center relative cursor-pointer">
@@ -108,7 +108,7 @@ const Left = (props: ILeftProps): ReactElement => {
           </div>
         </div>
 
-        <div className="flex-direction-column flex-center border-top">
+        <div className="flex-direction-column flex-center border-top w100">
           {/* 系统设置 */}
           <div
             className="w-8 h-8 p-1.5 mb-4 cursor-pointer flex-center bg-menu-hover rounded mt-2"

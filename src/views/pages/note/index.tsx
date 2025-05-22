@@ -16,7 +16,7 @@ import { SyntaxHighlightedCode } from '@views/modules/page/type'
 import Page from '@views/modules/page'
 
 const ArticleList = (): ReactElement => {
-  const { noteStore } = useStore()
+  const { noteStore, systemStore } = useStore()
   const navigate = useNavigate()
 
   useMount(async () => {
@@ -104,8 +104,11 @@ const ArticleList = (): ReactElement => {
         className="article-list-page wh100 overflow-hidden"
         contentClassName="page-content position-relative overflow"
         loading={noteStore.loading}
+        title={{
+          show: false
+        }}
       >
-        <div className="article-content flex w100 min-h100 center p-5">
+        <div className="article-content flex w100 min-h100 center pt-5">
           <div className="box-left flex-1 flex-direction-column">
             <div className="flex-1 flex-direction-column">
               {list.length > 0 &&
@@ -116,7 +119,7 @@ const ArticleList = (): ReactElement => {
                       <div className="content-info flex-direction-column h100 flex-jsc-between">
                         <div className="flex-direction-column">
                           <p
-                            className="item-title font-bold over-two-ellipsis cursor-pointer"
+                            className={`item-title font-bold over-two-ellipsis cursor-pointer ${systemStore.font.titleFontSize || ''}`}
                             onClick={() => {
                               navigate(
                                 `${RouterUrls.NOTE.URL}${RouterUrls.NOTE.DETAIL.URL}?id=${Utils.encrypt(encodeURIComponent(item.id || ''))}`
@@ -126,7 +129,9 @@ const ArticleList = (): ReactElement => {
                             {item.title || ''}
                           </p>
 
-                          <div className="item-desc flex-align-center">
+                          <div
+                            className={`item-desc mt-3 color-gray-lighter flex-align-center ${systemStore.font.descFontSize || ''}`}
+                          >
                             <svg
                               className="svg-icon"
                               viewBox="0 0 1024 1024"
@@ -138,10 +143,10 @@ const ArticleList = (): ReactElement => {
                                 fill="currentColor"
                               ></path>
                             </svg>
-                            <div className="desc flex-align-center">
+                            <div className="desc flex-align-center mt-2">
                               <p>发表于</p>
                               <p>{item.createTime || ''}</p>
-                              {!Utils.isBlank(item.updateTime || '') && <span className="spec">|</span>}
+                              {!Utils.isBlank(item.updateTime || '') && <span className="spec ml-1 mr-1">|</span>}
 
                               {!Utils.isBlank(item.updateTime || '') && (
                                 <div className="update flex-align-center">
@@ -153,7 +158,9 @@ const ArticleList = (): ReactElement => {
                           </div>
 
                           {tags.length > 0 && (
-                            <div className="item-desc flex-align-center">
+                            <div
+                              className={`item-desc tags mt-2 flex-align-center ${systemStore.font.descFontSize || ''}`}
+                            >
                               {tags.map((t: string = '') => {
                                 return (
                                   <div className="flex-wrap" key={t}>
@@ -166,7 +173,7 @@ const ArticleList = (): ReactElement => {
                         </div>
 
                         <Popover
-                          overlayClassName="card-item-popover"
+                          rootClassName="m-ant-popover card-item-popover"
                           placement="right"
                           content={getCardContent(item.content || '')}
                           title=""
@@ -378,7 +385,12 @@ const ArticleList = (): ReactElement => {
                             )
                           }}
                         >
-                          <Tag color={tagColorList[tagIndex]}>{item.name || ''}</Tag>
+                          <Tag
+                            className={`m-ant-tag ${systemStore.font.descFontSize || ''}`}
+                            color={tagColorList[tagIndex]}
+                          >
+                            {item.name || ''}
+                          </Tag>
                         </div>
                       )
                     })}

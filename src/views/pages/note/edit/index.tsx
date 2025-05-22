@@ -57,6 +57,7 @@ const ArticleEdit = (): ReactElement => {
         <div className="article-content flex wh100">
           <div className="article-content-left flex-1">
             <Input.TextArea
+              className="m-ant-input"
               placeholder="请输入"
               value={noteStore.form.content}
               onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

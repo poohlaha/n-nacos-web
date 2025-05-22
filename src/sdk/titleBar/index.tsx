@@ -12,11 +12,12 @@ import createTrayMenu from '@communal/tray'
 import { LogicalPosition } from '@tauri-apps/api/dpi'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 
+// @ts-ignore
 interface ITitleBarProps {
   onHome: () => void
 }
 
-const TitleBar = (props: ITitleBarProps): ReactElement => {
+const TitleBar = (): ReactElement => {
   const [alwaysOnTop, setAlwaysOnTop] = useState(false)
 
   useMount(async () => {
@@ -54,11 +55,11 @@ const TitleBar = (props: ITitleBarProps): ReactElement => {
 
   const render = () => {
     return (
-      <div className="title-bar relative z-999 left-0 w-full top-0 h-10 pt-1 pb-1 pl-2 pr-2 select-none flex-jsc-between flex flex-shrink-0 items-center grap-4 background">
+      <div className="title-bar relative bg-transparent z-999 left-0 w-full top-0 h-10 pt-1 pb-1 pl-2 pr-2 select-none flex-jsc-end flex flex-shrink-0 items-center grap-4">
         {/* 拖拽区域 */}
         <div className=" absolute left-0 top-0 z-0 h-full w-full" data-tauri-drag-region></div>
 
-        {/* LOGO */}
+        {/* LOGO
         <div className="z-1 flex items-center pl-2 cursor-pointer" onClick={props.onHome}>
           <div className="svg-box cursor-pointer w-6 h-6">
             <svg
@@ -76,6 +77,7 @@ const TitleBar = (props: ITitleBarProps): ReactElement => {
             </svg>
           </div>
         </div>
+         */}
 
         {/* 右侧按钮 */}
         <div className="relative right z-1 flex items-center gap-1">
