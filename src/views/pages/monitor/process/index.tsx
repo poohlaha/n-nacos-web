@@ -212,6 +212,8 @@ const Index = (): ReactElement => {
           maskClosable={false}
         >
           <Select
+            className="m-ant-select"
+            rootClassName="m-ant-select-dropdown"
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="请选择进程"

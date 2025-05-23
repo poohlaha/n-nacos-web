@@ -157,7 +157,7 @@ const QuickLook = (): ReactElement => {
   const getListDisplayIcon = () => {
     return (
       <div
-        className={`svg-box color-svg ml-2 w-8 h-8 p-1 cursor-pointer rounded bg-menu-hover ${lookStore.activeDisplayName === 'list' ? 'bg-menu-active' : ''}`}
+        className={`svg-box color-desc ml-2 w-8 h-8 p-1 cursor-pointer rounded bg-menu-hover ${lookStore.activeDisplayName === 'list' ? 'bg-menu-active' : ''}`}
         onClick={() => lookStore.onSetActiveDisplayName('list')}
       >
         <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -176,7 +176,7 @@ const QuickLook = (): ReactElement => {
   const getGridDisplayIcon = () => {
     return (
       <div
-        className={`svg-box color-svg w-8 h-8 p-1 cursor-pointer rounded bg-menu-hover ${lookStore.activeDisplayName === 'grid' ? 'bg-menu-active' : ''}`}
+        className={`svg-box color-desc w-8 h-8 p-1 cursor-pointer rounded bg-menu-hover ${lookStore.activeDisplayName === 'grid' ? 'bg-menu-active' : ''}`}
         onClick={() => lookStore.onSetActiveDisplayName('grid')}
       >
         <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -192,7 +192,7 @@ const QuickLook = (): ReactElement => {
   const getFileIcon = (text: string = '') => {
     return (
       <div className={`svg-box relative w100 flex-center ${lookStore.activeDisplayName === 'grid' ? 'h-24' : 'h-6'}`}>
-        <svg className="wh100 color-svg" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <svg className="wh100 color-desc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M642 673.1H301.6c-9.9 0-17.9-8-17.9-17.9s8-17.9 17.9-17.9H642c9.9 0 17.9 8 17.9 17.9s-8 17.9-17.9 17.9zM642 511.8H301.6c-9.9 0-17.9-8-17.9-17.9 0-9.9 8-17.9 17.9-17.9H642c9.9 0 17.9 8 17.9 17.9 0 9.9-8 17.9-17.9 17.9zM480.7 350.6H301.6c-9.9 0-17.9-8-17.9-17.9s8-17.9 17.9-17.9h179.2c9.9 0 17.9 8 17.9 17.9s-8.1 17.9-18 17.9zM874.9 350.6H695.7c-49.4 0-89.6-40.2-89.6-89.6V81.9c0-9.9 8-17.9 17.9-17.9 9.9 0 17.9 8 17.9 17.9V261c0 29.6 24.1 53.7 53.7 53.7h179.2c9.9 0 17.9 8 17.9 17.9s-7.9 18-17.8 18z"
             fill="currentColor"
@@ -326,7 +326,7 @@ const QuickLook = (): ReactElement => {
         >
           {list.length > lookStore.size && (
             <div
-              className="w-6 h-6 absolute right-4 bottom-4 cursor-pointer color-svg"
+              className="w-6 h-6 absolute right-4 bottom-4 cursor-pointer color-desc"
               onClick={() => {
                 ref.current?.scrollTo({
                   top: 0,
@@ -361,7 +361,7 @@ const QuickLook = (): ReactElement => {
             {list.map((file: { [K: string]: any } = {}, index: number) => {
               return (
                 <div className="p-4 flex-center w-36 look-item-box flex-align-start" key={index}>
-                  <div className="w-28 flex-direction-column flex-align-center cursor-pointer look-item rounded p-2">
+                  <div className="w-28 flex-direction-column flex-align-center cursor-pointer look-item bg-menu-hover rounded-md p-2">
                     {getIconByFileType(file || {})}
                     <p className="text-c mt-1 text-sm word-break over-two-ellipsis max-h-10 w-24 pl-2 pr-2">
                       {(file.fileName || '').replaceAll('"', '').trim()}
@@ -621,13 +621,15 @@ const QuickLook = (): ReactElement => {
     const height = getTableHeight()
 
     return (
-      <Page className="look-page overflow-hidden" loading={lookStore.loading} contentClassName="flex-direction-column">
-        {/* title */}
-        <div className="page-title flex-align-center">
-          <p className="flex-1 font-bold text-xl">{RouterUrls.TOOLS.FILELOOK.NAME}</p>
-        </div>
-
-        <div className="page-content text-sm flex-1 flex-direction-column">
+      <Page
+        className="look-page overflow-hidden"
+        loading={lookStore.loading}
+        contentClassName="flex-direction-column"
+        title={{
+          label: RouterUrls.TOOLS.FILELOOK.NAME || ''
+        }}
+      >
+        <div className="page-content flex-1 flex-direction-column">
           {/* search */}
           <div className="page-search p-5 flex-align-center">
             <div className="search-item flex-align-center h-10 w100">

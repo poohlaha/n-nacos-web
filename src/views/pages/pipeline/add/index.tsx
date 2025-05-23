@@ -225,6 +225,7 @@ const PipelineAdd = (): ReactElement => {
             </div>
             <Select
               className="m-ant-select"
+              rootClassName="m-ant-select-dropdown"
               style={{ width: 350 }}
               onChange={(value: string = '') => {
                 setServerId(value || '')
@@ -348,7 +349,7 @@ const PipelineAdd = (): ReactElement => {
   const render = () => {
     return (
       <Page
-        className="pipeline-add-page page-white overflow-y-auto page-padding-left page-padding-right page-padding-bottom"
+        className="pipeline-add-page overflow-y-auto page-padding-left page-padding-right page-padding-bottom"
         breadCrumbItemList={homeStore.getBreadcrumbItemList('', true)}
         loading={pipelineStore.loading}
       >

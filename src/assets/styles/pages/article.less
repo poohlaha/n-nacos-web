@@ -47,8 +47,6 @@
     height: fit-content;
 
     .content-item {
-      border-radius: 12px 8px 8px 12px;
-      background: #ffffff;
       box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.06);
       transition: all 0.3s;
       min-height: 100px;
@@ -65,7 +63,7 @@
           transition: all 0.2s ease-in-out;
 
           &:hover {
-            color: @theme;
+            color: @color_active;
           }
         }
 
@@ -95,9 +93,7 @@
 
     .info-item {
       padding: 20px;
-      background: #ffffff;
       min-height: 100px;
-      border-radius: 8px;
       box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.06);
       transition: box-shadow 0.3s;
 
@@ -139,7 +135,7 @@
               background: @color_menu_active;
               border-radius: 4px;
               cursor: pointer;
-              color: @theme;
+              color: @color_active;
 
               p:last-child {
                 color: @theme_orange!important;
@@ -255,7 +251,7 @@
           top: 14.5px;
           width: 12px;
           height: 12px;
-          border: 3px solid @theme;
+          border: 3px solid @color_active;
           border-radius: 12px;
           background: 0 0;
           content: '';
@@ -266,7 +262,7 @@
           overflow-wrap: break-word;
 
           &:hover {
-            color: @theme;
+            color: @color_active;
           }
         }
 
@@ -359,7 +355,7 @@
           transition: all 0.3s;
 
           &:hover {
-            color: @theme;
+            color: @color_active;
             transform: translateX(10px);
           }
         }

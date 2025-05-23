@@ -24,7 +24,7 @@ const Home = (): ReactElement => {
   const render = () => {
     return (
       <Page
-        className={`home-page wh100 overflow-hidden background ${systemStore.font.fontSize}`}
+        className={`home-page wh100 overflow-hidden background-right ${systemStore.font.fontSize}`}
         contentClassName="flex-direction-column !p-0"
         loading={homeStore.loading}
         title={{

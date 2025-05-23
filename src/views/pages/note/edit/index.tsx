@@ -26,7 +26,7 @@ const ArticleEdit = (): ReactElement => {
 
   const getActionNode = () => {
     return (
-      <Tooltip title="保存">
+      <Tooltip rootClassName="m-ant-tooltip" title="保存">
         <div
           className="save-button page-margin-left cursor-pointer"
           onClick={() => {
@@ -121,6 +121,8 @@ const ArticleEdit = (): ReactElement => {
                   <span className="flex-center">*</span>
                 </div>
                 <Select
+                  className="m-ant-select"
+                  rootClassName="m-ant-select-dropdown"
                   mode="tags"
                   style={{ width: '100%' }}
                   maxCount={10}

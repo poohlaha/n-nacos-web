@@ -15,7 +15,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons'
 import { useNavigate } from 'react-router'
 
 const Server = (): ReactElement => {
-  const { serverStore } = useStore()
+  const { serverStore, commonStore } = useStore()
   const navigate = useNavigate()
 
   useMount(async () => {
@@ -79,7 +79,7 @@ const Server = (): ReactElement => {
         return (
           <div className="actions flex-align-center flex-jsc-end">
             <div
-              className="theme-blue-color mr-2"
+              className={`${commonStore.onJudgeDark() ? 'color' : 'theme-blue-color'} mr-2`}
               onClick={() => {
                 navigate(
                   `${RouterUrls.SERVER.URL}${RouterUrls.SERVER.DETAIL.URL}?&id=${Utils.encrypt(encodeURIComponent(record.id || ''))}`
@@ -89,7 +89,7 @@ const Server = (): ReactElement => {
               详情
             </div>
             <div
-              className="theme-blue-color mr-2"
+              className={`${commonStore.onJudgeDark() ? 'color' : 'theme-blue-color'} mr-2`}
               onClick={() => {
                 serverStore.showAddDialog = true
                 serverStore.form = Utils.deepCopy(record)
@@ -98,7 +98,7 @@ const Server = (): ReactElement => {
               修改
             </div>
             <Popconfirm
-              rootClassName="m-ant-popover"
+              rootClassName={`m-ant-popover ${commonStore.skin || ''}`}
               title={RouterUrls.SERVER.LIST.NAME}
               description="是否删除此项?"
               key={record.id}
@@ -166,7 +166,7 @@ const Server = (): ReactElement => {
 
         {/* 添加服务器 */}
         <Modal
-          rootClassName="m-ant-modal"
+          rootClassName={`m-ant-modal ${commonStore.skin || ''}`}
           title="添加/编辑服务器"
           open={serverStore.showAddDialog}
           onOk={async () => serverStore.onSave()}

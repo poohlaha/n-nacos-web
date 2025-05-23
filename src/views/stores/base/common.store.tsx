@@ -40,6 +40,13 @@ class CommonStore extends BaseStore {
 
     this.skin = skin
   }
+
+  /**
+   * 判断是不是黑色
+   */
+  onJudgeDark() {
+    return this.skin === CONSTANT.SKINS[1]
+  }
 }
 
 export default new CommonStore()

@@ -25,7 +25,7 @@ const ArticleList = (): ReactElement => {
 
   const getWriteNode = () => {
     return (
-      <Tooltip title="写作">
+      <Tooltip rootClassName="m-ant-tooltip" title="写作">
         <div
           className="absolute article-button theme w-6 h-6 flex-align-center cursor-pointer left-4 top-4"
           onClick={() => {
@@ -115,7 +115,10 @@ const ArticleList = (): ReactElement => {
                 list.map((item: { [K: string]: any } = {}, index: number) => {
                   let tags = item.tags || []
                   return (
-                    <div className={`content-item ${index !== 0 ? 'page-margin-top' : ''}`} key={item.id || index}>
+                    <div
+                      className={`content-item rounded-md bg-card ${index !== 0 ? 'page-margin-top' : ''}`}
+                      key={item.id || index}
+                    >
                       <div className="content-info flex-direction-column h100 flex-jsc-between">
                         <div className="flex-direction-column">
                           <p
@@ -130,7 +133,7 @@ const ArticleList = (): ReactElement => {
                           </p>
 
                           <div
-                            className={`item-desc mt-3 color-gray-lighter flex-align-center ${systemStore.font.descFontSize || ''}`}
+                            className={`item-desc mt-3 color-desc flex-align-center ${systemStore.font.descFontSize || ''}`}
                           >
                             <svg
                               className="svg-icon"
@@ -143,7 +146,7 @@ const ArticleList = (): ReactElement => {
                                 fill="currentColor"
                               ></path>
                             </svg>
-                            <div className="desc flex-align-center mt-2">
+                            <div className="desc flex-align-center mtl-2">
                               <p>发表于</p>
                               <p>{item.createTime || ''}</p>
                               {!Utils.isBlank(item.updateTime || '') && <span className="spec ml-1 mr-1">|</span>}
@@ -159,12 +162,12 @@ const ArticleList = (): ReactElement => {
 
                           {tags.length > 0 && (
                             <div
-                              className={`item-desc tags mt-2 flex-align-center ${systemStore.font.descFontSize || ''}`}
+                              className={`item-desc tags mt-2 color-desc flex-align-center ${systemStore.font.descFontSize || ''}`}
                             >
                               {tags.map((t: string = '') => {
                                 return (
                                   <div className="flex-wrap" key={t}>
-                                    <Tag>{t || ''}</Tag>
+                                    <Tag className="m-ant-tag">{t || ''}</Tag>
                                   </div>
                                 )
                               })}
@@ -208,7 +211,7 @@ const ArticleList = (): ReactElement => {
 
           <div className="box-right">
             {/* 网站信息 */}
-            <div className="info-list info-item">
+            <div className="info-list info-item rounded-md bg-card">
               <div className="list-item-title new-list-title flex-align-center">
                 <div className="svg-box">
                   <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -242,7 +245,7 @@ const ArticleList = (): ReactElement => {
             </div>
 
             {/* 最新文章 */}
-            <div className="new-list info-item page-margin-top">
+            <div className="new-list info-item mt-3 rounded-md bg-card">
               <div className="list-item-title new-list-title flex-align-center">
                 <div className="svg-box">
                   <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -284,7 +287,7 @@ const ArticleList = (): ReactElement => {
 
             {/* 分类 */}
             {tagClassifyList.length > 0 && (
-              <div className="feilei-list info-item page-margin-top">
+              <div className="feilei-list info-item mt-3 rounded-md bg-card">
                 <div className="list-item-title new-list-title flex-jsc-between">
                   <div className="flex-align-center list-item-title-left flex-1">
                     <div className="svg-box flex-center">
@@ -353,7 +356,7 @@ const ArticleList = (): ReactElement => {
 
             {/* 标签 */}
             {tagList.length > 0 && (
-              <div className="tag-list info-item page-margin-top">
+              <div className="tag-list info-item mt-3 rounded-md bg-card">
                 <div className="list-item-title new-list-title flex-align-center">
                   <div className="svg-box">
                     <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -401,7 +404,7 @@ const ArticleList = (): ReactElement => {
 
             {/* 归档 */}
             {archiveList.length > 0 && (
-              <div className="guidang-list info-item page-margin-top">
+              <div className="guidang-list info-item mt-3 rounded-md bg-card">
                 <div className="list-item-title new-list-title flex-align-center">
                   <div className="svg-box">
                     <svg className="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">

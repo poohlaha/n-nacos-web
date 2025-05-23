@@ -138,7 +138,7 @@ const Pipeline = (): ReactElement => {
     return 'step-gray'
   }
 
-  const tableHeaders: Array<{ [K: string]: any }> = [
+  const COLUMNS: Array<{ [K: string]: any }> = [
     {
       title: '流水线名称',
       dataIndex: 'name',
@@ -181,7 +181,7 @@ const Pipeline = (): ReactElement => {
         return (
           <div
             dangerouslySetInnerHTML={{ __html: record.basic?.desc || '' }}
-            className="color-gray-lighter"
+            className="color-desc"
             style={{ whiteSpace: 'pre-line' }}
           ></div>
         )
@@ -240,7 +240,13 @@ const Pipeline = (): ReactElement => {
           let className = getStepClassName(stageIndex, status, i)
           let label = (s.groups || []).map((ss: { [K: string]: any }) => ss.label).join(',')
           arr.push(
-            <Tooltip key={i} className="tooltip-question m-ant-tooltip" placement="top" title={label || ''}>
+            <Tooltip
+              key={i}
+              rootClassName="m-ant-tooltip"
+              className="tooltip-question"
+              placement="top"
+              title={label || ''}
+            >
               <div className="step-box">
                 <div className={`step ${className || ''}`} />
               </div>
@@ -392,6 +398,7 @@ const Pipeline = (): ReactElement => {
               {/* 状态 */}
               <Select
                 className="mr-2 m-ant-select"
+                rootClassName="m-ant-select-dropdown"
                 placeholder="请选择运行状态"
                 style={{ width: 180 }}
                 allowClear
@@ -421,7 +428,7 @@ const Pipeline = (): ReactElement => {
               />
 
               {/* search */}
-              <Tooltip title="查询" className="m-ant-tooltip">
+              <Tooltip title="查询" rootClassName="m-ant-tooltip">
                 <Button
                   className="mr-2 m-ant-button"
                   type="primary"
@@ -436,7 +443,7 @@ const Pipeline = (): ReactElement => {
               </Tooltip>
 
               {/* 刷新 */}
-              <Tooltip title="刷新" className="m-ant-tooltip">
+              <Tooltip title="刷新" rootClassName="m-ant-tooltip">
                 <Button
                   className="mr-2 m-ant-button"
                   shape="circle"
@@ -465,7 +472,7 @@ const Pipeline = (): ReactElement => {
             <Table
               className="m-ant-table wh100"
               rowKey="id"
-              columns={tableHeaders || []}
+              columns={COLUMNS || []}
               dataSource={pipelineStore.list || []}
               scroll={{ x: 1500, y: 300 }}
               rowSelection={{

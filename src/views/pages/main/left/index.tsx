@@ -95,11 +95,14 @@ const Left = (props: ILeftProps): ReactElement => {
             {(homeStore.MENU_LIST || []).map((item: { [K: string]: any } = {}, index: number) => {
               return (
                 <div
-                  className="w-8 h-8 p-1.5 mb-4 cursor-pointer flex-center bg-menu-hover rounded color-svg"
+                  className={`w-8 h-8 p-1.5 mb-4 cursor-pointer flex-center bg-menu-hover rounded color-svg ${item.key === homeStore.selectedMenu ? 'bg-menu-active' : ''}`}
                   key={index}
-                  onClick={() => navigate(`${item.parentUrl || ''}${item.url || ''}`)}
+                  onClick={() => {
+                    homeStore.onSetSelectMenu(item.key || '')
+                    navigate(`${item.parentUrl || ''}${item.url || ''}`)
+                  }}
                 >
-                  <Tooltip title={item.label || ''} placement="right">
+                  <Tooltip rootClassName="m-ant-tooltip" title={item.label || ''} placement="right">
                     <div className="wh100">{item.icon || null}</div>
                   </Tooltip>
                 </div>
@@ -114,7 +117,7 @@ const Left = (props: ILeftProps): ReactElement => {
             className="w-8 h-8 p-1.5 mb-4 cursor-pointer flex-center bg-menu-hover rounded mt-2 color-svg"
             onClick={() => navigate(`${RouterUrls.SETTING.URL}${RouterUrls.SETTING.SYSTEM.URL}`)}
           >
-            <Tooltip title={RouterUrls.SETTING.SYSTEM.NAME} placement="right">
+            <Tooltip title={RouterUrls.SETTING.SYSTEM.NAME} placement="right" rootClassName="m-ant-tooltip">
               <div className="wh100">
                 <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
                   <path

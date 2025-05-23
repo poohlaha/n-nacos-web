@@ -11,8 +11,6 @@ import { listen } from '@tauri-apps/api/event'
 import createTrayMenu from '@communal/tray'
 import { LogicalPosition } from '@tauri-apps/api/dpi'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
-import { useStore } from '@views/stores'
-import { CONSTANT } from '@config/index'
 
 // @ts-ignore
 interface ITitleBarProps {
@@ -20,7 +18,6 @@ interface ITitleBarProps {
 }
 
 const TitleBar = (): ReactElement => {
-  const { commonStore } = useStore()
   const [alwaysOnTop, setAlwaysOnTop] = useState(false)
 
   useMount(async () => {
@@ -58,9 +55,7 @@ const TitleBar = (): ReactElement => {
 
   const render = () => {
     return (
-      <div
-        className={`title-bar relative ${commonStore.skin === CONSTANT.SKINS[0] ? 'bg-transparent' : 'background-right'} z-999 left-0 w-full top-0 h-10 pt-1 pb-1 pl-2 pr-2 select-none flex-jsc-end flex flex-shrink-0 items-center grap-4`}
-      >
+      <div className="title-bar relative bg-transparent z-999 left-0 w-full top-0 h-10 pt-1 pb-1 pl-2 pr-2 select-none flex-jsc-end flex flex-shrink-0 items-center gap-4">
         {/* 拖拽区域 */}
         <div className=" absolute left-0 top-0 z-0 h-full w-full" data-tauri-drag-region></div>
 

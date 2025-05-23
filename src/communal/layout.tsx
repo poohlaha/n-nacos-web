@@ -73,18 +73,19 @@ const switchSkin = (skin: string = '', font: { [K: string]: any } = {}) => {
    */
 
   document.body.setAttribute('class', '')
-  document.body.setAttribute('class', `${skin} ${font.fontFamily || ''}`)
+  document.body.setAttribute('class', `${skin} ${font.fontFamily || ''} ${font.fontSize || ''}`)
 }
 
 const Layout = (): ReactElement => {
-  const { commonStore, systemStore } = useStore()
+  const { commonStore, systemStore, homeStore } = useStore()
 
   useEffect(() => {
     switchSkin(commonStore.skin, systemStore.font || {})
-  }, [commonStore.skin, systemStore.font.fontFamily])
+  }, [commonStore.skin, systemStore.font.fontFamily, systemStore.font.fontSize])
 
   useMount(() => {
     commonStore.onGetSkin()
+    homeStore.onGetSelectMenu()
   })
 
   const px2rem = px2remTransformer({

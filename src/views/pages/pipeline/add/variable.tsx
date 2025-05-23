@@ -176,6 +176,7 @@ const PipelineVariable = (): ReactElement => {
               </div>
               <Select
                 className="m-ant-select"
+                rootClassName="m-ant-select-dropdown"
                 style={{ width: '100%' }}
                 placeholder="请选择变量类型"
                 value={form.genre}
@@ -248,6 +249,7 @@ const PipelineVariable = (): ReactElement => {
               </div>
               <Select
                 className="m-ant-select"
+                rootClassName="m-ant-select-dropdown"
                 style={{ width: '100%' }}
                 placeholder="请选择是否禁用"
                 value={form.disabled}
@@ -266,6 +268,7 @@ const PipelineVariable = (): ReactElement => {
               </div>
               <Select
                 className="m-ant-select"
+                rootClassName="m-ant-select-dropdown"
                 style={{ width: '100%' }}
                 placeholder="请选择是否必填"
                 value={form.require}

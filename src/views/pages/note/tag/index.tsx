@@ -32,7 +32,7 @@ const Tag = (): ReactElement => {
         }}
       >
         <div className="article-content p-4 min-h100 center flex-direction-column overflow background rounded-md">
-          <div className="article-tag-content page-margin-top">
+          <div className="article-tag-content mt-3">
             {noteStore.tagClassify.length > 0 &&
               noteStore.tagClassify.map((item: { [K: string]: any } = {}, index: number) => {
                 return (
@@ -41,7 +41,7 @@ const Tag = (): ReactElement => {
                     className="tag-item flex-align-center"
                     onClick={() =>
                       navigate(
-                        `${RouterUrls.NOTE.TAG_DETAIL_URL}?id=${Utils.encrypt(
+                        `${RouterUrls.NOTE.URL}${RouterUrls.NOTE.TAGDETAIL.URL}?id=${Utils.encrypt(
                           encodeURIComponent(item.id || '')
                         )}&name=${Utils.encrypt(encodeURIComponent(item.tagName || ''))}&title=${Utils.encrypt(
                           encodeURIComponent('分类')

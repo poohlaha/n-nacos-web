@@ -32,7 +32,7 @@ const ArticleDetail = (): ReactElement => {
   const getActionNode = () => {
     return (
       <div className="flex-align-center relative mr-4">
-        <Tooltip title="修改">
+        <Tooltip rootClassName="m-ant-tooltip" title="修改">
           <div
             className="edit-button page-margin-left cursor-pointer"
             onClick={() => {
@@ -57,7 +57,7 @@ const ArticleDetail = (): ReactElement => {
           </div>
         </Tooltip>
 
-        <Tooltip title="删除">
+        <Tooltip rootClassName="m-ant-tooltip" title="删除">
           <div
             className="delete-button page-margin-left cursor-pointer"
             onClick={() => {
@@ -129,7 +129,7 @@ const ArticleDetail = (): ReactElement => {
             })}
           </div>
           <div className="article-text flex-1">
-            <div className="markdown-body">
+            <div className="markdown-body dark">
               <Markdown
                 children={noteStore.detail?.content || ''}
                 options={{

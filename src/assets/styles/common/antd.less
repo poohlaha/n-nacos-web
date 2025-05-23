@@ -3,31 +3,6 @@
  * @date 2023-4-19
  * @author poohlaha
  */
-.m-ant-input,
-.m-ant-input-icon {
-  .ant-input-prefix svg {
-    color: @color_svg;
-  }
-
-  .ant-input-suffix {
-    .anticon-eye svg {
-      path:not(:nth-child(2)) {
-        fill: @theme!important;
-      }
-
-      path:nth-child(2) {
-        fill: none !important;
-      }
-    }
-  }
-
-  &.ant-input-outlined:not(.ant-input-disabled):hover,
-  &.ant-input-outlined:not(.ant-input-disabled):focus-within {
-    border-color: @theme;
-    box-shadow: unset;
-  }
-}
-
 // alert
 .ant-alert {
   border-radius: 0;
@@ -37,6 +12,12 @@
 .ant-modal-root {
   z-index: 99;
   position: relative;
+
+  .font-unset();
+
+  .ant-modal {
+    .font-unset();
+  }
 
   .ant-modal-header {
     background: transparent !important;
@@ -49,7 +30,8 @@
   }
 
   .ant-modal-content {
-    background: @background_card!important;
+    background: @background!important;
+    color: @color;
 
     .ant-input,
     .ant-input-password {
@@ -70,6 +52,7 @@
 
     .ant-modal-body {
       .font-unset();
+      border-top: @border;
 
       .modal-body {
         .form-item {
@@ -98,32 +81,7 @@
       }
 
       .ant-btn-primary {
-        background-color: @theme!important;
-      }
-    }
-  }
-}
-
-.ant-select-dropdown {
-  .rc-virtual-list {
-    .ant-select-item-option-selected {
-      background: @theme;
-      color: @color_border_gray;
-    }
-
-    .ant-select-item-option-content {
-      white-space: pre-wrap;
-    }
-  }
-
-  .rc-virtual-list-holder-inner {
-    .ant-select-item-option-selected:not(:last-child) {
-      margin-bottom: 4px;
-    }
-
-    .ant-select-item-option-selected {
-      .ant-select-item-option-state {
-        color: #ffffff !important;
+        background-color: @theme;
       }
     }
   }
@@ -192,10 +150,20 @@
 .m-ant-table {
   .font-unset();
 
+  &.ant-table-wrapper .ant-table-tbody .ant-table-row.ant-table-row-selected > .ant-table-cell {
+    background: @theme_to !important;
+  }
+
   .ant-table-thead .ant-table-cell {
     background: @background_table_head !important;
     color: @color!important;
     font-weight: 550 !important;
+    border-bottom: @border;
+
+    &.ant-table-cell-scrollbar {
+      background: @background_table_head !important;
+      box-shadow: unset !important;
+    }
 
     .font-unset();
   }
@@ -215,13 +183,15 @@
       cursor: pointer;
     }
 
-    .ant-table-cell-fix-right, .ant-table-cell-fix-left {
+    .ant-table-cell-fix-right,
+    .ant-table-cell-fix-left {
       background: @background_right;
       color: @color;
     }
 
     .ant-table-cell-row-hover {
       background: @color_menu_active;
+      color: @color;
     }
 
     .ant-table-cell {
@@ -249,15 +219,6 @@
       .ant-tooltip-inner {
         white-space: pre-line;
       }
-    }
-  }
-}
-
-// .ant-breadcrumb
-.ant-breadcrumb {
-  li:last-child {
-    .ant-breadcrumb-link {
-      color: @theme;
     }
   }
 }
@@ -363,9 +324,25 @@
 
 .m-ant-tabs {
   .font-unset();
+  color: unset !important;
+
+  .ant-tabs-nav {
+    &::before {
+      border-bottom: unset !important;
+    }
+  }
 
   .ant-tabs-tab {
     .font-unset();
+  }
+
+  .ant-tabs-ink-bar {
+    background: @color_active;
+  }
+
+  .ant-tabs-tab-btn {
+    color: @color;
+    text-shadow: unset !important;
   }
 
   &.ant-tabs-left {
@@ -378,7 +355,7 @@
       border-right: @border;
 
       &:hover {
-        color: @theme!important;
+        color: @color_active!important;
       }
 
       &:not(:first-child) {
@@ -391,7 +368,7 @@
   .ant-tabs-tab-active {
     // border-right: 0.1rem solid @theme!important;
     .ant-tabs-tab-btn {
-      color: @theme!important;
+      color: @color_active!important;
     }
   }
 
@@ -406,22 +383,49 @@
 .m-ant-select,
 .m-ant-table .ant-pagination .ant-select,
 .m-ant-pagination .ant-select {
+  background: unset !important;
+  color: @color;
+
   .font-unset();
+
+  .ant-select-selector {
+    background: unset !important;
+
+    .ant-select-selection-placeholder {
+      color: @color_gray_lighter;
+    }
+  }
+
+  &.ant-select-outlined {
+    &:hover {
+      .ant-select-selector {
+        border: @border_active!important;
+        box-shadow: unset !important;
+      }
+    }
+  }
 
   &:not(.ant-select-disabled):hover {
     .ant-select-selector {
-      border-color: @theme!important;
+      border: @border_active;
     }
   }
 
   .ant-select-selection-search-input,
   .ant-select-selector {
     .font-unset();
+    background: unset !important;
+    border: @border;
+    color: @color;
+  }
+
+  .ant-select-arrow {
+    color: @color_svg;
   }
 
   &.ant-select-focused:not(.ant-select-disabled) {
     .ant-select-selector {
-      border-color: @theme!important;
+      border: @border_active!important;
       box-shadow: unset !important;
     }
   }
@@ -430,7 +434,7 @@
   .ant-select-dropdown {
     .rc-virtual-list {
       .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-        background-color: @theme_to;
+        background-color: @background_theme;
 
         .ant-select-item-option-state {
           color: @theme;
@@ -447,12 +451,44 @@
     -webkit-line-clamp: 1;
     word-break: break-word;
     white-space: break-spaces;
+    color: @color;
   }
 
   .ant-select-selection-overflow-item {
     .ant-select-selection-item {
       display: flex !important;
     }
+  }
+}
+
+.m-ant-select-dropdown:not(.m-ant-select) {
+  .font-unset();
+  background: @background;
+  padding: 0;
+
+  .ant-select-item {
+    .font-unset();
+
+    border-radius: unset;
+    color: @color;
+    &:not(:last-child) {
+      margin-bottom: 0.4rem;
+    }
+
+    &:hover {
+      background: @background_theme;
+      color: @color_theme_inner;
+    }
+  }
+
+  .ant-select-item-option-content {
+    .font-weight-bold();
+  }
+
+  .ant-select-item-option-selected {
+    background: @background_theme;
+    color: @color_theme_inner;
+    border-radius: unset;
   }
 }
 
@@ -484,15 +520,27 @@
   }
 
   &:not(.disabled).ant-btn-default:hover {
-    border-color: @theme;
+    border-color: @border_active;
+    background: @color_menu_active!important;
     box-shadow: unset !important;
-    color: @theme;
+    color: @color_theme_inner!important;
   }
 
   // primary
   &.ant-btn-primary {
-    background: @theme!important;
-    color: @color_theme_inner!important;
+    background: @background_theme;
+    color: @color_theme_inner;
+  }
+
+  // default
+  &.ant-btn-default {
+    background: unset !important;
+    color: @color!important;
+  }
+
+  &.ant-btn-variant-outlined,
+  &.ant-btn-variant-solid {
+    border: @border_active!important;
   }
 }
 
@@ -504,33 +552,13 @@
     color: @color!important;
     .font-weight-bold();
   }
-}
 
-// modal
-.m-ant-modal {
-  .font-unset();
-
-  .ant-modal {
-    .font-unset();
+  .ant-popover-inner {
+    background: @background;
   }
 
-  .ant-modal-content {
-    padding: 0 !important;
-
-    .ant-modal-header {
-      padding: 0.8rem 0.8rem 0 0.8rem;
-    }
-
-    .ant-modal-body {
-      padding: 20px 24px;
-      max-height: 500px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    .ant-modal-footer {
-      padding: 20px 24px;
-    }
+  .ant-popconfirm-description {
+    color: @color;
   }
 }
 
@@ -538,6 +566,11 @@
 .m-ant-input,
 .m-ant-input-icon {
   .font-unset();
+  background: @background;
+
+  &.ant-input-outlined {
+    border: @border;
+  }
 
   .ant-input-prefix svg {
     color: @color_svg;
@@ -546,7 +579,7 @@
   .ant-input-suffix {
     .anticon-eye svg {
       path:not(:nth-child(2)) {
-        fill: @theme!important;
+        fill: @color_active!important;
       }
 
       path:nth-child(2) {
@@ -557,11 +590,12 @@
 
   &.ant-input-outlined:not(.ant-input-disabled):hover,
   &.ant-input-outlined:not(.ant-input-disabled):focus-within {
-    border-color: @theme;
-    box-shadow: unset;
+    border-color: @border_active;
+    box-shadow: unset !important;
   }
 
-  input {
+  input,
+  textarea {
     color: @color!important;
     .font-unset();
   }
@@ -570,7 +604,7 @@
 // card
 .m-ant-card {
   .font-unset();
-   background: @color_menu_active;
+  background: @color_menu_active;
 
   &.ant-card-bordered {
     border: @border!important;
@@ -613,6 +647,14 @@
 
   code[class*='language-'],
   pre[class*='language-'] {
+    text-shadow: unset !important;
+  }
+
+  .token.operator {
+    background: unset !important;
+  }
+  code[class*='language-'],
+  pre[class*='language-'] {
     .font-unset();
   }
 }
@@ -620,7 +662,10 @@
 // tag
 .m-ant-tag {
   .font-unset();
+  // color: unset!important;
   line-height: unset !important;
+  background: unset;
+  // border: @border;
 }
 
 // timeline
@@ -629,6 +674,11 @@
 
   .ant-timeline-item {
     .font-unset();
+    color: @color;
+  }
+
+  .ant-timeline-item-head {
+    top: 0 !important;
   }
 }
 
@@ -645,9 +695,15 @@
     }
   }
 
-  li:hover {
+  li:not(.ant-pagination-disabled):hover {
     button {
-      color: @color_menu_active;
+      background: @color_menu_active!important;
+    }
+  }
+
+  li {
+    button {
+      color: @color!important;
     }
   }
 
@@ -671,6 +727,7 @@
 
 // tooltip
 .m-ant-tooltip {
+  .font-unset();
 }
 
 // radio
@@ -686,47 +743,66 @@
 
 // -breadcrumb
 .m-ant-breadcrumb {
-  font-family: unset !important;
+  .font-unset();
+  color: @color;
+
+  li:last-child {
+    .ant-breadcrumb-link {
+      color: @color_active;
+    }
+  }
+
+  .ant-breadcrumb-separator {
+    color: @color_desc;
+  }
 }
 
 /* input placeholder 样式 */
 input::-webkit-input-placeholder {
   /* 使用webkit内核的浏览器 */
   .font-unset();
+  color: @color_gray_lighter;
 }
 
 input:-moz-placeholder {
   /* Firefox版本4-18 */
   .font-unset();
+  color: @color_gray_lighter;
 }
 
 input::-moz-placeholder {
   /* Firefox版本19+ */
   .font-unset();
+  color: @color_gray_lighter;
 }
 
 input:-ms-input-placeholder {
   /* IE浏览器 */
   .font-unset();
+  color: @color_gray_lighter;
 }
 
 /* textarea placeholder 样式 */
 textarea::-webkit-input-placeholder {
   /* 使用webkit内核的浏览器 */
   .font-unset();
+  color: @color_gray_lighter;
 }
 
 textarea:-moz-placeholder {
   /* Firefox版本4-18 */
   .font-unset();
+  color: @color_gray_lighter;
 }
 
 textarea::-moz-placeholder {
   /* Firefox版本19+ */
   .font-unset();
+  color: @color_gray_lighter;
 }
 
 textarea:-ms-input-placeholder {
   /* IE浏览器 */
   .font-unset();
+  color: @color_gray_lighter;
 }

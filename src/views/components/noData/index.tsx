@@ -6,9 +6,7 @@
 import React, { ReactElement } from 'react'
 import { Empty } from 'antd'
 
-interface INoChatProps {}
-
-const NoData: React.FC<INoChatProps> = (props: INoChatProps): ReactElement | null => {
+const NoData = (): ReactElement | null => {
   const render = () => {
     return (
       <div className="no-data wh100 flex-center overflow-hidden">

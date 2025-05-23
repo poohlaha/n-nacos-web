@@ -12,10 +12,13 @@ import Utils from '@utils/utils'
 import PipelineAdd from '@pages/pipeline/add'
 import PipelineDetail from '@pages/pipeline/detail'
 import { ADDRESS } from '@utils/base'
+import { SYSTEM } from '@config/index'
 
 class HomeStore extends BaseStore {
   // 选中的菜单
   @observable selectedMenuKeys: Array<string> = []
+
+  @observable selectedMenu: string = ''
 
   // 用户信息
   @observable userInfo: { [K: string]: any } = {}
@@ -457,6 +460,16 @@ class HomeStore extends BaseStore {
   @action
   reset() {
     this.breadcrumbItems = []
+  }
+
+  @action
+  onSetSelectMenu(key: string = '') {
+    this.selectedMenu = key || ''
+    Utils.setLocal(SYSTEM.LEFT_MENU_NAME, this.selectedMenu)
+  }
+
+  onGetSelectMenu() {
+    this.selectedMenu = Utils.getLocal(SYSTEM.LEFT_MENU_NAME) || ''
   }
 
   /**

@@ -21,7 +21,10 @@ const PipelinePluginMarket = (): ReactElement => {
    */
   const getTemplateHtml = (title: string = '', desc: string = '', date: string = '', onClick?: Function) => {
     return (
-      <div className="template-item cursor-pointer flex-direction-column rounded-md" onClick={() => onClick?.()}>
+      <div
+        className="template-item bg-card cursor-pointer flex-direction-column rounded-md"
+        onClick={() => onClick?.()}
+      >
         <div className="item-top flex">
           <div className="svg-box">
             <svg
@@ -58,9 +61,7 @@ const PipelinePluginMarket = (): ReactElement => {
             </div>
           </div>
         </div>
-        <div
-          className={`item-desc over-two-ellipsis flex-1 mt-3 color-gray-lighter ${systemStore.font.descFontSize || ''}`}
-        >
+        <div className={`item-desc over-two-ellipsis flex-1 mt-3 color-desc ${systemStore.font.descFontSize || ''}`}>
           {desc || ''}
         </div>
 

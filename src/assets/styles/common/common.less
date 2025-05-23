@@ -162,6 +162,7 @@
 
 .theme-bg {
   background: @theme!important;
+  color: @color_theme_inner;
 }
 
 .theme-to-bg {
@@ -174,10 +175,6 @@
 
 .background-right {
   background: @background_right;
-}
-
-.background-gay {
-  background: @background_gay;
 }
 
 .theme-blue-color {
@@ -222,7 +219,7 @@
 }
 
 .color-desc {
-  color: #646e82;
+  color: @color_desc;
 }
 
 .color-svg {
@@ -243,6 +240,12 @@
   }
 }
 
+.border-hover {
+  &:hover {
+    border: @border;
+  }
+}
+
 .word-break {
   word-break: break-word;
 }
@@ -257,6 +260,10 @@
 
 .bg-menu-active {
   background: @color_menu_active;
+}
+
+.bg-card {
+  background: @background_card;
 }
 
 .red {

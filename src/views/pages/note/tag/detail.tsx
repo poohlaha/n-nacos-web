@@ -112,7 +112,9 @@ const TagDetail = (): ReactElement => {
               <p
                 className="article-title cursor-pointer over-two-ellipsis"
                 onClick={() => {
-                  navigate(`${RouterUrls.NOTE.DETAIL_URL}?id=${Utils.encrypt(encodeURIComponent(l.articleId || ''))}`)
+                  navigate(
+                    `${RouterUrls.NOTE.URL}${RouterUrls.NOTE.DETAIL.URL}?id=${Utils.encrypt(encodeURIComponent(l.articleId || ''))}`
+                  )
                 }}
               >
                 {l.articleTitle || ''}

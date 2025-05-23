@@ -225,6 +225,8 @@ const PipelineProcess = (props: IPipelineProcessProps): ReactElement => {
 
                           {component.type === 'select' && (
                             <Select
+                              className="m-ant-select"
+                              rootClassName="m-ant-select-dropdown"
                               style={{ width: '100%' }}
                               placeholder="请选择"
                               allowClear
