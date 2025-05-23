@@ -31,16 +31,30 @@ const System = (): ReactElement => {
               <div className="flex-align-center flex-jsc-between mb-2">
                 <p>主题切换</p>
                 <div className="flex-align-center border pl-2 pr-2 pt-1 pb-1 rounded-full">
-                  <div className="bg-menu-hover mr-2 cursor-pointer pl-3 pr-3 pt-1 pb-1 rounded-full">跟随系统</div>
+                  <div
+                    className={`bg-menu-hover mr-2 cursor-pointer pl-3 pr-3 pt-1 pb-1 rounded-full ${commonStore.skin === CONSTANT.SKINS[2] ? 'theme-bg' : ''}`}
+                    onClick={async () => {
+                      commonStore.onSkinChange(2)
+                      await systemStore.onSave(commonStore.skin)
+                    }}
+                  >
+                    跟随系统
+                  </div>
                   <div
                     className={`bg-menu-hover mr-2 cursor-pointer pl-3 pr-3 pt-1 pb-1 rounded-full border-0 ${commonStore.skin === CONSTANT.SKINS[0] ? 'theme-bg' : ''}`}
-                    onClick={() => commonStore.onSkinChange(0)}
+                    onClick={async () => {
+                      commonStore.onSkinChange(0)
+                      await systemStore.onSave(commonStore.skin)
+                    }}
                   >
                     浅色
                   </div>
                   <div
                     className={`bg-menu-hover cursor-pointer pl-3 pr-3 pt-1 pb-1 rounded-full border-0 ${commonStore.skin === CONSTANT.SKINS[1] ? 'theme-bg' : ''}`}
-                    onClick={() => commonStore.onSkinChange(1)}
+                    onClick={async () => {
+                      commonStore.onSkinChange(1)
+                      await systemStore.onSave(commonStore.skin)
+                    }}
                   >
                     深色
                   </div>
@@ -56,7 +70,10 @@ const System = (): ReactElement => {
                     style={{ width: 200 }}
                     value={systemStore.font.fontFamily}
                     options={systemStore.FONT_FAMILY_LIST || []}
-                    onChange={(value: string = '') => (systemStore.font.fontFamily = value || '')}
+                    onChange={async (value: string = '') => {
+                      systemStore.font.fontFamily = value || ''
+                      await systemStore.onSave(commonStore.skin)
+                    }}
                   />
                 </div>
               </div>
@@ -78,7 +95,10 @@ const System = (): ReactElement => {
                         </div>
                       )
                     }}
-                    onChange={(value: string = '') => (systemStore.font.titleFontSize = value || '')}
+                    onChange={async (value: string = '') => {
+                      systemStore.font.titleFontSize = value || ''
+                      await systemStore.onSave(commonStore.skin)
+                    }}
                   />
                 </div>
               </div>
@@ -100,7 +120,10 @@ const System = (): ReactElement => {
                         </div>
                       )
                     }}
-                    onChange={(value: string = '') => (systemStore.font.fontSize = value || '')}
+                    onChange={async (value: string = '') => {
+                      systemStore.font.fontSize = value || ''
+                      await systemStore.onSave(commonStore.skin)
+                    }}
                   />
                 </div>
               </div>
@@ -122,7 +145,10 @@ const System = (): ReactElement => {
                         </div>
                       )
                     }}
-                    onChange={(value: string = '') => (systemStore.font.descFontSize = value || '')}
+                    onChange={async (value: string = '') => {
+                      systemStore.font.descFontSize = value || ''
+                      await systemStore.onSave(commonStore.skin)
+                    }}
                   />
                 </div>
               </div>
@@ -137,8 +163,8 @@ const System = (): ReactElement => {
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1 rounded-full">
                   <Switch
                     className="m-ant-switch"
-                    onChange={() => (systemStore.startAuto = !systemStore.startAuto)}
-                    value={systemStore.startAuto}
+                    onChange={async () => await systemStore.onAutoStart(commonStore.skin)}
+                    value={systemStore.autoStart}
                   />
                 </div>
               </div>

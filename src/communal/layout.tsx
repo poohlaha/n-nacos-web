@@ -22,6 +22,7 @@ import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import { px2remTransformer, StyleProvider } from '@ant-design/cssinjs'
 import useMount from '@hooks/useMount'
+import { CONSTANT } from '@config/index'
 
 const { Suspense } = React
 
@@ -73,7 +74,17 @@ const switchSkin = (skin: string = '', font: { [K: string]: any } = {}) => {
    */
 
   document.body.setAttribute('class', '')
-  document.body.setAttribute('class', `${skin} ${font.fontFamily || ''} ${font.fontSize || ''}`)
+
+  let className = `${font.fontFamily || ''} ${font.fontSize || ''} `
+  // 跟随系统
+  if (skin === CONSTANT.SKINS[2]) {
+    const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    className += isSystemDark ? CONSTANT.SKINS[1] : CONSTANT.SKINS[0]
+  } else {
+    className += skin
+  }
+
+  document.body.setAttribute('class', className)
 }
 
 const Layout = (): ReactElement => {
@@ -83,9 +94,10 @@ const Layout = (): ReactElement => {
     switchSkin(commonStore.skin, systemStore.font || {})
   }, [commonStore.skin, systemStore.font.fontFamily, systemStore.font.fontSize])
 
-  useMount(() => {
+  useMount(async () => {
     commonStore.onGetSkin()
     homeStore.onGetSelectMenu()
+    await systemStore.getConfig()
   })
 
   const px2rem = px2remTransformer({

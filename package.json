@@ -52,6 +52,7 @@
     "@tauri-apps/plugin-dialog": "^2.2.1",
     "@tauri-apps/plugin-positioner": "^2.2.0",
     "@tauri-apps/plugin-process": "^2.2.1",
+    "@tauri-apps/plugin-autostart": "^2.3.0",
     "@bale-react-components/pipeline": "^1.0.5",
     "markdown-to-jsx": "^7.5.0",
     "highlight.js": "^11.10.0",

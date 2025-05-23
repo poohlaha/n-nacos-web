@@ -21,14 +21,14 @@ const TitleBar = (): ReactElement => {
   const [alwaysOnTop, setAlwaysOnTop] = useState(false)
 
   useMount(async () => {
-    await createTrayMenu()
-
     // 监听托盘事件
     await listen('tray_contextmenu', async event => {
       console.log('listen tray_contextmenu...', event)
 
       const trayWindow = await WebviewWindow.getByLabel('trayMenu')
-      if (!trayWindow) return
+      if (!trayWindow) {
+        await createTrayMenu()
+      }
 
       let position: any = event.payload || { x: 100, y: 100 }
       if (trayWindow) {

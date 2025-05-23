@@ -521,26 +521,36 @@
 
   &:not(.disabled).ant-btn-default:hover {
     border-color: @border_active;
-    background: @color_menu_active!important;
+    // background: @color_menu_active!important;
     box-shadow: unset !important;
-    color: @color_theme_inner!important;
+    // color: @color_theme_inner!important;
+    @color: @color_active!important;
   }
 
   // primary
   &.ant-btn-primary {
     background: @background_theme;
     color: @color_theme_inner;
+
+    .ant-btn-icon {
+      svg {
+        color: @color_theme_inner!important;
+      }
+    }
   }
 
   // default
   &.ant-btn-default {
     background: unset !important;
-    color: @color!important;
+
+    &:not(.ant-btn-dangerous) {
+      color: @color!important;
+    }
   }
 
   &.ant-btn-variant-outlined,
   &.ant-btn-variant-solid {
-    border: @border_active!important;
+    border: @border;
   }
 }
 
@@ -590,7 +600,7 @@
 
   &.ant-input-outlined:not(.ant-input-disabled):hover,
   &.ant-input-outlined:not(.ant-input-disabled):focus-within {
-    border-color: @border_active;
+    border: @border_active!important;
     box-shadow: unset !important;
   }
 
@@ -666,6 +676,20 @@
   line-height: unset !important;
   background: unset;
   // border: @border;
+  &:not(
+      .ant-tag-success,
+      .ant-tag-error,
+      .ant-tag-processing,
+      .ant-tag-orange,
+      .ant-tag-lime,
+      .ant-tag-gold,
+      .ant-tag-purple,
+      .ant-tag-volcano,
+      .ant-tag-cyan,
+      .ant-tag-magenta
+    ) {
+    color: @color;
+  }
 }
 
 // timeline
