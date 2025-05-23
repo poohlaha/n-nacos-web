@@ -4,6 +4,7 @@
  * @author poohlaha
  */
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { emit, listen } from '@tauri-apps/api/event'
 
 export interface IWindowProps {
   label: string // 窗口Label(惟一)
@@ -63,6 +64,15 @@ export class Window {
     })
   }
 
+  // 监听事件
+  async addListen() {
+    // 创建新窗体
+    await listen('window-create', event => {
+      console.log(event)
+      this.create(event.payload as IWindowProps)
+    })
+  }
+
   // 获取窗口
   async getWindowByLabel(label: string) {
     return await WebviewWindow.getByLabel(label)
@@ -71,4 +81,9 @@ export class Window {
   getWindow() {
     return this.window
   }
+}
+
+// 创建窗口
+export async function createWindow(props: IWindowProps) {
+  await emit('window-create', props)
 }

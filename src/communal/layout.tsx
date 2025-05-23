@@ -23,6 +23,7 @@ import zhCN from 'antd/locale/zh_CN'
 import { px2remTransformer, StyleProvider } from '@ant-design/cssinjs'
 import useMount from '@hooks/useMount'
 import { CONSTANT } from '@config/index'
+import { Window } from '@communal/tray/window'
 
 const { Suspense } = React
 
@@ -98,6 +99,8 @@ const Layout = (): ReactElement => {
     commonStore.onGetSkin()
     homeStore.onGetSelectMenu()
     await systemStore.getConfig()
+
+    await new Window().addListen()
   })
 
   const px2rem = px2remTransformer({

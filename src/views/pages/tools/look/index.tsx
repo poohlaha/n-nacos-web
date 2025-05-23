@@ -14,6 +14,7 @@ import Utils from '@utils/utils'
 import NoData from '@views/components/noData'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { SearchOutlined } from '@ant-design/icons'
+import { createWindow, IWindowProps } from '@communal/tray/window'
 
 // 节流
 export function useThrottle<T extends (...args: any[]) => void>(fn: T, delay: number) {
@@ -385,7 +386,25 @@ const QuickLook = (): ReactElement => {
         render: (_: any, record: { [K: string]: any } = {}) => {
           let fileName = (record.fileName || '').replaceAll('"', '').trim()
           return (
-            <div className="flex-align-center">
+            <div
+              className="flex-align-center"
+              onClick={async () => {
+                await createWindow({
+                  label: fileName,
+                  url: 'https://www.baidu.com',
+                  title: fileName,
+                  skipTaskbar: true,
+                  decorations: false,
+                  center: false,
+                  resizable: false,
+                  alwaysOnTop: true,
+                  focus: true,
+                  x: window.screen.width + 50,
+                  y: window.screen.height + 50,
+                  visible: false
+                } as IWindowProps)
+              }}
+            >
               <div className="w-4 max-w-4 min-w-4 mr-1.5 h-6 flex-center mr-1">
                 {getIconByFileType(record || {}, false)}
               </div>
