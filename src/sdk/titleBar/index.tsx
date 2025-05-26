@@ -7,10 +7,7 @@ import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import useMount from '@hooks/useMount'
-import { listen } from '@tauri-apps/api/event'
 import createTrayMenu from '@communal/tray'
-import { LogicalPosition } from '@tauri-apps/api/dpi'
-import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 
 // @ts-ignore
 interface ITitleBarProps {
@@ -21,23 +18,7 @@ const TitleBar = (): ReactElement => {
   const [alwaysOnTop, setAlwaysOnTop] = useState(false)
 
   useMount(async () => {
-    // 监听托盘事件
-    await listen('tray_contextmenu', async event => {
-      console.log('listen tray_contextmenu...', event)
-
-      const trayWindow = await WebviewWindow.getByLabel('trayMenu')
-      if (!trayWindow) {
-        await createTrayMenu()
-      }
-
-      let position: any = event.payload || { x: 100, y: 100 }
-      if (trayWindow) {
-        await trayWindow.setAlwaysOnTop(true)
-        await trayWindow.setFocus()
-        await trayWindow.setPosition(new LogicalPosition(position.x, position.y))
-        await trayWindow.show()
-      }
-    })
+    await createTrayMenu()
   })
 
   const onAlwaysOnTop = async () => {

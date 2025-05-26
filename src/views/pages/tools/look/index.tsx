@@ -388,26 +388,24 @@ const QuickLook = (): ReactElement => {
           return (
             <div
               className="flex-align-center"
-              onClick={async () => {
+              onClick={async event => {
                 await createWindow({
-                  label: fileName,
+                  label: 'aaa',
                   url: 'https://www.baidu.com',
                   title: fileName,
                   skipTaskbar: true,
-                  decorations: false,
+                  decorations: true,
                   center: false,
                   resizable: false,
                   alwaysOnTop: true,
                   focus: true,
-                  x: window.screen.width + 50,
-                  y: window.screen.height + 50,
-                  visible: false
+                  x: event.clientX,
+                  y: event.clientY,
+                  visible: true
                 } as IWindowProps)
               }}
             >
-              <div className="w-4 max-w-4 min-w-4 mr-1.5 h-6 flex-center mr-1">
-                {getIconByFileType(record || {}, false)}
-              </div>
+              <div className="w-4 max-w-4 min-w-4 mr-1.5 h-6 flex-center">{getIconByFileType(record || {}, false)}</div>
               <p className="over-ellipsis">{fileName}</p>
             </div>
           )

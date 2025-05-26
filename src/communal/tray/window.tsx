@@ -10,10 +10,12 @@ export interface IWindowProps {
   label: string // 窗口Label(惟一)
   title: string // 标题
   url: string // 地址
-  width?: string // 窗口宽度
-  height?: string // 窗口高度
+  width?: number // 窗口宽度
+  height?: number // 窗口高度
   minWidth?: number // 窗口最小宽度
+  maxWidth?: number // 窗口最大宽度
   minHeight?: number // 窗口最小高度
+  maxHeight?: number // 窗口最大高度
   x?: number // 窗口相对于屏幕左侧坐标
   y?: number // 窗口相对于屏幕顶端坐标
   skipTaskbar?: boolean

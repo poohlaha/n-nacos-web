@@ -99,6 +99,7 @@ const Layout = (): ReactElement => {
     commonStore.onGetSkin()
     homeStore.onGetSelectMenu()
     await systemStore.getConfig()
+    await homeStore.getApplicationList()
 
     await new Window().addListen()
   })

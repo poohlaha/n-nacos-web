@@ -6,6 +6,10 @@
 
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import RouterUrls from '@route/router.url.toml'
+import { listen } from '@tauri-apps/api/event'
+import { LogicalPosition } from '@tauri-apps/api/dpi'
+import { IWindowProps } from '@communal/tray/window'
+import { createWindow } from './window'
 
 export const MenuWidth = 150
 export const MenuHeight = 150
@@ -13,70 +17,48 @@ export const MenuHeight = 150
 export default async function createTrayMenu() {
   console.log('Start create tray menu')
 
-  let trayWindow = new WebviewWindow('trayMenu', {
-    url: RouterUrls.SDK.TRAY.MENU.URL,
-    skipTaskbar: true,
-    decorations: false,
-    center: false,
-    resizable: false,
-    alwaysOnTop: true,
-    focus: true,
-    x: window.screen.width + 50,
-    y: window.screen.height + 50,
-    visible: false
-  })
+  const createMenu = async () => {
+    await createWindow({
+      url: RouterUrls.SDK.TRAY.MENU.URL,
+      label: 'trayMenu',
+      title: '',
+      skipTaskbar: true,
+      decorations: false,
+      center: false,
+      resizable: false,
+      alwaysOnTop: true,
+      focus: true,
+      x: window.screen.width + 50,
+      y: window.screen.height + 50,
+      width: 150,
+      height: 10,
+      minHeight: 96,
+      maxHeight: 400,
+      visible: false
+    } as IWindowProps)
+  }
 
-  await new Promise(resolve => {
-    trayWindow?.once('tauri://ready', () => {
-      console.log('TrayMenu window is ready')
-      resolve(true)
-    })
-  })
+  // 监听托盘事件
+  await listen('tray_contextmenu', async event => {
+    console.log('listen tray_contextmenu...', event)
 
-  await trayWindow.listen('tauri://window-created', async () => {
-    console.log('Tray menu create')
-  })
+    const trayWindow = await WebviewWindow.getByLabel('trayMenu')
+    if (!trayWindow) {
+      await createMenu()
+    }
 
-  await trayWindow.listen('tauri://blur', async () => {
-    console.log('Tray menu blur')
-    await trayWindow?.hide()
+    let position: any = event.payload || { x: 100, y: 100 }
+    if (trayWindow) {
+      const isVisible = await trayWindow.isVisible()
+      if (!isVisible) {
+        await trayWindow.setAlwaysOnTop(true)
+        await trayWindow.setFocus()
+        await trayWindow.setPosition(new LogicalPosition(position.x, position.y))
+        await trayWindow.show()
+      } else {
+        await trayWindow.hide()
+        await trayWindow.setAlwaysOnTop(false)
+      }
+    }
   })
-
-  await trayWindow.listen('tauri://error', async error => {
-    console.log('Tray menu error!', error)
-  })
-
-  /*
-        let _window = new Window()
-        await _window.create({
-          url: RouterUrls.SDK.TRAY.MENU.URL,
-          skipTaskbar: true,
-          decorations: false,
-          center: false,
-          resizable: false,
-          alwaysOnTop: true,
-          focus: true,
-          x: window.screen.width + 50,
-          y: window.screen.height + 50,
-          visible: false
-        } as IWindowProps)
-        trayWindow = _window.getWindow()
-         */
-  /*
-  // 托盘消息事件
-  await webview.listen('tauri://window-created', async () => {
-    console.log('Tray menu create')
-  })
-
-  await webview.listen('tauri://blur', async () => {
-    console.log('Tray menu blur')
-    const win = await WebviewWindow.getByLabel('trayMenu')
-    await win?.hide()
-  })
-
-
-  await webview.listen('tauri://error', async error => {
-    console.log('Tray menu error!', error)
-  })
-   */
 }

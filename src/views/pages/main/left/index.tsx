@@ -114,8 +114,11 @@ const Left = (props: ILeftProps): ReactElement => {
         <div className="flex-direction-column flex-center border-top w100">
           {/* 系统设置 */}
           <div
-            className="w-8 h-8 p-1.5 mb-4 cursor-pointer flex-center bg-menu-hover rounded mt-2 color-svg"
-            onClick={() => navigate(`${RouterUrls.SETTING.URL}${RouterUrls.SETTING.SYSTEM.URL}`)}
+            className={`w-8 h-8 p-1.5 mb-4 cursor-pointer flex-center bg-menu-hover rounded mt-2 color-svg ${RouterUrls.SETTING.SYSTEM.KEY === homeStore.selectedMenu ? 'bg-menu-active' : ''}`}
+            onClick={() => {
+              homeStore.onSetSelectMenu(RouterUrls.SETTING.SYSTEM.KEY || '')
+              navigate(`${RouterUrls.SETTING.URL}${RouterUrls.SETTING.SYSTEM.URL}`)
+            }}
           >
             <Tooltip title={RouterUrls.SETTING.SYSTEM.NAME} placement="right" rootClassName="m-ant-tooltip">
               <div className="wh100">
