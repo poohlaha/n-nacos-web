@@ -7,7 +7,6 @@ import React, { ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@views/stores'
 import { Dropdown, MenuProps, Tooltip } from 'antd'
-import { useNavigate } from 'react-router'
 import AvatarImg from '@assets/images/avatar.jpeg'
 import Utils from '@utils/utils'
 import RouterUrls from '@route/router.url.toml'
@@ -20,7 +19,6 @@ interface ILeftProps {
 
 const Left = (props: ILeftProps): ReactElement => {
   const { homeStore } = useStore()
-  const navigate = useNavigate()
 
   // 递归生成子菜单
   const generateMenuItems = (menuList: Array<{ [K: string]: any }> = [], parentPath: string = ''): Array<any> => {
@@ -99,7 +97,7 @@ const Left = (props: ILeftProps): ReactElement => {
                   key={index}
                   onClick={() => {
                     homeStore.onSetSelectMenu(item.key || '')
-                    navigate(`${item.parentUrl || ''}${item.url || ''}`)
+                    // navigate(`${item.parentUrl || ''}${item.url || ''}`)
                   }}
                 >
                   <Tooltip rootClassName="m-ant-tooltip" title={item.label || ''} placement="right">
@@ -112,12 +110,12 @@ const Left = (props: ILeftProps): ReactElement => {
         </div>
 
         <div className="flex-direction-column flex-center border-top w100">
-          {/* 系统设置 */}
+          {/* 偏好设置 */}
           <div
             className={`w-8 h-8 p-1.5 mb-4 cursor-pointer flex-center bg-menu-hover rounded mt-2 color-svg ${RouterUrls.SETTING.SYSTEM.KEY === homeStore.selectedMenu ? 'bg-menu-active' : ''}`}
             onClick={() => {
               homeStore.onSetSelectMenu(RouterUrls.SETTING.SYSTEM.KEY || '')
-              navigate(`${RouterUrls.SETTING.URL}${RouterUrls.SETTING.SYSTEM.URL}`)
+              // navigate(`${RouterUrls.SETTING.URL}${RouterUrls.SETTING.SYSTEM.URL}`)
             }}
           >
             <Tooltip title={RouterUrls.SETTING.SYSTEM.NAME} placement="right" rootClassName="m-ant-tooltip">

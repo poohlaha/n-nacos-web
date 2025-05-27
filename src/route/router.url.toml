@@ -104,7 +104,7 @@ URL = ''
 
 [SETTING.SYSTEM]
 KEY = 'system'
-NAME = '系统设置'
+NAME = '偏好设置'
 URL = '/system'
 
 [MONITOR]

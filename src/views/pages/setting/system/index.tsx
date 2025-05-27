@@ -8,8 +8,9 @@ import { observer } from 'mobx-react-lite'
 import RouterUrls from '@route/router.url.toml'
 import Page from '@views/modules/page'
 import { useStore } from '@views/stores'
-import { Select, Switch } from 'antd'
+import { Select, Switch, Radio } from 'antd'
 import { CONSTANT } from '@config/index'
+import { emitTo } from '@tauri-apps/api/event'
 
 const System = (): ReactElement => {
   const { systemStore, commonStore } = useStore()
@@ -28,7 +29,7 @@ const System = (): ReactElement => {
           <div className="flex-direction-column bg-card p-4 rounded-md">
             <p className="font-bold">主题与字体</p>
             <div className="p-4 mt-2 rounded-md">
-              <div className="flex-align-center flex-jsc-between mb-2">
+              <div className="flex-align-center flex-jsc-between mb-2 h-10">
                 <p>主题切换</p>
                 <div className="flex-align-center border pl-2 pr-2 pt-1 pb-1 rounded-full">
                   <div
@@ -36,6 +37,10 @@ const System = (): ReactElement => {
                     onClick={async () => {
                       commonStore.onSkinChange(2)
                       await systemStore.onSave(commonStore.skin)
+                      // 向托盘窗口发送请求
+                      await emitTo('trayMenu', 'chang-theme', {
+                        skin: commonStore.skin || ''
+                      })
                     }}
                   >
                     跟随系统
@@ -45,6 +50,10 @@ const System = (): ReactElement => {
                     onClick={async () => {
                       commonStore.onSkinChange(0)
                       await systemStore.onSave(commonStore.skin)
+                      // 向托盘窗口发送请求
+                      await emitTo('trayMenu', 'chang-theme', {
+                        skin: commonStore.skin || ''
+                      })
                     }}
                   >
                     浅色
@@ -54,6 +63,11 @@ const System = (): ReactElement => {
                     onClick={async () => {
                       commonStore.onSkinChange(1)
                       await systemStore.onSave(commonStore.skin)
+
+                      // 向托盘窗口发送请求
+                      await emitTo('trayMenu', 'chang-theme', {
+                        skin: commonStore.skin || ''
+                      })
                     }}
                   >
                     深色
@@ -61,7 +75,7 @@ const System = (): ReactElement => {
                 </div>
               </div>
 
-              <div className="flex-align-center flex-jsc-between mb-2 border-bottom pb-2">
+              <div className="flex-align-center flex-jsc-between mb-2 border-bottom h-10 pb-2">
                 <p>字体设置</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
                   <Select
@@ -78,7 +92,7 @@ const System = (): ReactElement => {
                 </div>
               </div>
 
-              <div className="flex-align-center flex-jsc-between">
+              <div className="flex-align-center flex-jsc-between mb-2 h-10">
                 <p>标题类字体大小</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
                   <Select
@@ -103,7 +117,7 @@ const System = (): ReactElement => {
                 </div>
               </div>
 
-              <div className="flex-align-center flex-jsc-between">
+              <div className="flex-align-center flex-jsc-between mb-2 h-10">
                 <p>字体大小</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
                   <Select
@@ -128,7 +142,7 @@ const System = (): ReactElement => {
                 </div>
               </div>
 
-              <div className="flex-align-center flex-jsc-between">
+              <div className="flex-align-center flex-jsc-between h-10">
                 <p>描述类字体大小</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1">
                   <Select
@@ -158,13 +172,36 @@ const System = (): ReactElement => {
           <div className="flex-direction-column mt-5 bg-card p-4 rounded-md">
             <p className="font-bold">系统</p>
             <div className="p-4 mt-2 rounded-md">
-              <div className="flex-align-center flex-jsc-between">
+              <div className="flex-align-center flex-jsc-between mb-2 h-10">
                 <p>开机启动</p>
                 <div className="flex-align-center pl-2 pr-2 pt-1 pb-1 rounded-full">
                   <Switch
                     className="m-ant-switch"
                     onChange={async () => await systemStore.onAutoStart(commonStore.skin)}
-                    value={systemStore.autoStart}
+                    value={systemStore.system.autoStart}
+                  />
+                </div>
+              </div>
+
+              <div className="flex-align-center flex-jsc-between h-10">
+                <p>关闭主面板</p>
+                <div className="flex-align-center pl-2 pr-2 pt-1 pb-1 rounded-full">
+                  <Radio.Group
+                    className="m-ant-radio-group"
+                    options={[
+                      {
+                        label: '最小化到程序坞(Dock 栏), 不退出程序',
+                        value: '0'
+                      },
+                      {
+                        label: '直接退出程序',
+                        value: '1'
+                      }
+                    ]}
+                    onChange={async event => {
+                      await systemStore.onClose(event.target.value || '0')
+                    }}
+                    value={systemStore.system.closeType}
                   />
                 </div>
               </div>

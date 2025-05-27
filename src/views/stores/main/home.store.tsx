@@ -280,6 +280,34 @@ class HomeStore extends BaseStore {
 
   @observable applicationList: Array<{ [K: string]: any }> = [] // 应用程序列表
 
+  constructor() {
+    super()
+    this.getSelectMenuByUrl()
+  }
+
+  /**
+   * 根据 url 获取选中的 key
+   */
+  @action
+  getSelectMenuByUrl() {
+    let { addressUrl } = ADDRESS.getAddress()
+    console.log('addressUrl', addressUrl)
+    if (addressUrl === `${RouterUrls.SETTING.URL}${RouterUrls.SETTING.SYSTEM.URL}`) {
+      this.selectedMenu = RouterUrls.SETTING.SYSTEM.KEY
+      return
+    }
+
+    // 根据key查找url
+    let obj =
+      this.MENU_LIST.find((item: { [K: string]: any } = {}) => `${item.parentUrl}${item.url}` === addressUrl) || {}
+    if (!Utils.isObjectNull(obj || {})) {
+      this.selectedMenu = obj.key
+      return
+    }
+
+    this.selectedMenu = ''
+  }
+
   /**
    * 获取其他子路由
    */
@@ -522,10 +550,10 @@ class HomeStore extends BaseStore {
       let result: { [K: string]: any } = (await invoke('get_application_list', {})) || {}
       this.loading = false
       let data = this.handleResult(result) || []
-      this.applicationList = (data || []).map(async (item: { [K: string]: any } = {}, index: number) => {
+      this.applicationList = (data || []).map((item: { [K: string]: any } = {}, index: number) => {
         return { ...item, key: index + 1, label: item.name || '', value: item.id || '' }
       })
-      console.log('get application list result:', result)
+      console.log('get application list result:', this.applicationList)
     } catch (e: any) {
       this.loading = false
       throw new Error(e)

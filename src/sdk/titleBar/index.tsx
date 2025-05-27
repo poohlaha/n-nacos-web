@@ -6,8 +6,8 @@
 import React, { ReactElement, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { getCurrentWindow } from '@tauri-apps/api/window'
-import useMount from '@hooks/useMount'
-import createTrayMenu from '@communal/tray'
+import { useStore } from '@views/stores'
+import { exit } from '@tauri-apps/plugin-process'
 
 // @ts-ignore
 interface ITitleBarProps {
@@ -15,11 +15,8 @@ interface ITitleBarProps {
 }
 
 const TitleBar = (): ReactElement => {
+  const { systemStore } = useStore()
   const [alwaysOnTop, setAlwaysOnTop] = useState(false)
-
-  useMount(async () => {
-    await createTrayMenu()
-  })
 
   const onAlwaysOnTop = async () => {
     await getCurrentWindow()?.setAlwaysOnTop(!alwaysOnTop)
@@ -118,7 +115,13 @@ const TitleBar = (): ReactElement => {
           {/* 关闭 */}
           <div
             className="svg-box w-8 h-8 p-2 mr-2 cursor-pointer bg-menu-hover rounded color-svg"
-            onClick={async () => await onMinimize()}
+            onClick={async () => {
+              if (systemStore.system.closeType === '1') {
+                await exit(0)
+              } else {
+                await onMinimize()
+              }
+            }}
           >
             <svg className="wh100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <path

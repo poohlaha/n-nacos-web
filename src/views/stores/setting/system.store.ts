@@ -88,14 +88,19 @@ class SystemStore extends BaseStore {
     fontFamily: this.FONT_FAMILY_LIST[0].value
   }
 
+  readonly DEFAULT_SYSTEM = {
+    autoStart: false,
+    closeType: '0' // 0: 最小化到程序坞(Dock 栏), 不退出程序 , 1: 直接退出程序
+  }
+
   @observable font: { [K: string]: any } = Utils.deepCopy(this.DEFAULT_FONT)
 
-  @observable autoStart: boolean = false
+  @observable system: { [K: string]: any } = Utils.deepCopy(this.DEFAULT_SYSTEM)
 
   @action
   async onAutoStart(theme: string = '') {
-    this.autoStart = !this.autoStart
-    if (this.autoStart) {
+    this.system.autoStart = !this.system.autoStart
+    if (this.system.autoStart) {
       if (await isAutostartEnabled()) {
         await this.onSave(theme)
         return
@@ -115,13 +120,20 @@ class SystemStore extends BaseStore {
   }
 
   @action
+  async onClose(value: string = '') {
+    this.system.closeType = value || '0'
+    await this.onSave()
+  }
+
+  @action
   async onSave(theme: string = '') {
     try {
       this.loading = true
       let result: { [K: string]: any } = await invoke('save_setting', {
         settings: {
           ...this.font,
-          autoStart: `${this.autoStart}`,
+          autoStart: `${this.system.autoStart}`,
+          closeType: this.system.closeType || '0',
           theme
         }
       })
@@ -148,7 +160,7 @@ class SystemStore extends BaseStore {
       let data = this.handleResult(result) || {}
       if (Utils.isObjectNull(data || {})) {
         this.font = Utils.deepCopy(this.DEFAULT_FONT)
-        this.autoStart = false
+        this.system.autoStart = false
         return
       }
 
@@ -158,10 +170,37 @@ class SystemStore extends BaseStore {
         descFontSize: data.descFontSize || '',
         fontFamily: data.fontFamily || ''
       }
-      this.autoStart = data.autoStart === 'true'
+      this.system.autoStart = data.autoStart === 'true'
+      this.system.closeType = data.closeType || '0'
     } catch (e: any) {
       this.loading = false
       TOAST.show({ message: `获取设置失败: ${e}`, type: 4 })
+      throw new Error(e)
+    }
+  }
+
+  @action
+  async onHideDock() {
+    try {
+      this.loading = true
+      let result: { [K: string]: any } = await invoke('hide_dock', {})
+
+      this.loading = false
+      this.handleResult(result)
+    } catch (e: any) {
+      this.loading = false
+      throw new Error(e)
+    }
+  }
+
+  async onShowDock() {
+    try {
+      this.loading = true
+      let result: { [K: string]: any } = await invoke('show_dock', {})
+      this.loading = false
+      this.handleResult(result)
+    } catch (e: any) {
+      this.loading = false
       throw new Error(e)
     }
   }

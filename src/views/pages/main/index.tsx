@@ -3,7 +3,7 @@
  * @date 2023-04-12
  * @author poohlaha
  */
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@views/stores'
 import useMount from '@hooks/useMount'
@@ -12,14 +12,55 @@ import Page from '@views/modules/page'
 import Left from '@pages/main/left'
 import Right from '@pages/main/right'
 import TitleBar from '@sdk/titleBar'
+import Utils from '@utils/utils'
+import { useNavigate } from 'react-router'
+import { listen } from '@tauri-apps/api/event'
+import RouterUrls from '@route/router.url.toml'
+import createTrayMenu from '@communal/tray'
 
 const Home = (): ReactElement => {
   const { homeStore, systemStore } = useStore()
+  const navigate = useNavigate()
 
-  useMount(() => {
+  useMount(async () => {
     homeStore.userInfo = USER.getUserInfo() || {}
     homeStore.getSelectedKeysByUrl()
+
+    await onBackEnd()
   })
+
+  const onBackEnd = async () => {
+    await createTrayMenu()
+    await onEmit()
+  }
+
+  const onEmit = async () => {
+    await listen('set-setting-menu', event => {
+      console.log('[main] 主窗口收到更改为设置菜单消息', event)
+      let payload: any = event.payload || {}
+      homeStore.selectedMenu = payload.menu || ''
+    })
+  }
+
+  useEffect(() => {
+    console.log('change menu', homeStore.selectedMenu)
+    if (Utils.isBlank(homeStore.selectedMenu || '')) {
+      return
+    }
+
+    if (homeStore.selectedMenu === RouterUrls.SETTING.SYSTEM.KEY) {
+      navigate(`${RouterUrls.SETTING.URL}${RouterUrls.SETTING.SYSTEM.URL}`)
+      return
+    }
+
+    // 根据key查找url
+    let obj = homeStore.MENU_LIST.find((item: { [K: string]: any } = {}) => item.key === homeStore.selectedMenu) || {}
+    if (Utils.isObjectNull(obj || {})) {
+      return
+    }
+
+    navigate(`${obj.parentUrl || ''}${obj.url || ''}`)
+  }, [homeStore.selectedMenu])
 
   const render = () => {
     return (
