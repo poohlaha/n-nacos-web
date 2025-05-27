@@ -8,8 +8,25 @@ import { observer } from 'mobx-react-lite'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { exit } from '@tauri-apps/plugin-process'
 import { LogicalSize } from '@tauri-apps/api/dpi'
+import useMount from '@hooks/useMount'
+import { listen } from '@tauri-apps/api/event'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 
 const TrayMenu = (): ReactElement => {
+  useMount(async () => {
+    await listen('tauri://blur', async () => {
+      let currentWindow = getCurrentWindow()
+      let focused = await currentWindow.isFocused()
+      if (!focused) {
+        setTimeout(async () => {
+          console.log('[Tray Menu] blur and hiding self...')
+          await currentWindow.hide()
+          await currentWindow.setAlwaysOnTop(false)
+        }, 100)
+      }
+    })
+  })
+
   const onHideTrayMenu = async () => {
     // 隐藏托盘菜单
     const trayWindow = await WebviewWindow.getByLabel('trayMenu')

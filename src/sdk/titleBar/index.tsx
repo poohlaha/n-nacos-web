@@ -31,7 +31,12 @@ const TitleBar = (): ReactElement => {
   }
 
   const onMaximized = async () => {
-    await getCurrentWindow()?.maximize()
+    let currentWindow = getCurrentWindow()
+    if (await currentWindow?.isMaximized()) {
+      await getCurrentWindow()?.unmaximize()
+    } else {
+      await getCurrentWindow()?.maximize()
+    }
   }
 
   const render = () => {

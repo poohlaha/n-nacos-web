@@ -59,6 +59,8 @@ export class Window {
         console.log('maximized')
         await this.window?.maximize()
       }
+
+      await emit('window-has-ready', this.window)
     })
 
     await this.window?.once('tauri://error', async error => {
