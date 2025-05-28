@@ -3,7 +3,7 @@
  * @date 2023-08-28
  * @author poohlaha
  */
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { exit } from '@tauri-apps/plugin-process'
@@ -12,14 +12,16 @@ import { emitTo, listen } from '@tauri-apps/api/event'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { CONSTANT } from '@config/index'
 import Utils from '@utils/utils'
-import { Button, Tabs } from 'antd'
+import { Button, Tabs, Tag } from 'antd'
 import { useStore } from '@views/stores'
 import NoData from '@views/components/noData'
 import RouterUrls from '@route/router.url.toml'
 import { openPath } from '@tauri-apps/plugin-opener'
+import Page from '@views/modules/page'
 
 const TrayMenu = (): ReactElement => {
-  const { homeStore } = useStore()
+  const { trayStore, pipelineStore } = useStore()
+  const [activeTabIndex, setActiveTabIndex] = useState<string>('1')
 
   useMount(async () => {
     document.body.style.minWidth = '0'
@@ -65,6 +67,16 @@ const TrayMenu = (): ReactElement => {
     })
   })
 
+  useEffect(() => {
+    if (pipelineStore.list.length === 0 && !pipelineStore.loading) {
+      pipelineStore.getList()
+    }
+
+    if (trayStore.applicationList.length === 0 && !trayStore.loading) {
+      trayStore.getApplicationList()
+    }
+  }, [pipelineStore.list, trayStore.applicationList])
+
   const onHideTrayMenu = async () => {
     // 隐藏托盘菜单
     const trayWindow = await WebviewWindow.getByLabel('trayMenu')
@@ -89,11 +101,77 @@ const TrayMenu = (): ReactElement => {
   }
 
   const getPipelineHtml = () => {
-    return <div></div>
+    if (pipelineStore.loading) return null
+    if (pipelineStore.list.length === 0) {
+      return (
+        <div className="wh100 flex-center">
+          <NoData />
+        </div>
+      )
+    }
+
+    return (
+      <div className="wh100 overflow-y-auto pl-4 pr-4">
+        {pipelineStore.list.map((item: { [K: string]: any } = {}, index: number) => {
+          const basic = item.basic || {}
+          let buttonDisabled = pipelineStore.onDisabledRunButton(item.status || '')
+          let status =
+            pipelineStore.RUN_STATUS.find(
+              (status: { [K: string]: any } = {}) => status.value.toLowerCase() === (item.status || '').toLowerCase()
+            ) || {}
+          return (
+            <div className="card p-4 border rounded-md mb-4 text-xs" key={index}>
+              <p className="card-title font-bold text-base">{basic.name || ''}</p>
+              <div className="card-content mt-2">
+                {!Utils.isBlank(basic.desc || '') && (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: basic.desc || '' }}
+                    className="color-desc flex-align-center over-three-ellipsis"
+                    style={{ whiteSpace: 'pre-line' }}
+                  ></div>
+                )}
+
+                <div className="flex-align-center h-6 flex-jsc-between mt-2 color-desc">
+                  <p>运行状态:</p>
+                  <div>
+                    <Tag className="m-ant-tag" color={status.color || ''}>
+                      {status.label || ''}
+                    </Tag>
+                  </div>
+                </div>
+
+                <div className="flex-align-center h-6 flex-jsc-between mt-2 color-desc">
+                  <p>上次运行时间:</p>
+                  <div>{item.lastRunTime || '-'}</div>
+                </div>
+              </div>
+              <div className="card-footer mt-2 flex-jsc-between">
+                {pipelineStore.getTagHtml(basic.tag || '')}
+
+                <a
+                  className={buttonDisabled ? 'disabled' : ''}
+                  onClick={async () => {
+                    if (buttonDisabled) return
+                    // 获取详情
+                    await pipelineStore.getDetailInfo(item.id || '', item.serverId || '', async () => {
+                      pipelineStore.onRerun(item || {}, () => {})
+                      await pipelineStore.onRun(true, undefined, false)
+                    })
+                  }}
+                >
+                  重试
+                </a>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )
   }
 
   const getApplicationHtml = () => {
-    let applicationList = homeStore.applicationList || []
+    if (trayStore.loading) return null
+    let applicationList = trayStore.applicationList || []
     if (applicationList.length === 0) {
       return (
         <div className="wh100 flex-center">
@@ -105,6 +183,7 @@ const TrayMenu = (): ReactElement => {
     return (
       <div className="wh100 overflow-y-auto pl-4 pr-4">
         {applicationList.map((item: { [K: string]: any } = {}, index: number) => {
+          let hasStart = (item.processIds || []).length > 0
           return (
             <div
               className="menu-item w100 flex-align-center h-8 flex-align-center bg-menu-hover cursor-pointer pl-2 pr-2 relative rounded-md"
@@ -119,10 +198,26 @@ const TrayMenu = (): ReactElement => {
                 className="m-ant-button hidden"
                 type="link"
                 onClick={async () => {
-                  await openPath(item.path || '')
+                  onHideTrayMenu()
+
+                  if (hasStart) {
+                    // 结束进程
+                    await trayStore.onKillApp(item.processIds)
+                    // 更新
+                    trayStore.onUpdateProcessList(item.path || '')
+                    return
+                  }
+
+                  // 使用 openPath 会失去焦点
+                  openPath(item.path || '')
+
+                  // 获取进程ID列表
+                  setTimeout(async () => {
+                    await trayStore.onGetProcessIds(item.name || '', item.path || '')
+                  }, 300)
                 }}
               >
-                打开
+                {hasStart ? '结束' : '启动'}
               </Button>
             </div>
           )
@@ -156,9 +251,29 @@ const TrayMenu = (): ReactElement => {
   const render = () => {
     // let applicationList = homeStore.applicationList || []
     return (
-      <div className="wh100 flex-direction-column background color relative tray-menu-page">
+      <Page
+        className="wh100 flex-direction-column background color relative tray-menu-page"
+        contentClassName="!p-0"
+        loading={trayStore.loading || pipelineStore.loading}
+        title={{
+          show: false
+        }}
+      >
         <div className="wh100 pb-12">
-          <Tabs className="m-ant-tabs wh100" defaultActiveKey="2" items={tabs} onChange={() => {}} />
+          <Tabs
+            className="m-ant-tabs wh100"
+            items={tabs}
+            activeKey={activeTabIndex}
+            onChange={async tabIndex => {
+              if (tabIndex === activeTabIndex) return
+              if (tabIndex === '1') {
+                await pipelineStore.getList()
+              } else {
+                await trayStore.getApplicationList()
+              }
+              setActiveTabIndex(tabIndex)
+            }}
+          />
         </div>
 
         <div className="h-12 w100 flex-align-center fixed bottom-0 background pl-2 pr-2">
@@ -188,7 +303,7 @@ const TrayMenu = (): ReactElement => {
             退出
           </Button>
         </div>
-      </div>
+      </Page>
     )
   }
 

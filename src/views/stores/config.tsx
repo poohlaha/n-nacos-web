@@ -17,6 +17,7 @@ import noteStore from '@stores/note/note.store'
 import loginStore from '@stores/login/login.store'
 import lookStore from '@stores/look/look.store'
 import systemStore from '@stores/setting/system.store'
+import trayStore from '@stores/tray/tray.store'
 
 export function createStore() {
   return {
@@ -33,7 +34,8 @@ export function createStore() {
     pipelineMarketStore,
     noteStore,
     lookStore,
-    systemStore
+    systemStore,
+    trayStore
   }
 }
 

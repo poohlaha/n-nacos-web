@@ -89,7 +89,7 @@ const switchSkin = (skin: string = '', font: { [K: string]: any } = {}) => {
 }
 
 const Layout = (): ReactElement => {
-  const { commonStore, systemStore, homeStore } = useStore()
+  const { commonStore, systemStore, homeStore, trayStore, pipelineStore } = useStore()
 
   useEffect(() => {
     switchSkin(commonStore.skin, systemStore.font || {})
@@ -99,7 +99,8 @@ const Layout = (): ReactElement => {
     commonStore.onGetSkin()
     homeStore.onGetSelectMenu()
     await systemStore.getConfig()
-    await homeStore.getApplicationList()
+    // await trayStore.getApplicationList()
+    // await pipelineStore.getList()
 
     await new Window().addListen()
   })

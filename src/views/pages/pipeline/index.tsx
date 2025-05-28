@@ -74,19 +74,6 @@ const Pipeline = (): ReactElement => {
     await pipelineStore.getList('', query)
   }
 
-  const getTagHtml = (t: string = '') => {
-    let tag = pipelineStore.TAGS.find((tag: { [K: string]: any } = {}) => tag.value === t) || {}
-    if (!Utils.isObjectNull(tag)) {
-      return (
-        <Tag className="m-ant-tag" color={tag.color || ''}>
-          {tag.label || ''}
-        </Tag>
-      )
-    }
-
-    return <div className="tag"></div>
-  }
-
   const getStepClassName = (index: number = 0, status: string = 'No', i: number) => {
     // index 从 1 开始
 
@@ -263,7 +250,7 @@ const Pipeline = (): ReactElement => {
       key: 'tag',
       width: 150,
       render: (_: any, record: { [K: string]: any } = {}) => {
-        return getTagHtml(record.tag || '')
+        return pipelineStore.getTagHtml(record.tag || '')
       }
     },
     {
@@ -490,7 +477,7 @@ const Pipeline = (): ReactElement => {
         <PipelineBatchRunDialog
           open={showBatchRunDialog}
           selectedRowKeys={selectedRowKeys}
-          getTagHtml={getTagHtml}
+          getTagHtml={pipelineStore.getTagHtml}
           datasource={batchRunDatasource}
           onCancel={() => {
             setShowBatchRunDialog(false)

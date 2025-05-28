@@ -684,28 +684,6 @@ const PipelineDetail = (): ReactElement => {
     }
   ]
 
-  /**
-   * 重试
-   */
-  const onRerun = (record: { [K: string]: any } = {}) => {
-    pipelineStore.selectItem = pipelineStore.detailInfo || {}
-    pipelineStore.selectItem.runtime = record || {}
-    pipelineStore.selectItem.snapshot = record.snapshot || {}
-    pipelineStore.runDialogProps = Utils.deepCopy(pipelineStore.runDialogDefaultProps)
-    pipelineStore.runDialogProps.value = '1'
-
-    pipelineStore.onSetRadioRunProps(
-      pipelineStore.selectItem || {},
-      pipelineStore.runDialogProps,
-      record.snapshot || {},
-      {}
-    )
-    pipelineStore.runDialogProps.remark = record.remark || ''
-    setRunReadonly(true)
-    pipelineStore.showRunDialog = true
-    console.log('runDialogProps', pipelineStore.runDialogProps)
-  }
-
   // 获取运行历史
   const getRunHistoryHtml = () => {
     if (pipelineStore.historyList.length === 0) {
@@ -732,7 +710,9 @@ const PipelineDetail = (): ReactElement => {
                       className={`${disabledButton ? 'disabled' : ''}`}
                       onClick={() => {
                         if (disabledButton) return
-                        onRerun(record || {})
+                        pipelineStore.onRerun(record || {}, () => {
+                          setRunReadonly(true)
+                        })
                       }}
                     >
                       重试

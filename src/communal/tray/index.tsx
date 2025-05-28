@@ -113,7 +113,7 @@ class TrayMenu {
 
 const createTrayMenu = async () => {
   const trayMenu = new TrayMenu()
-  // await trayMenu.create()
+  await trayMenu.create()
   await trayMenu.addListen()
 }
 

@@ -13,7 +13,6 @@ import PipelineAdd from '@pages/pipeline/add'
 import PipelineDetail from '@pages/pipeline/detail'
 import { ADDRESS } from '@utils/base'
 import { SYSTEM } from '@config/index'
-import { invoke } from '@tauri-apps/api/core'
 
 class HomeStore extends BaseStore {
   // 选中的菜单
@@ -278,8 +277,6 @@ class HomeStore extends BaseStore {
 
   @observable selectedMenu: string = this.MENU_LIST[2].key
 
-  @observable applicationList: Array<{ [K: string]: any }> = [] // 应用程序列表
-
   constructor() {
     super()
     this.getSelectMenuByUrl()
@@ -538,26 +535,6 @@ class HomeStore extends BaseStore {
     }
 
     return routes
-  }
-
-  /**
-   * 获取应用程序列表
-   */
-  @action
-  async getApplicationList() {
-    try {
-      this.loading = true
-      let result: { [K: string]: any } = (await invoke('get_application_list', {})) || {}
-      this.loading = false
-      let data = this.handleResult(result) || []
-      this.applicationList = (data || []).map((item: { [K: string]: any } = {}, index: number) => {
-        return { ...item, key: index + 1, label: item.name || '', value: item.id || '' }
-      })
-      console.log('get application list result:', this.applicationList)
-    } catch (e: any) {
-      this.loading = false
-      throw new Error(e)
-    }
   }
 
   /**

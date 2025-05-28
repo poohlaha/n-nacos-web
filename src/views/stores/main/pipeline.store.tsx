@@ -10,6 +10,7 @@ import Utils from '@utils/utils'
 import { TOAST } from '@utils/base'
 import { invoke } from '@tauri-apps/api/core'
 import { info } from '@tauri-apps/plugin-log'
+import { Tag } from 'antd'
 
 // @ts-ignore
 class PipelineProcessConfig {
@@ -483,6 +484,12 @@ class PipelineStore extends BaseStore {
   @action
   async getList(serverId: string = '', form: { [K: string]: any } = {}) {
     try {
+      if (Utils.isObjectNull(form)) {
+        form = {
+          name: '',
+          status: ''
+        }
+      }
       console.log('get pipeline list query params:', form)
       await info(`get pipeline list query params: ${JSON.stringify(form)}`)
       this.loading = true
@@ -519,6 +526,36 @@ class PipelineStore extends BaseStore {
       path,
       desc
     }
+  }
+
+  /**
+   * 重试
+   */
+  onRerun(record: { [K: string]: any } = {}, callback?: Function) {
+    this.selectItem = this.detailInfo || {}
+    this.selectItem.runtime = record || {}
+    this.selectItem.snapshot = record.snapshot || {}
+    this.runDialogProps = Utils.deepCopy(this.runDialogDefaultProps)
+    this.runDialogProps.value = '1'
+
+    this.onSetRadioRunProps(this.selectItem || {}, this.runDialogProps, record.snapshot || {}, {})
+    this.runDialogProps.remark = record.remark || ''
+    this.showRunDialog = true
+    console.log('runDialogProps', this.runDialogProps)
+    callback?.()
+  }
+
+  getTagHtml(t: string = '') {
+    let tag = this.TAGS.find((tag: { [K: string]: any } = {}) => tag.value === t) || {}
+    if (!Utils.isObjectNull(tag)) {
+      return (
+        <Tag className="m-ant-tag" color={tag.color || ''}>
+          {tag.label || ''}
+        </Tag>
+      )
+    }
+
+    return <div className="tag"></div>
   }
 
   @action
