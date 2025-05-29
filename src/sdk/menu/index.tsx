@@ -18,6 +18,7 @@ import NoData from '@views/components/noData'
 import RouterUrls from '@route/router.url.toml'
 import { openPath } from '@tauri-apps/plugin-opener'
 import Page from '@views/modules/page'
+import { TOAST } from '@utils/base'
 
 const TrayMenu = (): ReactElement => {
   const { trayStore, pipelineStore } = useStore()
@@ -111,7 +112,7 @@ const TrayMenu = (): ReactElement => {
     }
 
     return (
-      <div className="wh100 overflow-y-auto pl-4 pr-4">
+      <div className="wh100 overflow-y-auto p-4">
         {pipelineStore.list.map((item: { [K: string]: any } = {}, index: number) => {
           const basic = item.basic || {}
           let buttonDisabled = pipelineStore.onDisabledRunButton(item.status || '')
@@ -120,7 +121,10 @@ const TrayMenu = (): ReactElement => {
               (status: { [K: string]: any } = {}) => status.value.toLowerCase() === (item.status || '').toLowerCase()
             ) || {}
           return (
-            <div className="card p-4 border rounded-md mb-4 text-xs" key={index}>
+            <div
+              className={`card p-4 border rounded-md text-xs ${index !== pipelineStore.list.length - 1 ? 'mb-4' : ''}`}
+              key={index}
+            >
               <p className="card-title font-bold text-base">{basic.name || ''}</p>
               <div className="card-content mt-2">
                 {!Utils.isBlank(basic.desc || '') && (
@@ -153,10 +157,14 @@ const TrayMenu = (): ReactElement => {
                   onClick={async () => {
                     if (buttonDisabled) return
                     // 获取详情
-                    await pipelineStore.getDetailInfo(item.id || '', item.serverId || '', async () => {
-                      pipelineStore.onRerun(item || {}, () => {})
+                    await pipelineStore.getDetailInfo(item.id || '', item.serverId || '')
+                    await pipelineStore.getHistoryList(item.id || '', item.serverId || '')
+                    if (pipelineStore.historyList.length > 0) {
+                      pipelineStore.onRerun(pipelineStore.historyList[0] || {}, undefined)
                       await pipelineStore.onRun(true, undefined, false)
-                    })
+                    } else {
+                      TOAST.show({ message: '未找到运行记录, 请打开`主界面->流水线`运行', type: 4 })
+                    }
                   }}
                 >
                   重试
@@ -186,16 +194,16 @@ const TrayMenu = (): ReactElement => {
           let hasStart = (item.processIds || []).length > 0
           return (
             <div
-              className="menu-item w100 flex-align-center h-8 flex-align-center bg-menu-hover cursor-pointer pl-2 pr-2 relative rounded-md"
+              className={`menu-item  w100 flex-align-center h-8 flex-align-center bg-menu-hover cursor-pointer pl-2 pr-2 relative rounded-md ${index !== applicationList.length - 1 ? 'mt-1' : 'mb-3'} ${index === 0 ? '!mt-3' : ''}`}
               key={index}
             >
               <div className="flex-1 flex-align-center">
-                <img className="w-6 h-6 mr-2" src={item.icon || ''} />
-                <p>{item.name || ''}</p>
+                <img className="w-6 h-6 mr-2 select-none" src={item.icon || ''} />
+                <p className="select-none">{item.name || ''}</p>
               </div>
 
               <Button
-                className="m-ant-button hidden"
+                className={`m-ant-button ${hasStart ? '' : 'hidden'}`}
                 type="link"
                 onClick={async () => {
                   onHideTrayMenu()
@@ -217,7 +225,7 @@ const TrayMenu = (): ReactElement => {
                   }, 300)
                 }}
               >
-                {hasStart ? '结束' : '启动'}
+                <p className={`${hasStart ? 'red' : ''} select-none`}>{hasStart ? '结束' : '启动'}</p>
               </Button>
             </div>
           )
@@ -266,12 +274,12 @@ const TrayMenu = (): ReactElement => {
             activeKey={activeTabIndex}
             onChange={async tabIndex => {
               if (tabIndex === activeTabIndex) return
+              setActiveTabIndex(tabIndex)
               if (tabIndex === '1') {
                 await pipelineStore.getList()
               } else {
                 await trayStore.getApplicationList()
               }
-              setActiveTabIndex(tabIndex)
             }}
           />
         </div>

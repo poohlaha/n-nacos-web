@@ -266,7 +266,7 @@ const PipelineDetail = (): ReactElement => {
     let disabledButton = pipelineStore.onDisabledRunButton(status || '')
     let disabledRunButton = pipelineStore.onDisabledRerunButton(status || '')
     return (
-      <div className="late-content h100 flex-direction-column">
+      <div className="late-content h100 flex-direction-column mt-4">
         <div className="buttons flex-jsc-between">
           <div className="buttons-left">
             <Button
@@ -688,7 +688,7 @@ const PipelineDetail = (): ReactElement => {
   const getRunHistoryHtml = () => {
     if (pipelineStore.historyList.length === 0) {
       return (
-        <div className="history-content h100">
+        <div className="history-content h100 mt-4">
           <div className="no-data-box">
             <NoData />
           </div>
@@ -697,7 +697,7 @@ const PipelineDetail = (): ReactElement => {
     }
 
     return (
-      <div className="history-content h100">
+      <div className="history-content h100 mt-4">
         <MTable
           dataSource={pipelineStore.historyList || []}
           actions={[
