@@ -192,6 +192,7 @@ const TrayMenu = (): ReactElement => {
       <div className="wh100 overflow-y-auto pl-4 pr-4">
         {applicationList.map((item: { [K: string]: any } = {}, index: number) => {
           let hasStart = (item.processIds || []).length > 0
+          const name = !Utils.isBlank(item.realName || '') ? item.realName || '' : item.name || ''
           return (
             <div
               className={`menu-item  w100 flex-align-center h-8 flex-align-center bg-menu-hover cursor-pointer pl-2 pr-2 relative rounded-md ${index !== applicationList.length - 1 ? 'mt-1' : 'mb-3'} ${index === 0 ? '!mt-3' : ''}`}
@@ -199,7 +200,7 @@ const TrayMenu = (): ReactElement => {
             >
               <div className="flex-1 flex-align-center">
                 <img className="w-6 h-6 mr-2 select-none" src={item.icon || ''} />
-                <p className="select-none">{item.name || ''}</p>
+                <p className="select-none">{name || ''}</p>
               </div>
 
               <Button
