@@ -61,8 +61,8 @@ const TrayMenu = (): ReactElement => {
       if (!focused) {
         setTimeout(async () => {
           console.log('[Tray Menu] blur and hiding self...')
-          // await currentWindow.hide()
-          // await currentWindow.setAlwaysOnTop(false)
+          await currentWindow.hide()
+          await currentWindow.setAlwaysOnTop(false)
         }, 100)
       }
     })

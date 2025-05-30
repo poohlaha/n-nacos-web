@@ -90,7 +90,8 @@ class SystemStore extends BaseStore {
 
   readonly DEFAULT_SYSTEM = {
     autoStart: false,
-    closeType: '0' // 0: 最小化到程序坞(Dock 栏), 不退出程序 , 1: 直接退出程序
+    closeType: '0', // 0: 最小化到程序坞(Dock 栏), 不退出程序 , 1: 直接退出程序
+    nodeJsDir: ''
   }
 
   @observable font: { [K: string]: any } = Utils.deepCopy(this.DEFAULT_FONT)
@@ -125,6 +126,14 @@ class SystemStore extends BaseStore {
     await this.onSave()
   }
 
+  async onGetNodeJsDir(value: string = '') {
+    if (Utils.isBlank(value || '')) {
+      return
+    }
+    this.system.nodeJsDir = value || ''
+    await this.onSave()
+  }
+
   @action
   async onSave(theme: string = '') {
     try {
@@ -134,7 +143,8 @@ class SystemStore extends BaseStore {
           ...this.font,
           autoStart: `${this.system.autoStart}`,
           closeType: this.system.closeType || '0',
-          theme
+          theme,
+          nodeJsDir: this.system.nodeJsDir || ''
         }
       })
 
@@ -170,8 +180,12 @@ class SystemStore extends BaseStore {
         descFontSize: data.descFontSize || '',
         fontFamily: data.fontFamily || ''
       }
-      this.system.autoStart = data.autoStart === 'true'
-      this.system.closeType = data.closeType || '0'
+
+      this.system = {
+        autoStart: data.autoStart === 'true',
+        closeType: data.closeType || '0',
+        nodeJsDir: data.nodeJsDir || ''
+      }
     } catch (e: any) {
       this.loading = false
       TOAST.show({ message: `获取设置失败: ${e}`, type: 4 })
