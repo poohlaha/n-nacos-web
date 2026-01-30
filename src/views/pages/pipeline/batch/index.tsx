@@ -14,7 +14,7 @@ interface IPipelineBatchRunDialogProps {
   selectedRowKeys: any[]
   onCancel: () => void
   onOk: (data: Array<{ [K: string]: any }>) => void
-  getTagHtml: Function
+  getTagHtml: (t: string) => void
   datasource: Array<{ [K: string]: any }>
 }
 

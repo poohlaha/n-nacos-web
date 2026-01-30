@@ -209,7 +209,7 @@
 
 // .ant-drawer
 .ant-drawer {
-  font-size: @font;
+  // font-size: @font;
 }
 
 // .ant-tooltip
@@ -268,8 +268,8 @@
     padding-right: 0 !important;
     margin-left: 12px !important;
     margin-right: 12px !important;
-    font-size: @font;
-    color: @color_gray;
+    // font-size: @font;
+    // color: @color_gray;
     // font-weight: 500;
     // border-bottom: @border;
   }
@@ -615,7 +615,14 @@
 // card
 .m-ant-card {
   .font-unset();
-  background: @color_menu_active;
+
+  &.white {
+    background: #ffffff;
+  }
+
+  &:not(.white) {
+    background: @color_menu_active;
+  }
 
   &.ant-card-bordered {
     border: @border!important;

@@ -477,7 +477,7 @@ const Pipeline = (): ReactElement => {
         <PipelineBatchRunDialog
           open={showBatchRunDialog}
           selectedRowKeys={selectedRowKeys}
-          getTagHtml={pipelineStore.getTagHtml}
+          getTagHtml={(t: string = '') => pipelineStore.getTagHtml(t)}
           datasource={batchRunDatasource}
           onCancel={() => {
             setShowBatchRunDialog(false)

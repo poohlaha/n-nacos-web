@@ -546,7 +546,7 @@ class PipelineStore extends BaseStore {
   }
 
   getTagHtml(t: string = '') {
-    let tag = this.TAGS.find((tag: { [K: string]: any } = {}) => tag.value === t) || {}
+    let tag = (this.TAGS || []).find((tag: { [K: string]: any } = {}) => tag.value === t) || {}
     if (!Utils.isObjectNull(tag)) {
       return (
         <Tag className="m-ant-tag" color={tag.color || ''}>

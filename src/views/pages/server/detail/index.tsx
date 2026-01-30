@@ -190,7 +190,7 @@ const Server = (): ReactElement => {
   // 服务器基本信息
   const getServerInfoHtml = () => {
     return (
-      <Card title="服务器基本信息" className="server-info-card m-ant-card">
+      <Card title="服务器基本信息" className="server-info-card m-ant-card white">
         <Descriptions bordered column={2}>
           <Descriptions.Item label="IP">
             <p className="color-text">{serverStore.serverInfo?.ip || '-'}</p>
@@ -221,14 +221,14 @@ const Server = (): ReactElement => {
                       tempInput.select()
                       document.execCommand('copy')
                       document.body.removeChild(tempInput)
-                      TOAST.show({ message: '复制到剪切板成功', type: 2 })
+                      TOAST.show({ message: '复制成功', type: 2 })
                     } catch (e) {
                       console.error(e)
-                      TOAST.show({ message: '复制到剪切板失败', type: 4 })
+                      TOAST.show({ message: '复制失败', type: 4 })
                     }
                   }}
                 >
-                  复制到剪切板
+                  复制
                 </Button>
               </div>
             </div>

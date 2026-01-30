@@ -23,6 +23,7 @@ URL = ''
 KEY = 'serverList'
 NAME = '服务器列表'
 URL = '/serverList'
+DESCRIPTION = '集中管理服务器账号与访问信息'
 
 [SERVER.DETAIL]
 KEY = 'serverDetail'
@@ -39,6 +40,7 @@ URL = ''
 KEY = 'pipelineList'
 NAME = '流水线'
 URL = '/pipelineList'
+DESCRIPTION = '可视化流水线，一键发布项目'
 
 [PIPELINE.ADD]
 KEY = 'pipelineAdd'
@@ -54,6 +56,7 @@ URL = '/pipelineDetail'
 KEY = 'pipelineMarket'
 NAME = '插件市场'
 URL = '/pipelineMarket'
+DESCRIPTION = '为流水线扩展更多自动化能力'
 
 # 笔记
 [NOTE]
@@ -63,8 +66,9 @@ URL = ''
 
 [NOTE.LIST]
 KEY = 'noteList'
-NAME = '文章列表'
+NAME = '文章记录'
 URL = '/nodeList'
+DESCRIPTION = '分类整理与沉淀知识与文章'
 
 [NOTE.EDIT]
 KEY = 'noteEdit'
@@ -93,8 +97,9 @@ URL = ''
 
 [TOOLS.FILELOOK]
 KEY = 'quickLook'
-NAME = '文件查看'
+NAME = '文件管理'
 URL = '/quickLook'
+DESCRIPTION = '统一查看与管理本地文件'
 
 # 设置
 [SETTING]
@@ -116,4 +121,19 @@ SERVER_URL = '/server'
 KEY = 'trayMenu'
 NAME = '托盘菜单'
 URL = '/trayMenu'
+
+# 答题
+[ANSWER]
+KEY = 'answer'
+NAME = '信息记录'
+URL = '/answer'
+DESCRIPTION = '统一记录和管理各类网站信息'
+
+# 机器人
+[ROBOT]
+KEY = 'robot'
+NAME = '个人中枢'
+URL = '/robot'
+DESCRIPTION = '基于 Clawdbot 的自动化执行与协作能力'
+
 

@@ -14,6 +14,12 @@ class CommonStore extends BaseStore {
   @observable data: { [K: string]: any } = {} // 接收的数据
   @observable language: string = ''
 
+  constructor() {
+    super()
+
+    this.onSkinChange(0)
+  }
+
   /**
    * 切换皮肤
    * @param index
@@ -32,6 +38,7 @@ class CommonStore extends BaseStore {
   /**
    * 获取皮肤
    */
+  @action
   onGetSkin() {
     let skin = Utils.getLocal(SYSTEM.THEME_NAME) || ''
     if (Utils.isBlank(skin || '')) {
@@ -44,6 +51,7 @@ class CommonStore extends BaseStore {
   /**
    * 判断是不是黑色
    */
+  @action
   onJudgeDark() {
     return this.skin === CONSTANT.SKINS[1]
   }

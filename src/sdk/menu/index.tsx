@@ -195,7 +195,7 @@ const TrayMenu = (): ReactElement => {
           const name = !Utils.isBlank(item.realName || '') ? item.realName || '' : item.name || ''
           return (
             <div
-              className={`menu-item  w100 flex-align-center h-8 flex-align-center bg-menu-hover cursor-pointer pl-2 pr-2 relative rounded-md ${index !== applicationList.length - 1 ? 'mt-1' : 'mb-3'} ${index === 0 ? '!mt-3' : ''}`}
+              className={`menu-item  w100 flex-align-center h-8 bg-menu-hover cursor-pointer pl-2 pr-2 relative rounded-md ${index !== applicationList.length - 1 ? 'mt-1' : 'mb-3'} ${index === 0 ? '!mt-3' : ''}`}
               key={index}
             >
               <div className="flex-1 flex-align-center">

@@ -18,6 +18,8 @@ import loginStore from '@stores/login/login.store'
 import lookStore from '@stores/look/look.store'
 import systemStore from '@stores/setting/system.store'
 import trayStore from '@stores/tray/tray.store'
+import answerStore from '@stores/answer/answer.store'
+import robotStore from '@stores/robot/robot.store'
 
 export function createStore() {
   return {
@@ -35,7 +37,9 @@ export function createStore() {
     noteStore,
     lookStore,
     systemStore,
-    trayStore
+    trayStore,
+    answerStore,
+    robotStore
   }
 }
 
