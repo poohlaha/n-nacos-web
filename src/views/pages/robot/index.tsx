@@ -284,6 +284,25 @@ const Robot = (): ReactElement => {
             </div>
           </Card>
 
+          <Card className="mt-4" title="Iframe 嵌入" type="inner">
+            <div className="flex-align-center">
+              <div className="flex-direction-column">
+                <div className="inline-block">
+                  <p className="ml-1 color-gray">修改</p>
+                  <p className="ml-1 theme">
+                    ~/.nvm/versions/node/v24.13.0/lib/node_modules/openclaw/dist/gateway-cli-CHghbhEZ.js
+                  </p>
+                </div>
+                <div className="flex-align-center">
+                  <p className="color-desc">注释掉</p>
+                  <p className="ml-2 theme">X-Frame-Options</p>
+                  <p className="ml-2 color-desc">和</p>
+                  <p className="ml-2 theme">Content-Security-Policy</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           <Card className="mt-4" title="网关" type="inner">
             <div className="flex-align-center">
               <div className="flex-align-center flex-1">
